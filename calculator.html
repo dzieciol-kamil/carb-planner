@@ -532,4 +532,52 @@
                     volume = parseFloat(volInput.value) || 0;
                 }
                 const concInput = row.querySelector('.bottle-concentration');
-                const concentration = parseFloat(concInput.value)
+                const concentration = parseFloat(concInput.value) || 0;
+
+                const mixSpan = row.querySelector('.result-mix');
+                const maltSpan = row.querySelector('.result-malt');
+                const fructSpan = row.querySelector('.result-fruct');
+                const saltSpan = row.querySelector('.result-salt');
+                const citricSpan = row.querySelector('.result-citric');
+
+                if (isChecked && volume > 0 && concentration > 0) {
+                    const mix = (volume / 250) * concentration;
+                    const malt = mix * (2/3);
+                    const fruct = mix * (1/3);
+                    const salt = (volume / 250) * SALT_PER_250;
+                    const citric = (volume / 250) * CITRIC_PER_250;
+
+                    mixSpan.textContent = mix.toFixed(1);
+                    maltSpan.textContent = malt.toFixed(1);
+                    fructSpan.textContent = fruct.toFixed(1);
+                    saltSpan.textContent = salt.toFixed(1);
+                    citricSpan.textContent = citric.toFixed(1);
+
+                    sumMix += mix;
+                    sumMalt += malt;
+                    sumFruct += fruct;
+                    sumSalt += salt;
+                    sumCitric += citric;
+                } else {
+                    mixSpan.textContent = '0.0';
+                    maltSpan.textContent = '0.0';
+                    fructSpan.textContent = '0.0';
+                    saltSpan.textContent = '0.0';
+                    citricSpan.textContent = '0.0';
+                }
+            });
+
+            // Podsumowanie – teraz „Cukry ogółem” zamiast mieszanka
+            totalMixSpan.textContent = sumMix.toFixed(1);
+            totalMaltSpan.textContent = sumMalt.toFixed(1);
+            totalFructSpan.textContent = sumFruct.toFixed(1);
+            totalSaltSpan.textContent = sumSalt.toFixed(1);
+            totalCitricSpan.textContent = sumCitric.toFixed(1);
+        }
+
+        // ----- Pierwsze przeliczenie -----
+        updateAll();
+    })();
+</script>
+</body>
+</html>
