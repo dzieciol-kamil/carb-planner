@@ -9,6 +9,7 @@ import {
   fmtX,
   fracFill,
   fracFood,
+  planSummary,
   prof,
   rangeLabel,
   rateStats,
@@ -346,5 +347,40 @@ describe('rangeLabel', () => {
 
   test('point renders a single labeled value', () => {
     expect(rangeLabel(20, 80, true, route, 'km')).toBe('20 km');
+  });
+});
+
+describe('planSummary', () => {
+  test('aggregates target, carbs, hydration and delegates coverage/absorbed to rateStats/samples', () => {
+    const gear: Vessel[] = [{ gid: 'g1', name: 'Bidon', vol: 500, allowed: ['izo'], gelParts: 4 }];
+    const fills: Fill[] = [{ fid: 1, gid: 'g1', content: 'izo', from: 0, to: 100 }];
+    const foods: FoodItem[] = [{ id: 1, key: 'ban', name: 'Banana', carbs: 25, from: 50, to: 50 }];
+    const plan = makePlan({
+      route: makeRoute({ mode: 'route', distance: 100, speed: 25, weight: 75, intensity: 'mid', temp: 20, useGpx: false }),
+      gear,
+      fills,
+      foods,
+    });
+
+    const summary = planSummary(plan);
+
+    expect(summary.target).toBeCloseTo(300, 6); // 4h * 75 g/h (mid, >2.5h)
+    expect(summary.izoCarbs).toBeCloseTo(55, 6); // 500ml/100 * 11 g/100ml
+    expect(summary.gelCarbs).toBe(0);
+    expect(summary.foodCarbs).toBe(25);
+    expect(summary.totalCarbs).toBeCloseTo(80, 6);
+    expect(summary.fluidPlanned).toBe(500); // izo volume, no gel, no food ml
+    expect(summary.sweatLoss).toBe(2800); // round(sweat=700 * 4h)
+    expect(summary.hydrationPct).toBe(18); // round(500/2800*100)
+    expect(summary.coverage).toBe(rateStats(plan).coverage);
+    expect(summary.absorbedTotal).toBe(samples(plan).at(-1)!.absorbed);
+  });
+
+  test('zero-duration plan has zero sweat loss and reports full hydration coverage', () => {
+    const zeroHrsPlan = makePlan({
+      route: makeRoute({ mode: 'time', hours: 0, minutes: 0, weight: 75, intensity: 'low', temp: 0 }),
+    });
+    expect(planSummary(zeroHrsPlan).sweatLoss).toBe(0);
+    expect(planSummary(zeroHrsPlan).hydrationPct).toBe(100);
   });
 });

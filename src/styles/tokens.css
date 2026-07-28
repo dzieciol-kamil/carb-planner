@@ -1,0 +1,67 @@
+:root {
+  --ink: #16191c;
+  --bg: #eff0ec;
+  --surface: #ffffff;
+  --border: #e3e5e0;
+  --border-soft: #edefea;
+  --chip-border: #dde0da;
+  --muted: #7a817c;
+  --muted-2: #6e7573;
+  --muted-3: #9aa09b;
+  --ink-soft: #3d423e;
+  --track: #f1f2ee;
+  --carb: #5aa33f;
+  --gel: #c9922e;
+  --food: #b4552f;
+  --water: #3d8fbf;
+  --climb: #d2703f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Archivo', Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--water);
+  text-decoration: none;
+}
+
+a:hover {
+  color: #2f7099;
+}
+
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+}
+
+input[type='range']::-webkit-slider-runnable-track {
+  height: 4px;
+  background: var(--chip-border);
+  border-radius: 2px;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  margin-top: -7px;
+  border-radius: 50%;
+  background: var(--ink);
+  cursor: pointer;
+}
+
+input:focus,
+select:focus {
+  outline: 2px solid var(--carb);
+  outline-offset: 1px;
+}
