@@ -3,6 +3,7 @@ import { absCap, planSummary } from '../../domain/fuel';
 import { t } from '../../i18n/strings';
 import { useAppStore, type YMode } from '../../store/appStore';
 import type { XUnit } from '../../domain/types';
+import { LanesSection } from '../lanes/LanesSection';
 import { Chart } from './Chart';
 
 function segButton(on: boolean, small = false): CSSProperties {
@@ -113,6 +114,8 @@ export function ChartCard() {
         </div>
         <div style={{ width: 40, flex: '0 0 40px' }} />
       </div>
+
+      <LanesSection />
     </div>
   );
 }

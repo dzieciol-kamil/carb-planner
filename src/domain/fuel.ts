@@ -135,11 +135,11 @@ function effTotal(route: RouteInput): number {
   return P.cum[P.N] || 1;
 }
 
-function findVessel(gid: string, gear: Vessel[]): Vessel | undefined {
+export function findVessel(gid: string, gear: Vessel[]): Vessel | undefined {
   return gear.find((g) => g.gid === gid);
 }
 
-function volOf(fill: Fill, gear: Vessel[]): number {
+export function volOf(fill: Fill, gear: Vessel[]): number {
   const v = findVessel(fill.gid, gear);
   return v ? v.vol : 0;
 }
@@ -149,18 +149,25 @@ export function carbsFill(fill: Fill, gear: Vessel[], mix: MixSettings): number 
   return (volOf(fill, gear) / 100) * (fill.content === 'gel' ? mix.gelConc : mix.conc);
 }
 
-function partsOf(fill: Fill, gear: Vessel[]): number {
+export function partsOf(fill: Fill, gear: Vessel[]): number {
   if (fill.content !== 'gel') return 1;
   const v = findVessel(fill.gid, gear);
   return Math.max(1, Math.round((v && v.gelParts) || 1));
 }
 
-function partPos(fill: Fill, k: number, gear: Vessel[]): number {
+export function partPos(fill: Fill, k: number, gear: Vessel[]): number {
   const n = partsOf(fill, gear);
   if (n <= 1) return fill.from;
   const even = fill.from + ((fill.to - fill.from) * k) / (n - 1);
   if (!fill.pos || fill.pos.length !== n || fill.pos[k] == null) return even;
   return Math.max(fill.from, Math.min(fill.to, fill.pos[k]));
+}
+
+export function partArray(fill: Fill, gear: Vessel[]): number[] {
+  const n = partsOf(fill, gear);
+  const arr: number[] = [];
+  for (let k = 0; k < n; k++) arr.push(partPos(fill, k, gear));
+  return arr;
 }
 
 export function fracFill(fill: Fill, x: number, gear: Vessel[], route: RouteInput): number {
