@@ -23,7 +23,7 @@
 </style>
 </helmet>
 
-<div style="min-height:100vh; padding:26px 24px 60px; display:flex; flex-direction:column; align-items:center; gap:16px">
+<div style="min-height:100vh; padding:14px 24px 40px; display:flex; flex-direction:column; align-items:center; gap:16px">
 
   <div style="width:100%; max-width:1420px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap">
     <div style="display:flex; align-items:baseline; gap:12px">
@@ -174,6 +174,9 @@
             <span style="display:flex; align-items:center; gap:7px; font-size:12px; color:#6E7573"><span style="width:14px; height:0; border-top:2px dotted #5AA33F"></span>{{ t.intake }}</span>
           </sc-if>
           <span style="display:flex; align-items:center; gap:7px; font-size:12px; color:#6E7573"><span style="width:14px; height:0; border-top:2px dashed #A8AEA9"></span>{{ legNeed }}</span>
+          <sc-if value="{{ showFcapLeg }}" hint-placeholder-val="{{ false }}">
+            <span style="display:flex; align-items:center; gap:7px; font-size:12px; color:#6E7573"><span style="{{ legCapColor }}"></span>{{ t.legCap }}</span>
+          </sc-if>
           <sc-if value="{{ showGutLane }}" hint-placeholder-val="{{ true }}">
             <span style="display:flex; align-items:center; gap:7px; font-size:12px; color:#6E7573"><span style="width:14px; height:8px; border-radius:2px; background:#DCC98A"></span>{{ t.gutLane }}</span>
           </sc-if>
@@ -193,7 +196,8 @@
 
       <div style="display:flex; align-items:stretch; gap:12px">
         <div style="width:168px; flex:0 0 168px; display:flex; flex-direction:column; gap:44px">
-          <span style="font-size:11px; line-height:1.45; color:#8A918C">{{ t.curveHint }}</span>
+          <sc-if value="{{ sumHint }}" hint-placeholder-val="{{ true }}"><span style="font-size:11px; line-height:1.45; color:#8A918C">{{ t.curveHintSum }}</span></sc-if>
+          <sc-if value="{{ rateHint }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px; line-height:1.45; color:#8A918C">{{ t.curveHint }}</span></sc-if>
           <span style="font-size:11px; line-height:1.45; color:#8A918C">{{ capNote }}</span>
         </div>
         <div style="flex:1; min-width:0">{{ chart }}</div>
@@ -537,6 +541,45 @@
   </div>
   </sc-if>
 
+  <footer style="width:100%; max-width:1420px; box-sizing:border-box; margin-top:14px; border-top:1px solid #DFE2DB; padding:22px 18px 0; display:flex; flex-direction:column; gap:22px">
+    <div style="display:grid; grid-template-columns:3fr 2fr; gap:64px; align-items:start">
+
+      <div style="display:flex; flex-direction:column; gap:9px; min-width:0">
+        <div style="display:flex; align-items:baseline; gap:9px">
+          <span style="font-size:14px; font-weight:700; letter-spacing:-0.01em">FUELPLAN</span>
+          <span style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:#9AA09B">{{ t.ftVersion }}</span>
+        </div>
+        <p style="margin:0; font-size:12px; line-height:1.6; color:#6E7573; text-wrap:pretty">{{ t.ftAboutBody }}</p>
+        <p style="margin:0; font-size:11px; line-height:1.6; color:#9AA09B; text-wrap:pretty">{{ t.ftSources1 }} {{ t.ftSources2 }}</p>
+        <span style="font-family:'JetBrains Mono',monospace; font-size:10px; color:#9AA09B">{{ t.ftPrivacy }}</span>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:10px; min-width:0">
+        <span style="font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#7A817C">{{ t.ftLinks }}</span>
+        <div style="display:flex; flex-direction:column; gap:9px; align-items:flex-start">
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap">
+            <a href="https://github.com/dzieciol-kamil/carb-planner/issues/new" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:8px; border:1px solid #DDE0DA; background:#fff; border-radius:999px; padding:7px 13px; font-size:12px; font-weight:600; color:#16191C">
+              <span style="width:8px; height:8px; border-radius:50%; background:#5AA33F; flex:0 0 8px"></span>
+              <span>{{ t.ftIssues }}</span>
+            </a>
+            <a href="https://github.com/dzieciol-kamil/carb-planner" target="_blank" rel="noopener" title="{{ t.ftRepo }}" style="display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; box-sizing:border-box; border:1px solid #DDE0DA; background:#fff; border-radius:999px; color:#4B514D">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"></path></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:9px">
+      <span style="font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#7A817C">{{ t.ftLegal }}</span>
+      <p style="margin:0; font-size:11.5px; line-height:1.65; color:#7A817C; text-wrap:pretty">{{ t.ftLegalBody }}</p>
+    </div>
+
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; border-top:1px solid #E6E8E2; padding-top:14px">
+      <span style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.08em; color:#9AA09B">{{ t.ftCopyright }}</span>
+    </div>
+  </footer>
+
   <sc-if value="{{ panelSettings }}" hint-placeholder-val="{{ false }}">
   <div style="position:fixed; inset:0; z-index:50">
     <div onClick="{{ closePanel }}" style="position:absolute; inset:0; background:rgba(18,20,18,0.34)"></div>
@@ -734,11 +777,13 @@ const STR = {
     gearHint:'Nazwa, pojemność i to, co dany pojemnik może wozić. Żel dzieli się na tyle porcji, ile tu ustawisz.',
     settingsHint:'Wszystko zapisuje się w tej przeglądarce (localStorage) — bez konta, bez backendu.',
     curve:'Planowanie', curveHint:'Liczy się tempo: g/h, które realnie wchłaniasz, kontra g/h, których potrzebujesz. Nadmiar zalega w żołądku (górny pasek), a rdzawe pola to godziny na deficycie.',
+    curveHintSum:'Gramy narastająco: ile cukru realnie wchłonąłeś do danej godziny kontra ile powinieneś. Nadmiar zalega w żołądku (górny pasek), a rdzawe pola to godziny na deficycie.',
     intake:'Zjedzone', absorbed:'Wchłonięte', gutLane:'W żołądku', need:'Zapotrzebowanie', timeline:'Rozkład', axisTime:'godziny',
     gutOver:'Za dużo naraz — ', gutAt:' g zalega w żołądku ok. ',
     dry:'Dziura w tankowaniu: ', dryAt:' bez cukru, ok. ', sumMode:'Suma', carbMode:'Węglowodany (g/h)', fluidMode:'Nawodnienie (ml/h)', tDry:'Najdłuższa dziura',
-    legFluid:'Płyny', legSweat:'Pot',
-    capNote:'Limit wchłaniania: ', capNote2:' — glukoza saturuje transporter SGLT1 ok. 60 g/h, fruktoza dochodzi osobno przez GLUT5 (ok. 30 g/h), dlatego liczę go z proporcji malto:fruktoza (Jeukendrup, przegląd 2010–2014). Przerywana linia na płynach = 750 ml/h opróżniania żołądka.',
+    legFluid:'Płyny', legSweat:'Pot', legCap:'Limit wchłaniania',
+    capNote:'Limit wchłaniania: ', capNote2:' — glukoza saturuje transporter SGLT1 ok. 60 g/h, fruktoza dochodzi osobno przez GLUT5 (ok. 30 g/h), dlatego liczę go z proporcji malto:fruktoza (Jeukendrup, przegląd 2010–2014).',
+    capNoteFluid:'Limit wchłaniania: 750 ml/h — tyle płynu żołądek oddaje do jelita w wysiłku (przerywana linia). Nadwyżka nie wchłania się, tylko zalega. Przy większym pocie da się deficyt ograniczyć, nie wyzerować.',
     tAbsorbed:'Wchłonięte', tCap:'Limit wchłaniania', tGutPeak:'Max w żołądku',
     timelineHint:'Podgląd — pozycję, zakres i zawartość każdej dolewki ustawiasz na wykresie powyżej.',
     dragHint:'Paski nie nachodzą na siebie — w ciasnej luce przeciągany pasek się skraca. Kreski porcji żelu przesuwasz osobno.',
@@ -768,6 +813,17 @@ const STR = {
     fName:'produkt', fCarbs:'cukry (g)', fMl:'płyn (ml)', fCont:'stopniowo',
     foodSectionHint:'Twoja lista produktów — te przyciski pojawiają się pod wykresem. Podaj same węglowodany w porcji (nie wagę batona) i ewentualny płyn.',
     mixHint:'Wartości na 100 ml — stąd liczą się gramy dla każdego napełnienia.',
+    ftVersion:'wersja demo · projekt hobbystyczny',
+    ftAboutBody:'FuelPlan liczy, ile węglowodanów i płynów zabrać na trasę — z dystansu, tempa, wagi, intensywności i temperatury — a potem rozkłada je na bidony, flaski i jedzenie w czasie. Plan, sprzęt i lista produktów zapisują się w tej przeglądarce.',
+    ftPrivacy:'Bez konta, bez serwera, bez cookies i trackerów.',
+    ftLegal:'Zastrzeżenie prawne',
+    ftLegalBody:'To narzędzie edukacyjne i pomocnicze — nie jest poradą medyczną, dietetyczną ani treningową i nie zastępuje kontaktu ze specjalistą. Wyliczenia są szacunkowe, oparte na uśrednionych modelach; Twoje realne zapotrzebowanie, tolerancja żołądkowa, poziom nawodnienia i reakcja na wysiłek mogą się od nich istotnie różnić. Korzystasz z aplikacji na własną odpowiedzialność i wyłącznie na własne ryzyko. Autor nie ponosi odpowiedzialności za jakiekolwiek skutki zdrowotne, kontuzje, szkody, straty ani decyzje podjęte na podstawie wyników — w szczególności nie odpowiada za Twoje zdrowie ani życie. Jeśli chorujesz (m.in. cukrzyca, choroby nerek, serca, przewodu pokarmowego), przyjmujesz leki, jesteś w ciąży albo planujesz długi lub bardzo intensywny start — skonsultuj plan żywieniowy z lekarzem lub dietetykiem sportowym. Nie ignoruj objawów: przy zawrotach głowy, nudnościach, dezorientacji, skurczach lub podejrzeniu hiponatremii przerwij wysiłek i szukaj pomocy. Aplikacja jest dostarczana „taką, jaka jest”, bez żadnych gwarancji.',
+    ftLinks:'Współtwórz',
+    ftIssues:'Pomysły i błędy → GitHub Issues',
+    ftRepo:'Kod źródłowy na GitHubie',
+    ftSources1:'Limity wchłaniania: przeglądy Jeukendrupa (2010–2014).',
+    ftSources2:'Utrata potu: przybliżenie z wagi, intensywności i temperatury.',
+    ftCopyright:'© 2026 FuelPlan · open source',
     notes:[
       { title:'Pas na każdy pojemnik', body:'Bidon 720, bidon 610, flask — każdy ma własny pas i nie da się wrzucić żelu do bidonu z izo.' },
       { title:'Dolewka po wyczerpaniu', body:'Napełnienia nie zachodzą na siebie: pasek zatrzymuje się na sąsiedzie, a + wstawia dolewkę w wolnej luce.' },
@@ -783,11 +839,13 @@ const STR = {
     gearHint:'Name, capacity and what this vessel may carry. Gel splits into as many portions as you set here.',
     settingsHint:'Everything is stored in this browser (localStorage) — no account, no backend.',
     curve:'Planning', curveHint:'Rate is what counts: g/h you actually absorb versus g/h you need. Excess sits in the stomach (top strip); rust areas are the hours you ride at a deficit.',
+    curveHintSum:'Grams cumulative: how much carb you have actually absorbed by a given hour versus how much you should have. Excess sits in the stomach (top strip); rust areas are the hours you ride at a deficit.',
     intake:'Eaten', absorbed:'Absorbed', gutLane:'In the gut', need:'Requirement', timeline:'Schedule', axisTime:'hours',
     gutOver:'Too much at once — ', gutAt:' g sitting in the stomach around ',
     dry:'Fuelling gap: ', dryAt:' with no carbs, around ', sumMode:'Total', carbMode:'Carbs (g/h)', fluidMode:'Hydration (ml/h)', tDry:'Longest gap',
-    legFluid:'Fluids', legSweat:'Sweat',
-    capNote:'Absorption limit: ', capNote2:' — glucose saturates the SGLT1 transporter at ~60 g/h, fructose adds on top via GLUT5 (~30 g/h), so it is derived from your malto:fructose ratio (Jeukendrup, 2010–2014 reviews). Dashed line in fluid mode = 750 ml/h gastric emptying.',
+    legFluid:'Fluids', legSweat:'Sweat', legCap:'Absorption limit',
+    capNote:'Absorption limit: ', capNote2:' — glucose saturates the SGLT1 transporter at ~60 g/h, fructose adds on top via GLUT5 (~30 g/h), so it is derived from your malto:fructose ratio (Jeukendrup, 2010–2014 reviews).',
+    capNoteFluid:'Absorption limit: 750 ml/h — that is how fast the stomach passes fluid on to the gut under load (dashed line). Anything above it is not absorbed, it just sits there. With a higher sweat rate you can limit the deficit, not erase it.',
     tAbsorbed:'Absorbed', tCap:'Absorption limit', tGutPeak:'Peak in stomach',
     timelineHint:'Read-only view — set position, range and contents of each refill on the chart above.',
     dragHint:'Bars never overlap — a dragged bar shortens to fit a tight gap. Gel portion marks drag on their own.',
@@ -817,6 +875,17 @@ const STR = {
     fName:'product', fCarbs:'carbs (g)', fMl:'fluid (ml)', fCont:'over time',
     foodSectionHint:'Your product list — these buttons show up under the chart. Enter carbs per serving (not the bar weight) and any fluid.',
     mixHint:'Values per 100 ml — per-fill grams are derived from this.',
+    ftVersion:'demo build · hobby project',
+    ftAboutBody:'FuelPlan works out how many carbs and how much fluid to take on a ride — from distance, pace, weight, intensity and temperature — then spreads them across bottles, flasks and food over time. Your plan, gear and product list stay in this browser.',
+    ftPrivacy:'No account, no server, no cookies, no trackers.',
+    ftLegal:'Disclaimer',
+    ftLegalBody:'This is an educational planning aid — not medical, dietary or coaching advice, and no substitute for a professional. All figures are estimates based on averaged models; your real requirement, gut tolerance, hydration status and response to effort may differ significantly. You use the app on your own responsibility and entirely at your own risk. The author accepts no liability for any health consequences, injury, damage, loss or decisions made on the basis of these results — and specifically takes no responsibility for your health or life. If you have a medical condition (including diabetes, kidney, heart or gastrointestinal disease), take medication, are pregnant, or are preparing for a long or very hard event, discuss your fuelling plan with a doctor or sports dietitian. Never ignore symptoms: if you feel dizzy, nauseous, disoriented, cramping, or suspect hyponatraemia, stop and seek help. The app is provided “as is”, without warranty of any kind.',
+    ftLinks:'Contribute',
+    ftIssues:'Ideas & bugs → GitHub Issues',
+    ftRepo:'Source code on GitHub',
+    ftSources1:'Absorption limits: Jeukendrup reviews (2010–2014).',
+    ftSources2:'Sweat loss: an estimate from weight, intensity and temperature.',
+    ftCopyright:'© 2026 FuelPlan · open source',
     notes:[
       { title:'A lane per vessel', body:'Big bottle, small bottle, flask — each has its own lane, so gel cannot land in the izo bottle.' },
       { title:'Refill once empty', body:'Fills never overlap: a bar stops at its neighbour and + inserts a refill into a free gap.' },
@@ -1110,7 +1179,7 @@ class Component extends DCLogic {
     const maxY = fluidMode
       ? Math.max(FCAP * 1.1, ...S.map(p => Math.max(p.fluidRate, p.sweatRate))) * 1.1
       : rateMode
-      ? Math.max(10, ...S.map(p => Math.max(p.rate, p.needRate))) * 1.15
+      ? Math.max(10, this.absCap() * 1.05, ...S.map(p => Math.max(p.rate, p.needRate))) * 1.15
       : Math.max(1, ...S.map(p => Math.max(p.intake, p.need))) * 1.08;
     const GT = showAxis ? 52 : 26, LIM = 60;
     const gutPeak = Math.max(LIM * 1.25, ...S.map(p => p.gut)) * 1.05;
@@ -1126,8 +1195,9 @@ class Component extends DCLogic {
       d: S.map((p, i) => (i ? 'L' : 'M') + px(p.x).toFixed(1) + ' ' + py(p[nk]).toFixed(1)).join(' ') + ' '
         + S.slice().reverse().map(p => 'L' + px(p.x).toFixed(1) + ' ' + py(Math.min(p[yk], p[nk])).toFixed(1)).join(' ') + ' Z'
     }) : null;
-    const fcapLine = fluidMode ? e('line', {
-      key: 'fc', x1: 0, x2: W, y1: py(FCAP), y2: py(FCAP), stroke: '#3D8FBF', strokeWidth: 1, strokeDasharray: '3 5', opacity: 0.8, vectorEffect: 'non-scaling-stroke'
+    const capY = fluidMode ? FCAP : this.absCap();
+    const fcapLine = (fluidMode || rateMode) ? e('line', {
+      key: 'fc', x1: 0, x2: W, y1: py(capY), y2: py(capY), stroke: fluidMode ? '#3D8FBF' : C.carb, strokeWidth: 1, strokeDasharray: '3 5', opacity: 0.8, vectorEffect: 'non-scaling-stroke'
     }) : null;
     const gutOver = S.some(p => p.gut > LIM);
     const gutStrip = [
@@ -1822,7 +1892,11 @@ class Component extends DCLogic {
       legMain: s.yMode === 'fluid' ? t.legFluid : t.absorbed,
       legNeed: s.yMode === 'fluid' ? t.legSweat : t.need,
       legMainColor: { width: 14, height: 3, borderRadius: 2, background: s.yMode === 'fluid' ? C.water : '#5AA33F' },
-      capNote: t.capNote + this.absCap() + ' g/h' + t.capNote2,
+      sumHint: s.yMode === 'sum',
+      rateHint: s.yMode === 'rate',
+      showFcapLeg: s.yMode !== 'sum',
+      legCapColor: { width: 14, height: 0, borderTop: '2px dotted ' + (s.yMode === 'fluid' ? C.water : C.carb) },
+      capNote: s.yMode === 'fluid' ? t.capNoteFluid : t.capNote + this.absCap() + ' g/h' + t.capNote2,
       timelineOpen: s.timelineOpen,
       toggleTimeline: () => this.set('timelineOpen', !s.timelineOpen),
       timelineBarStyle: { width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '10px 14px', border: '1px solid #E9EBE6', background: s.timelineOpen ? '#F6F7F4' : '#fff', borderRadius: 11, cursor: 'pointer', fontFamily: 'Archivo, sans-serif', color: '#16191C' },

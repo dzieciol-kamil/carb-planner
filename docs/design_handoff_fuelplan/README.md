@@ -1,5 +1,7 @@
 # Handoff: FuelPlan — planer żywienia na rowerze
 
+**Wrzut #2 · 2026-07-28.** Jeśli budowałeś już cokolwiek na podstawie wrzutu #1, przeczytaj najpierw „Zmiany od wrzutu #1" na końcu tego pliku — reszta dokumentu jest przepisana pod stan aktualny.
+
 ## Overview
 FuelPlan to planer nawodnienia i węglowodanów na długą jazdę. Użytkownik podaje trasę (dystans + tempo lub czas), warunki (waga, intensywność, temperatura), konfiguruje pojemniki (bidony, flask, bukłak) i rozkłada na osi trasy **napełnienia** (co i na jakim odcinku pije) oraz **jedzenie/dodatki**. Aplikacja na żywo liczy krzywą podaży vs. zapotrzebowania (g/h), pokrycie zapotrzebowania, nawodnienie oraz gramaturę mieszanki do odmierzenia na każde napełnienie.
 
@@ -54,6 +56,15 @@ Pliki w tym pakiecie to **referencja projektowa napisana w HTML** — prototyp p
 - Padding kart: `20px 24px` desktop, `14–16px` mobile. Gap siatek: 14–24px.
 - Wysokość toru: 24px desktop, 15px mobile.
 
+## Deploy: GitHub Pages (wymóg twardy)
+Aplikacja hostowana jest na GitHub Pages z repo `dzieciol-kamil/carb-planner` — czyli **statyczny build, bez backendu i bez SSR**.
+- `vite.config.ts`: `base: '/carb-planner/'` (albo `base: process.env.GITHUB_ACTIONS ? '/carb-planner/' : '/'`). Bez tego assety 404-ują na Pages.
+- Wszystkie ścieżki do assetów przez `import`/`new URL(..., import.meta.url)` — nigdy ścieżki absolutne od `/`.
+- Router: jeśli w ogóle potrzebny, `HashRouter` — Pages nie obsługuje fallbacku na `index.html` dla ścieżek.
+- Build i publikacja przez GitHub Actions (`actions/upload-pages-artifact` + `actions/deploy-pages`) na push do `master`, output `dist/`. Dodaj `.nojekyll`.
+- Zero zmiennych środowiskowych z sekretami — cały stan użytkownika w `localStorage`.
+- Fonty: Google Fonts z CDN (jak w prototypie) albo lokalnie w `src/assets/fonts` — bez zależności od proxy.
+
 ## Kształt stanu (przenieś 1:1)
 
 ```ts
@@ -92,7 +103,7 @@ Domyślna biblioteka produktów (`carbs` w g, `ml` opcjonalne, `cont:true` = spo
 - `fracFill / fracFood` — jaka część pozycji jest już spożyta na kilometrze `x`; dla żelu podzielonego na `gelParts` — skokowo, na pozycjach porcji (`partPos`, przesuwalnych osobno).
 - `samples()` — 160 próbek: `intake`, `gut` (w żołądku), `absorbed` (opróżnianie żołądka limitowane `absCap`), `ml`, `need`; potem wygładzone (~30 min) `rate`, `needRate`, `fluidRate`, `sweatRate`.
 - `rateStats()` — pokrycie liczone uczciwie: `Σ min(rate, needRate)·dt / Σ needRate·dt`; dodatkowo najdłuższy „suchy" odcinek (rate < 40% zapotrzebowania) z jego kilometrem.
-- Przerywana linia na wykresie płynów = 750 ml/h (limit opróżniania żołądka).
+- `FCAP = 750` ml/h — stały pułap opróżniania żołądka (przerywana linia w trybie płynów). Literatura daje 600–1000 ml/h w wysiłku (skrajnie ~1300); wartość jest **wpisana na sztywno**, nie skalowana wagą, intensywnością ani osmolalnością napoju — patrz „Otwarte kwestie". Praktyczna konsekwencja do pokazania użytkownikowi: przy pocie powyżej 750 ml/h deficytu nie da się wyzerować, tylko ograniczyć.
 
 ## Ekrany / widoki
 
@@ -104,11 +115,29 @@ Kolumna kart na tle `#EFF0EC`, każda karta biała, radius 16, ramka `#E3E5E0`.
 1. **Nagłówek** — nazwa, przełącznik języka PL/EN, przełącznik widoku.
 2. **Panel trasy** — dystans / tempo (albo czas), waga, intensywność, temperatura, profil GPX (Wł./Wyłącz, „Wczytaj" pliku, komunikat błędu `gpxBad`). *Uwaga: `durationLabel` (czas trwania) został z tego panelu usunięty i obecnie pojawia się tylko w widoku mobilnym — patrz „Otwarte kwestie".*
 3. **Karty podsumowania** — cel (g), pokrycie zapotrzebowania (%), nawodnienie (utrata / plan / %), kcal, licznik dolewek.
-4. **Krzywa** — SVG na całą szerokość: profil wysokości w tle (pasma podjazd `#D2703F` / zjazd `#3D8FBF`, opacity 0.075), obszar węglowodanów (gradient z `carb`), warstwa „w żołądku", linia zapotrzebowania (przerywana), linia limitu wchłaniania, linia podaży kolorowana kolorem aktualnie aktywnego źródła. Przełączniki: oś X km↔h, tryb Y (g/h ↔ płyny).
+4. **Krzywa** — SVG na całą szerokość: profil wysokości w tle (pasma podjazd `#D2703F` / zjazd `#3D8FBF`, opacity 0.075), obszar podaży (gradient z `carb`, w trybie płynów z `water`), warstwa „w żołądku", linia zapotrzebowania (przerywana `#A8AEA9`, `6 5`), linia limitu wchłaniania, linia podaży kolorowana kolorem aktualnie aktywnego źródła. Trzy tryby osi Y: `sum` (gramy narastająco), `rate` (g/h), `fluid` (ml/h); osobno przełącznik osi X km↔h.
+
+   **Linia limitu wchłaniania** (`strokeDasharray:'3 5'`, opacity 0.8) — pozioma, rysowana tylko w trybach `rate` i `fluid`:
+   - `rate` → na wysokości `absCap()` (g/h), kolor `carb` `#5AA33F`; `maxY` musi obejmować `absCap()*1.05`, żeby linia nie wypadła za górną krawędź przy chudym planie.
+   - `fluid` → na 750 ml/h (stała `FCAP`, limit opróżniania żołądka), kolor `water` `#3D8FBF`.
+   - `sum` → brak linii (oś to gramy narastająco, limit g/h nie ma tam sensu) i brak wpisu w legendzie.
+
+   **Legenda** (prawy górny róg karty, 12px `#6E7573`): podaż (pełna kreska 14×3, radius 2) · „Zjedzone" (kropkowana, tylko w `sum` gdy zaległość >5 g) · zapotrzebowanie/pot (kreskowana szara) · **„Limit wchłaniania" / „Absorption limit"** (kropkowana 2px w kolorze linii limitu, tylko `rate` i `fluid`) · „W żołądku" (kostka `#DCC98A`, poza trybem płynów). Etykieta legendy jest bez wartości liczbowej — liczba stoi w nocie obok wykresu.
+
+   **Nota obok wykresu** (lewa kolumna, 168px, 11px `#8A918C`) — dwa akapity zależne od trybu:
+   - `sum` → `curveHintSum` (gramy narastająco) + `capNote` (wyliczony `absCap()` g/h + wyjaśnienie SGLT1/GLUT5).
+   - `rate` → `curveHint` (tempo g/h) + `capNote`.
+   - `fluid` → **tylko** `capNoteFluid` (750 ml/h, co znaczy przekroczenie linii); noty węglowodanowej nie ma.
 5. **Tory pod wykresem** — jeden tor na każdy skonfigurowany pojemnik + tor „Jedzenie / dodatki". W torze pojemnika paski **nie nachodzą na siebie** (przeciągany pasek skraca się do wolnej luki), w torze jedzenia mogą. Po lewej etykieta pojemnika (nazwa, `ml · dozwolona zawartość`), po prawej przycisk `+` (dolewka w pierwszej wolnej luce; nieaktywny → `noRoom`).
 6. **Lista produktów do dodania** — chipy z kropką w kolorze `food` i gramaturą.
 7. **ROZKŁAD** (collapsible) — lista wszystkich pozycji z zakresem, składem i licznikiem, hover zsynchronizowany z wykresem.
 8. **SKŁAD POJEMNIKÓW** — karta na każdy pojemnik, w środku wiersz na każde napełnienie: cukry, malto, fruktoza, sól, kwasek w gramach. W nagłówku przycisk „ustawienia mieszanki" (otwiera panel `mix`).
+
+9. **Stopka** (desktop, poza kartami, na tle strony) — `border-top:1px solid #DFE2DB`, `padding:22px 18px 0`, siatka `3fr 2fr` z gapem 64px:
+   - lewa kolumna: wordmark `FUELPLAN` (14px/700) + `ftVersion` (10px mono, uppercase, letter-spacing 0.12em, `#9AA09B`), `ftAboutBody` (12px/1.6 `#6E7573`), `ftSources1` + `ftSources2` (11px `#9AA09B`), `ftPrivacy` (10px mono);
+   - prawa kolumna: `ftLinks` jako nagłówek (10px mono/700, uppercase, 0.14em, `#7A817C`) → link `ftIssues` z kropką `#5AA33F` 8px do `/issues/new` i link do repo z logo GitHuba (16px SVG, `currentColor`); pod nimi `ftLegal` + `ftLegalBody` (11.5px/1.65 `#7A817C`);
+   - pasek dolny: `border-top:1px solid #E6E8E2`, `padding-top:14px`, `ftCopyright` (10px mono `#9AA09B`).
+   Wszystkie linki `target="_blank" rel="noopener"`. Górny padding strony to `14px 24px 40px` (był 26/60 — stopka domyka stronę wizualnie, nagłówek stoi wyżej).
 
 ### B. Mobile
 Ten sam model danych, układ pionowy: ciemna karta `#16191C` z czasem trwania i celem (28px mono), kompaktowa krzywa, tory o wysokości 15px, edycja pozycji przez **tap → wiersz edycji** (chipy zawartości + „Usuń") zamiast hovera, uchwyty przeciągania szersze (18px).
@@ -132,6 +161,8 @@ Brak grafik. Tylko Google Fonts (Archivo, JetBrains Mono) i ikonografia tekstowa
 
 ## Otwarte kwestie do decyzji z właścicielem
 - **Czas trwania (`durationLabel`)** — usunięty z panelu trasy na desktopie, dalej liczony. Zdecydować, gdzie ma wrócić (przy krzywej, w podsumowaniu, w nagłówku).
+- **Pułap opróżniania żołądka** — 750 ml/h jest stałą. Decyzja: zostawić stałą, wyliczać (waga × intensywność × stężenie napoju), czy wystawić jako pole w ustawieniach?
+- **Stopka na mobile** — obecnie stopka jest tylko w layoucie desktopowym. Zdecydować, czy na mobile ma być skrócona wersja (zastrzeżenie prawne + link do repo) czy żadna.
 - Persystencja: co zapisujemy w `localStorage` (ustawienia zawsze; plany — jeden ostatni czy lista nazwanych?).
 - Czy planowany jest eksport planu (PDF / naklejka na ramę) — wpłynie na strukturę widoku druku.
 
@@ -146,3 +177,13 @@ Brak grafik. Tylko Google Fonts (Archivo, JetBrains Mono) i ikonografia tekstowa
 3. Pierwszy prompt: *„Przeczytaj docs/design_handoff_fuelplan/README.md. Zbuduj szkielet aplikacji (Vite+React+TS) i przenieś model obliczeniowy z klasy `Component` w FuelPlan.dc.html do `src/domain/fuel.ts` jako czyste funkcje + testy jednostkowe na cph/sweat/absCap/samples/rateStats. Nie ruszaj jeszcze UI."*
 4. Potem ekran po ekranie: panel trasy → wykres SVG → tory z drag&drop → skład pojemników → ustawienia. Za każdym razem odsyłaj do konkretnej sekcji README i do prototypu.
 5. Drag&drop i popover zostaw na koniec jednej sesji — to najbardziej wrażliwa część (zachowanie hovera opisane wyżej).
+
+## Zmiany od wrzutu #1
+
+Jeśli implementacja powstawała na poprzednim wrzucie, to jest pełna lista różnic w prototypie. Nic poza tym się nie zmieniło — model obliczeniowy, kształt stanu, tory, drag&drop, skład pojemników i layout mobilny są identyczne.
+
+1. **Linia limitu wchłaniania w trybie g/h (nowe).** Wcześniej pozioma linia limitu istniała tylko w trybie płynów (750 ml/h). Teraz rysuje się także w trybie `rate`, na wysokości `absCap()`, w kolorze `carb`. `maxY` w trybie `rate` uwzględnia `absCap()*1.05`. W trybie `sum` linii nie ma.
+2. **Wpis w legendzie „Limit wchłaniania" / „Absorption limit" (nowe).** Kropkowana kreska w kolorze linii limitu, widoczna w `rate` i `fluid`, ukryta w `sum`. Bez wartości liczbowej w etykiecie. Nowe klucze i18n: `legCap`.
+3. **Nota obok wykresu rozbita na tryby.** Był jeden tekst `curveHint` widoczny zawsze plus `capNote` z dopiskiem o 750 ml/h na końcu. Teraz: `curveHintSum` (nowy klucz) dla `sum`, `curveHint` dla `rate`, a w `fluid` sam `capNoteFluid` (nowy klucz) — wzmianka o płynach została usunięta z `capNote2`.
+4. **Stopka (nowe).** Cała sekcja 9 w „Ekrany / widoki" — wcześniej strona kończyła się na karcie ze składem pojemników. Nowe klucze i18n: `ftVersion`, `ftAbout`, `ftAboutBody`, `ftSources1`, `ftSources2`, `ftPrivacy`, `ftLegal`, `ftLegalBody`, `ftLinks`, `ftIssues`, `ftRepo`, `ftCopyright`.
+5. **Padding strony** `26px 24px 60px` → `14px 24px 40px`.
