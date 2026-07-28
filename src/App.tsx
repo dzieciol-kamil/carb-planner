@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { ChartCard } from './components/chart/ChartCard';
+import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { MobileApp } from './components/mobile/MobileApp';
 import { MixPanel } from './components/panels/MixPanel';
@@ -48,6 +49,7 @@ function App() {
       ) : (
         <MobileApp />
       )}
+      {isDesktop && <Footer />}
     </div>
   );
 }
