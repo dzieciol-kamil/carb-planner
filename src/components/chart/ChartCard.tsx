@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { absCap, planSummary, prof } from '../../domain/fuel';
+import { planSummary, prof } from '../../domain/fuel';
 import { t } from '../../i18n/strings';
 import { useAppStore, type YMode } from '../../store/appStore';
 import type { XUnit } from '../../domain/types';
@@ -8,6 +8,7 @@ import { LanesSection } from '../lanes/LanesSection';
 import { TimelineSection } from '../timeline/TimelineSection';
 import { Chart } from './Chart';
 import { elevationTicks } from './ElevationLayer';
+import { CHART_COLORS } from './theme';
 
 const CHART_HEIGHT = 300;
 const CHART_PB = 22;
@@ -47,16 +48,17 @@ export function ChartCard() {
 
   const planState = { route, mix, gear, fills, foods, foodLib };
   const summary = planSummary(planState);
-  const cap = absCap(mix);
 
   const showEaten = yMode === 'sum' && summary.totalCarbs - summary.absorbedTotal > 5;
   const showGutLane = yMode !== 'fluid';
   const showUnits = route.mode !== 'time';
   const legMain = yMode === 'fluid' ? strings.legFluid : strings.absorbed;
   const legNeed = yMode === 'fluid' ? strings.legSweat : strings.need;
-  const legMainColor = yMode === 'fluid' ? 'var(--water)' : 'var(--carb)';
+  const legMainColor =
+    yMode === 'fluid'
+      ? 'var(--water)'
+      : `linear-gradient(90deg, ${CHART_COLORS.neutralLine}, ${CHART_COLORS.carb}, ${CHART_COLORS.water}, ${CHART_COLORS.gel}, ${CHART_COLORS.food})`;
   const showCapLeg = yMode !== 'sum';
-  const capNote = yMode === 'fluid' ? strings.capNoteFluid : strings.capNote + cap + ' g/h' + strings.capNote2;
 
   const yModeOptions: { value: YMode; label: string }[] = [
     { value: 'rate', label: strings.carbMode },
@@ -122,9 +124,10 @@ export function ChartCard() {
 
       <div style={{ display: 'flex', alignItems: 'stretch', gap: 12 }}>
         <div style={{ width: 168, flex: '0 0 168px', display: 'flex', flexDirection: 'column', gap: 44 }}>
+          {showGutLane && <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{strings.gutHint}</span>}
           {yMode === 'sum' && <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{strings.curveHintSum}</span>}
           {yMode === 'rate' && <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{strings.curveHint}</span>}
-          <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{capNote}</span>
+          {yMode === 'fluid' && <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{strings.capNoteFluid}</span>}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <Chart height={CHART_HEIGHT} showAxis />

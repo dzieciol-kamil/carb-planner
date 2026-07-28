@@ -1,3 +1,4 @@
+import { absCap } from '../domain/fuel';
 import { t } from '../i18n/strings';
 import { useAppStore } from '../store/appStore';
 
@@ -11,7 +12,10 @@ function GitHubIcon() {
 
 export function Footer() {
   const lang = useAppStore((s) => s.ui.lang);
+  const mix = useAppStore((s) => s.mix);
   const strings = t(lang);
+  const cap = absCap(mix);
+  const absorptionNote = strings.capNote + cap + ' g/h' + strings.capNote2;
 
   return (
     <footer style={{ width: '100%', maxWidth: 1420, boxSizing: 'border-box', marginTop: 14, borderTop: '1px solid #DFE2DB', padding: '22px 18px 0', display: 'flex', flexDirection: 'column', gap: 22 }}>
@@ -23,7 +27,7 @@ export function Footer() {
           </div>
           <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: 'var(--muted-2)' }}>{strings.ftAboutBody}</p>
           <p style={{ margin: 0, fontSize: 11, lineHeight: 1.6, color: 'var(--muted-3)' }}>
-            {strings.ftSources1} {strings.ftSources2}
+            {absorptionNote} {strings.ftSources2}
           </p>
           <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: 'var(--muted-3)' }}>{strings.ftPrivacy}</span>
         </div>
