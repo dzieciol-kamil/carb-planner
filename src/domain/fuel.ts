@@ -367,4 +367,25 @@ export function planSummary(state: PlanState): PlanSummary {
   };
 }
 
+export interface PlanExtras {
+  gutPeak: { g: number; x: number };
+  refillTotal: number;
+  gelPortions: number;
+}
+
+export function planExtras(state: PlanState): PlanExtras {
+  const { gear, fills } = state;
+  const { samples: S } = rateStats(state);
+
+  let gutPeak = { g: 0, x: 0 };
+  S.forEach((p) => {
+    if (p.gut > gutPeak.g) gutPeak = { g: p.gut, x: p.x };
+  });
+
+  const refillTotal = gear.reduce((a, g) => a + Math.max(0, fills.filter((f) => f.gid === g.gid).length - 1), 0);
+  const gelPortions = fills.filter((f) => f.content === 'gel').reduce((a, f) => a + partsOf(f, gear), 0);
+
+  return { gutPeak, refillTotal, gelPortions };
+}
+
 export { FLUID_ABSORPTION_CAP_ML_H };
