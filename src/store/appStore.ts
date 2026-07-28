@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { bestGapSpan, gaps } from '../domain/dragMath';
+import { bestGapSpan, gaps, moveListItem } from '../domain/dragMath';
 import { dist } from '../domain/fuel';
 import { loadGpxFile } from '../domain/gpx';
 import { t, type Lang } from '../i18n/strings';
@@ -84,6 +84,7 @@ interface AppState {
   updateVessel: (gid: string, patch: Partial<Vessel>) => void;
   removeVessel: (gid: string) => void;
   addVessel: () => void;
+  reorderVessel: (fromIndex: number, toIndex: number) => void;
   toggleVesselAllowed: (gid: string, content: Fill['content']) => void;
   setVesselGelParts: (gid: string, n: number) => void;
 
@@ -257,6 +258,7 @@ export const useAppStore = create<AppState>((set) => ({
       gear: [...s.gear, { gid: 'g' + s.nextGid, name: t(s.ui.lang).newVessel, vol: 500, allowed: ['water', 'izo'], gelParts: 4 }],
       nextGid: s.nextGid + 1,
     })),
+  reorderVessel: (fromIndex, toIndex) => set((s) => ({ gear: moveListItem(s.gear, fromIndex, toIndex) })),
   toggleVesselAllowed: (gid, content) =>
     set((s) => ({
       gear: s.gear.map((g) => {

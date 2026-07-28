@@ -6,6 +6,7 @@ import {
   gaps,
   moveFill,
   moveFood,
+  moveListItem,
   rescalePositions,
   resizeFillLeft,
   resizeFillRight,
@@ -199,5 +200,26 @@ describe('resizeFoodLeft / resizeFoodRight', () => {
   test('right is clamped to the route distance', () => {
     const fd: FoodItem = { id: 1, key: 'chew', name: 'Chews', carbs: 30, cont: true, from: 10, to: 30 };
     expect(resizeFoodRight(fd, 100, 1000, 30)).toBe(100);
+  });
+});
+
+describe('moveListItem', () => {
+  test('moves an item forward, shifting items in between back by one', () => {
+    expect(moveListItem(['a', 'b', 'c', 'd'], 0, 2)).toEqual(['b', 'c', 'a', 'd']);
+  });
+
+  test('moves an item backward, shifting items in between forward by one', () => {
+    expect(moveListItem(['a', 'b', 'c', 'd'], 3, 1)).toEqual(['a', 'd', 'b', 'c']);
+  });
+
+  test('is a no-op when from equals to', () => {
+    const list = ['a', 'b', 'c'];
+    expect(moveListItem(list, 1, 1)).toEqual(['a', 'b', 'c']);
+  });
+
+  test('does not mutate the original array', () => {
+    const list = ['a', 'b', 'c'];
+    moveListItem(list, 0, 2);
+    expect(list).toEqual(['a', 'b', 'c']);
   });
 });
