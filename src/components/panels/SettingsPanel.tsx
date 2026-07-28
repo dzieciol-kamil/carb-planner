@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { t } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
+import { NumberInput } from '../ui/NumberInput';
 import { PanelShell } from './PanelShell';
 
 function contStyle(active: boolean): CSSProperties {
@@ -104,23 +105,21 @@ export function SettingsPanel() {
               style={textInputStyle}
             />
             <span style={numberFieldStyle}>
-              <input
-                type="number"
+              <NumberInput
                 min={0}
                 step={1}
                 value={entry.carbs}
-                onChange={(e) => updateFoodLibEntry(entry.key, { carbs: Math.max(0, parseFloat(e.target.value) || 0) })}
+                onChange={(carbs) => updateFoodLibEntry(entry.key, { carbs: Math.max(0, carbs) })}
                 style={{ width: '100%', border: 'none', padding: '9px 0', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, fontWeight: 600, background: 'transparent' }}
               />
               <span style={{ fontSize: 11, color: 'var(--muted-3)' }}>g</span>
             </span>
             <span style={numberFieldStyle}>
-              <input
-                type="number"
+              <NumberInput
                 min={0}
                 step={10}
                 value={entry.ml || 0}
-                onChange={(e) => updateFoodLibEntry(entry.key, { ml: Math.max(0, parseFloat(e.target.value) || 0) })}
+                onChange={(ml) => updateFoodLibEntry(entry.key, { ml: Math.max(0, ml) })}
                 style={{ width: '100%', border: 'none', padding: '9px 0', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, fontWeight: 600, background: 'transparent' }}
               />
               <span style={{ fontSize: 11, color: 'var(--muted-3)' }}>ml</span>
