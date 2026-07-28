@@ -267,14 +267,39 @@ export function samples(state: PlanState): Sample[] {
     });
   }
 
-  const w = Math.max(2, Math.round((N * 0.5) / Math.max(0.5, hrs)));
+  // Exponential moving average (time constant ~30 min) instead of a fixed
+  // backward window: a boxcar window has a hard trailing edge, so any past
+  // intake spike falling out of it produces a fake bump with no current
+  // cause. EMA decays past events smoothly, so it can't ring like that.
+  const tau = 0.5;
+  const alpha = dt > 0 ? 1 - Math.exp(-dt / tau) : 1;
+
+  // Seed the EMA by simulating the pre-ride meal's own digestion (same cap,
+  // same dt) back to when it was eaten, so the rate right at the start line
+  // reflects how recently digestion actually caught up — continuous in
+  // preMealCarbs, instead of preRideGut()'s single leftover-or-not value.
+  let rateEma = 0;
+  if (dt > 0) {
+    let gutPre = route.preMealCarbs;
+    const preSteps = Math.max(0, Math.round(route.preMealMinutes / 60 / dt));
+    for (let k = 0; k < preSteps; k++) {
+      const take = Math.min(gutPre, cap * dt);
+      gutPre -= take;
+      rateEma += alpha * (take / dt - rateEma);
+    }
+  }
+
+  let needRateEma = 0;
+  let fluidRateEma = 0;
   for (let i = 0; i <= N; i++) {
-    const a = Math.max(0, i - w);
-    const b = Math.min(N, i + w);
-    const span = (b - a) * dt;
-    out[i].rate = span > 0 ? (out[b].absorbed - out[a].absorbed) / span : 0;
-    out[i].needRate = span > 0 ? (out[b].need - out[a].need) / span : 0;
-    out[i].fluidRate = span > 0 ? (out[b].ml - out[a].ml) / span : 0;
+    if (i > 0) {
+      rateEma += alpha * ((out[i].absorbed - out[i - 1].absorbed) / dt - rateEma);
+      needRateEma += alpha * ((out[i].need - out[i - 1].need) / dt - needRateEma);
+      fluidRateEma += alpha * ((out[i].ml - out[i - 1].ml) / dt - fluidRateEma);
+    }
+    out[i].rate = rateEma;
+    out[i].needRate = needRateEma;
+    out[i].fluidRate = fluidRateEma;
   }
 
   return out;

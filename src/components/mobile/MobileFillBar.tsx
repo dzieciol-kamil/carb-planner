@@ -64,15 +64,14 @@ export function MobileFillBar({ fill, distanceKm }: MobileFillProps) {
         <span style={{ fontSize: 9, fontWeight: 700, color: '#fff', fontFamily: "'JetBrains Mono', monospace", pointerEvents: 'none' }}>{short}</span>
         <span onPointerDown={createFillDragHandler(fill.fid, 'left')} style={{ position: 'absolute', left: -8, top: -2, bottom: -2, width: 18, cursor: 'ew-resize', touchAction: 'none', zIndex: 5 }} />
         <span onPointerDown={createFillDragHandler(fill.fid, 'resize')} style={{ position: 'absolute', right: -8, top: -2, bottom: -2, width: 18, cursor: 'ew-resize', touchAction: 'none', zIndex: 5 }} />
-        {parts.slice(1).map((_, i) => {
+        {parts.slice(1, -1).map((_, i) => {
           const k = i + 1;
           const rel = ((parts[k] - fill.from) / Math.max(0.1, fill.to - fill.from)) * 100;
-          const isLast = k === n - 1;
           return (
             <span
               key={k}
               onPointerDown={createGelPartDragHandler(fill.fid, k)}
-              style={{ position: 'absolute', top: -1, bottom: -1, left: isLast ? 'calc(100% - 16px)' : `calc(${rel}% - 6px)`, width: 12, cursor: 'ew-resize', touchAction: 'none', pointerEvents: 'auto', zIndex: 2, display: 'flex', justifyContent: 'center' }}
+              style={{ position: 'absolute', top: -1, bottom: -1, left: `calc(${rel}% - 6px)`, width: 12, cursor: 'ew-resize', touchAction: 'none', pointerEvents: 'auto', zIndex: 2, display: 'flex', justifyContent: 'center' }}
             >
               <span style={{ width: 2, background: 'rgba(255,255,255,0.85)', borderRadius: 2, pointerEvents: 'none', marginTop: 3, marginBottom: 3 }} />
             </span>
