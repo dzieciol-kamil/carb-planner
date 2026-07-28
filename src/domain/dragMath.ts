@@ -96,3 +96,10 @@ export function resizeFoodLeft(food: FoodItem, deltaKm: number, originalFrom: nu
 export function resizeFoodRight(food: FoodItem, distanceKm: number, deltaKm: number, originalTo: number): number {
   return Math.min(distanceKm, Math.max(food.from + 1, Math.round(originalTo + deltaKm)));
 }
+
+export function moveListItem<T>(list: T[], fromIndex: number, toIndex: number): T[] {
+  const next = list.slice();
+  const [item] = next.splice(fromIndex, 1);
+  next.splice(toIndex, 0, item);
+  return next;
+}

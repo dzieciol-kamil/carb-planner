@@ -3,6 +3,7 @@ import type { Content } from '../../domain/types';
 import { t } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
 import { sourceColor } from '../chart/theme';
+import { createVesselReorderHandler } from './gearDragHandler';
 import { PanelShell } from './PanelShell';
 
 const RATIO_PRESETS = [2, 1.5, 1];
@@ -49,6 +50,7 @@ export function MixPanel() {
   const addVessel = useAppStore((s) => s.addVessel);
   const toggleVesselAllowed = useAppStore((s) => s.toggleVesselAllowed);
   const setVesselGelParts = useAppStore((s) => s.setVesselGelParts);
+  const dragKey = useAppStore((s) => s.ui.dragKey);
   const strings = t(lang);
 
   const ratioIsPreset = RATIO_PRESETS.includes(mix.ratio);
@@ -161,10 +163,26 @@ export function MixPanel() {
 
       <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: 12 }}>{strings.gear}</div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div data-gear-list style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         {gear.map((vessel) => (
-          <div key={vessel.gid} style={{ border: '1px solid #E9EBE5', borderRadius: 12, padding: 12, background: '#FBFCFA' }}>
+          <div
+            key={vessel.gid}
+            data-gid={vessel.gid}
+            style={{
+              border: '1px solid #E9EBE5',
+              borderRadius: 12,
+              padding: 12,
+              background: '#FBFCFA',
+              opacity: dragKey === 'g' + vessel.gid ? 0.6 : 1,
+            }}
+          >
             <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+              <span
+                onPointerDown={createVesselReorderHandler(vessel.gid)}
+                style={{ cursor: 'grab', touchAction: 'none', color: 'var(--muted-3)', fontSize: 14, lineHeight: 1, padding: '0 2px', userSelect: 'none', flex: '0 0 auto' }}
+              >
+                ⠿
+              </span>
               <input
                 type="text"
                 value={vessel.name}
