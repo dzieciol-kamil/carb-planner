@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { ChartCard } from './components/chart/ChartCard';
 import { Header } from './components/Header';
+import { MobileApp } from './components/mobile/MobileApp';
 import { MixPanel } from './components/panels/MixPanel';
 import { SettingsPanel } from './components/panels/SettingsPanel';
 import { RecipesSection } from './components/recipes/RecipesSection';
@@ -45,9 +46,7 @@ function App() {
           <RecipesSection />
         </div>
       ) : (
-        <div style={{ width: '100%', maxWidth: 420, textAlign: 'center', color: 'var(--muted-2)', fontSize: 13, padding: '40px 16px' }}>
-          Mobile layout is coming in a future update — switch to a wider window for now.
-        </div>
+        <MobileApp />
       )}
     </div>
   );

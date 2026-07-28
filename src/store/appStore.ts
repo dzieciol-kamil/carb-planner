@@ -8,6 +8,7 @@ import type { FoodItem, FoodLibEntry, Intensity, Mode, MixSettings, RouteInput, 
 export type ViewMode = 'auto' | 'desktop' | 'mobile';
 export type YMode = 'rate' | 'fluid' | 'sum';
 export type PanelId = 'settings' | 'mix' | null;
+export type MobileTab = 'plan' | 'gear' | 'food' | 'me';
 
 interface UiState {
   lang: Lang;
@@ -20,6 +21,7 @@ interface UiState {
   hoverKey: string | null;
   dragKey: string | null;
   timelineOpen: boolean;
+  tab: MobileTab;
 }
 
 interface AppState {
@@ -54,6 +56,7 @@ interface AppState {
   setXUnit: (u: XUnit) => void;
   setYMode: (m: YMode) => void;
   toggleTimelineOpen: () => void;
+  setTab: (tab: MobileTab) => void;
 
   setHoverKey: (key: string | null) => void;
   setDragKey: (key: string | null) => void;
@@ -148,6 +151,7 @@ export const useAppStore = create<AppState>((set) => ({
     hoverKey: null,
     dragKey: null,
     timelineOpen: false,
+    tab: 'plan',
   },
   nextGid: 3,
   nextFid: 1,
@@ -182,6 +186,7 @@ export const useAppStore = create<AppState>((set) => ({
   setXUnit: (xUnit) => set((s) => ({ ui: { ...s.ui, xUnit } })),
   setYMode: (yMode) => set((s) => ({ ui: { ...s.ui, yMode } })),
   toggleTimelineOpen: () => set((s) => ({ ui: { ...s.ui, timelineOpen: !s.ui.timelineOpen } })),
+  setTab: (tab) => set((s) => ({ ui: { ...s.ui, tab } })),
 
   setHoverKey: (hoverKey) => set((s) => ({ ui: { ...s.ui, hoverKey } })),
   setDragKey: (dragKey) => set((s) => ({ ui: { ...s.ui, dragKey } })),

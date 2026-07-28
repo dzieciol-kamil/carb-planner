@@ -9,6 +9,7 @@ import {
   fmtX,
   fracFill,
   fracFood,
+  planExtras,
   planSummary,
   prof,
   rangeLabel,
@@ -382,5 +383,58 @@ describe('planSummary', () => {
     });
     expect(planSummary(zeroHrsPlan).sweatLoss).toBe(0);
     expect(planSummary(zeroHrsPlan).hydrationPct).toBe(100);
+  });
+});
+
+describe('planExtras', () => {
+  test('with no fills/foods, gut never accumulates', () => {
+    const plan = makePlan({
+      route: makeRoute({ mode: 'route', distance: 100, speed: 25, weight: 75, intensity: 'mid', temp: 20, useGpx: false }),
+    });
+
+    const extras = planExtras(plan);
+
+    expect(extras.gutPeak).toEqual({ g: 0, x: 0 });
+    expect(extras.refillTotal).toBe(0);
+    expect(extras.gelPortions).toBe(0);
+  });
+
+  test('gutPeak tracks the largest un-absorbed backlog, reached right at the first gel step', () => {
+    // Reuses the "gel split into portions" samples() fixture: intake steps 0 -> 50 -> 100 g.
+    // The very first step dumps 50g into the gut before any absorption has happened (i=0 skips
+    // the absorption pass), which is a bigger backlog than the second 50g step produces once
+    // absorption has already been draining the gut for 80 samples.
+    const gear: Vessel[] = [{ gid: 'g1', name: 'Flask', vol: 250, allowed: ['gel'], gelParts: 3 }];
+    const fills: Fill[] = [{ fid: 1, gid: 'g1', content: 'gel', from: 0, to: 90 }];
+    const plan = makePlan({
+      route: makeRoute({ mode: 'route', distance: 90, speed: 30, useGpx: false }),
+      gear,
+      fills,
+    });
+
+    const extras = planExtras(plan);
+
+    expect(extras.gutPeak).toEqual({ g: 50, x: 0 });
+    expect(extras.refillTotal).toBe(0);
+    expect(extras.gelPortions).toBe(3);
+  });
+
+  test('counts refills per vessel beyond the first fill and sums gel portions across gel fills only', () => {
+    const gear: Vessel[] = [
+      { gid: 'g1', name: 'Bidon', vol: 650, allowed: ['izo'], gelParts: 4 },
+      { gid: 'g2', name: 'Flask', vol: 250, allowed: ['gel'], gelParts: 3 },
+    ];
+    const fills: Fill[] = [
+      { fid: 1, gid: 'g1', content: 'izo', from: 0, to: 30 },
+      { fid: 2, gid: 'g1', content: 'izo', from: 30, to: 60 },
+      { fid: 3, gid: 'g1', content: 'izo', from: 60, to: 90 },
+      { fid: 4, gid: 'g2', content: 'gel', from: 0, to: 100 },
+    ];
+    const plan = makePlan({ gear, fills });
+
+    const extras = planExtras(plan);
+
+    expect(extras.refillTotal).toBe(2); // g1: 3 fills -> 2 refills, g2: 1 fill -> 0 refills
+    expect(extras.gelPortions).toBe(3); // single gel fill on g2, gelParts: 3
   });
 });
