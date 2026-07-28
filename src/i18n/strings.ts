@@ -32,6 +32,7 @@ export interface StringTable {
   gearHint: string;
   settingsHint: string;
   curve: string;
+  gutHint: string;
   curveHint: string;
   curveHintSum: string;
   intake: string;
@@ -149,7 +150,6 @@ export interface StringTable {
   notes: { title: string; body: string }[];
   ftVersion: string;
   ftAboutBody: string;
-  ftSources1: string;
   ftSources2: string;
   ftPrivacy: string;
   ftLegal: string;
@@ -192,10 +192,9 @@ export const STR: Record<Lang, StringTable> = {
     gearHint: 'Nazwa, pojemność i to, co dany bidon może wozić. Żel dzieli się na tyle porcji, ile tu ustawisz.',
     settingsHint: 'Wszystko zapisuje się w tej przeglądarce (localStorage) — bez konta, bez backendu.',
     curve: 'Planowanie',
-    curveHint:
-      'Liczy się tempo: g/h, które realnie wchłaniasz, kontra g/h, których potrzebujesz. Nadmiar zalega w żołądku (górny pasek), a rdzawe pola to godziny na deficycie.',
-    curveHintSum:
-      'Gramy narastająco: ile cukru realnie wchłonąłeś do danej godziny kontra ile powinieneś. Nadmiar zalega w żołądku (górny pasek), a rdzawe pola to godziny na deficycie.',
+    gutHint: 'To Twój żołądek: górny pasek pokazuje, co w nim zalega i jak szybko się trawi, aż do górnego limitu pojemności.',
+    curveHint: 'Gruba ciągła linia to tempo, w jakim realnie wchłaniasz węglowodany — rdzawe pola to godziny, w których wchłaniasz mniej, niż potrzebujesz.',
+    curveHintSum: 'Gruba ciągła linia to suma węglowodanów, które realnie wchłonąłeś do danej godziny.',
     intake: 'Zjedzone',
     absorbed: 'Wchłonięte',
     gutLane: 'W żołądku',
@@ -215,9 +214,9 @@ export const STR: Record<Lang, StringTable> = {
     legCap: 'Limit wchłaniania',
     capNote: 'Limit wchłaniania: ',
     capNote2:
-      ' — glukoza saturuje transporter SGLT1 ok. 60 g/h, fruktoza dochodzi osobno przez GLUT5 (ok. 30 g/h), dlatego liczę go z proporcji maltodekstryna:fruktoza (Jeukendrup, przegląd 2010–2014).',
+      ' — tyle maksymalnie na godzinę wchłonie Twoje jelito, obojętnie ile zjesz; nadwyżka nie znika, tylko czeka w żołądku. Rośnie, gdy mieszasz glukozę z fruktozą, bo mają osobne drogi wchłaniania (glukoza ok. 60 g/h, fruktoza dokłada do tego ok. 30 g/h) — dlatego liczę go z Twojej proporcji maltodekstryna:fruktoza (Jeukendrup, przegląd 2010–2014).',
     capNoteFluid:
-      'Limit wchłaniania: 750 ml/h — tyle płynu żołądek oddaje do jelita w wysiłku (przerywana linia). Nadwyżka nie wchłania się, tylko zalega. Przy większym pocie da się deficyt ograniczyć, nie wyzerować.',
+      'Limit wchłaniania: 750 ml/h — tyle płynu żołądek oddaje do jelita w wysiłku (przerywana linia). Nadwyżka nie wchłania się, tylko zalega. Przy zwiększonej potliwości podczas wysiłku da się deficyt ograniczyć, ale nie wyzerować.',
     tAbsorbed: 'Wchłonięte',
     tCap: 'Limit wchłaniania',
     tGutPeak: 'Max w żołądku',
@@ -327,7 +326,6 @@ export const STR: Record<Lang, StringTable> = {
     ftLinks: 'Współtwórz',
     ftIssues: 'Pomysły i błędy → GitHub Issues',
     ftRepo: 'Kod źródłowy na GitHubie',
-    ftSources1: 'Limity wchłaniania: przeglądy Jeukendrupa (2010–2014).',
     ftSources2: 'Utrata potu: przybliżenie z wagi, intensywności i temperatury.',
     ftCopyright: '© 2026 Carb Planner · open source',
   },
@@ -362,10 +360,9 @@ export const STR: Record<Lang, StringTable> = {
     gearHint: 'Name, capacity and what this bottle may carry. Gel splits into as many portions as you set here.',
     settingsHint: 'Everything is stored in this browser (localStorage) — no account, no backend.',
     curve: 'Planning',
-    curveHint:
-      'Rate is what counts: g/h you actually absorb versus g/h you need. Excess sits in the stomach (top strip); rust areas are the hours you ride at a deficit.',
-    curveHintSum:
-      'Grams cumulative: how much carb you have actually absorbed by a given hour versus how much you should have. Excess sits in the stomach (top strip); rust areas are the hours you ride at a deficit.',
+    gutHint: "This is your stomach: the top strip shows what's sitting in it and how fast it's digesting, up to its capacity limit.",
+    curveHint: "The thick solid line is the rate you're actually absorbing carbs at — rust areas are the hours you're absorbing less than you need.",
+    curveHintSum: "The thick solid line is the cumulative carbs you've actually absorbed by a given hour.",
     intake: 'Eaten',
     absorbed: 'Absorbed',
     gutLane: 'In the gut',
@@ -385,7 +382,7 @@ export const STR: Record<Lang, StringTable> = {
     legCap: 'Absorption limit',
     capNote: 'Absorption limit: ',
     capNote2:
-      ' — glucose saturates the SGLT1 transporter at ~60 g/h, fructose adds on top via GLUT5 (~30 g/h), so it is derived from your maltodextrin:fructose ratio (Jeukendrup, 2010–2014 reviews).',
+      " — that's the most your gut can absorb per hour no matter how much you eat; anything above it doesn't vanish, it just waits in the stomach. It goes up when you mix glucose and fructose, since they're absorbed through separate routes (glucose ~60 g/h, fructose adds ~30 g/h on top) — that's why it's derived from your maltodextrin:fructose ratio (Jeukendrup, 2010–2014 reviews).",
     capNoteFluid:
       'Absorption limit: 750 ml/h — that is how fast the stomach passes fluid on to the gut under load (dashed line). Anything above it is not absorbed, it just sits there. With a higher sweat rate you can limit the deficit, not erase it.',
     tAbsorbed: 'Absorbed',
@@ -496,7 +493,6 @@ export const STR: Record<Lang, StringTable> = {
     ftLinks: 'Contribute',
     ftIssues: 'Ideas & bugs → GitHub Issues',
     ftRepo: 'Source code on GitHub',
-    ftSources1: 'Absorption limits: Jeukendrup reviews (2010–2014).',
     ftSources2: 'Sweat loss: an estimate from weight, intensity and temperature.',
     ftCopyright: '© 2026 Carb Planner · open source',
   },
