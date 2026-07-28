@@ -315,4 +315,49 @@ export function rangeLabel(a: number, b: number, point: boolean, route: RouteInp
   return fmtX(a, false, route, xUnit) + '–' + fmtX(b, true, route, xUnit);
 }
 
+export interface PlanSummary {
+  target: number;
+  izoCarbs: number;
+  gelCarbs: number;
+  foodCarbs: number;
+  totalCarbs: number;
+  fluidPlanned: number;
+  sweatLoss: number;
+  hydrationPct: number;
+  coverage: number;
+  absorbedTotal: number;
+}
+
+export function planSummary(state: PlanState): PlanSummary {
+  const { route, mix, gear, fills, foods } = state;
+  const hrs = totalHours(route);
+  const target = hrs * cph(route);
+
+  const izoCarbs = fills.filter((f) => f.content === 'izo').reduce((a, f) => a + carbsFill(f, gear, mix), 0);
+  const gelCarbs = fills.filter((f) => f.content === 'gel').reduce((a, f) => a + carbsFill(f, gear, mix), 0);
+  const foodCarbs = foods.reduce((a, f) => a + f.carbs, 0);
+  const totalCarbs = izoCarbs + gelCarbs + foodCarbs;
+
+  const fluidPlanned =
+    fills.filter((f) => f.content !== 'gel').reduce((a, f) => a + volOf(f, gear), 0) +
+    foods.reduce((a, f) => a + (f.ml || 0), 0);
+  const sweatLoss = Math.round(sweat(route) * hrs);
+  const hydrationPct = sweatLoss > 0 ? Math.round((fluidPlanned / sweatLoss) * 100) : 100;
+
+  const { coverage, samples: S } = rateStats(state);
+
+  return {
+    target,
+    izoCarbs,
+    gelCarbs,
+    foodCarbs,
+    totalCarbs,
+    fluidPlanned,
+    sweatLoss,
+    hydrationPct,
+    coverage,
+    absorbedTotal: S[S.length - 1].absorbed,
+  };
+}
+
 export { FLUID_ABSORPTION_CAP_ML_H };
