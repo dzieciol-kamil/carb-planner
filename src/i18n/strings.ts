@@ -31,6 +31,7 @@ export interface StringTable {
   settingsHint: string;
   curve: string;
   curveHint: string;
+  curveHintSum: string;
   intake: string;
   absorbed: string;
   gutLane: string;
@@ -50,6 +51,7 @@ export interface StringTable {
   legCap: string;
   capNote: string;
   capNote2: string;
+  capNoteFluid: string;
   tAbsorbed: string;
   tCap: string;
   tGutPeak: string;
@@ -177,6 +179,8 @@ export const STR: Record<Lang, StringTable> = {
     curve: 'Planowanie',
     curveHint:
       'Liczy się tempo: g/h, które realnie wchłaniasz, kontra g/h, których potrzebujesz. Nadmiar zalega w żołądku (górny pasek), a rdzawe pola to godziny na deficycie.',
+    curveHintSum:
+      'Gramy narastająco: ile cukru realnie wchłonąłeś do danej godziny kontra ile powinieneś. Nadmiar zalega w żołądku (górny pasek), a rdzawe pola to godziny na deficycie.',
     intake: 'Zjedzone',
     absorbed: 'Wchłonięte',
     gutLane: 'W żołądku',
@@ -196,7 +200,9 @@ export const STR: Record<Lang, StringTable> = {
     legCap: 'Limit wchłaniania',
     capNote: 'Limit wchłaniania: ',
     capNote2:
-      ' — glukoza saturuje transporter SGLT1 ok. 60 g/h, fruktoza dochodzi osobno przez GLUT5 (ok. 30 g/h), dlatego liczę go z proporcji maltodekstryna:fruktoza (Jeukendrup, przegląd 2010–2014). Przerywana linia na płynach = 750 ml/h opróżniania żołądka.',
+      ' — glukoza saturuje transporter SGLT1 ok. 60 g/h, fruktoza dochodzi osobno przez GLUT5 (ok. 30 g/h), dlatego liczę go z proporcji maltodekstryna:fruktoza (Jeukendrup, przegląd 2010–2014).',
+    capNoteFluid:
+      'Limit wchłaniania: 750 ml/h — tyle płynu żołądek oddaje do jelita w wysiłku (przerywana linia). Nadwyżka nie wchłania się, tylko zalega. Przy większym pocie da się deficyt ograniczyć, nie wyzerować.',
     tAbsorbed: 'Wchłonięte',
     tCap: 'Limit wchłaniania',
     tGutPeak: 'Max w żołądku',
@@ -328,6 +334,8 @@ export const STR: Record<Lang, StringTable> = {
     curve: 'Planning',
     curveHint:
       'Rate is what counts: g/h you actually absorb versus g/h you need. Excess sits in the stomach (top strip); rust areas are the hours you ride at a deficit.',
+    curveHintSum:
+      'Grams cumulative: how much carb you have actually absorbed by a given hour versus how much you should have. Excess sits in the stomach (top strip); rust areas are the hours you ride at a deficit.',
     intake: 'Eaten',
     absorbed: 'Absorbed',
     gutLane: 'In the gut',
@@ -347,7 +355,9 @@ export const STR: Record<Lang, StringTable> = {
     legCap: 'Absorption limit',
     capNote: 'Absorption limit: ',
     capNote2:
-      ' — glucose saturates the SGLT1 transporter at ~60 g/h, fructose adds on top via GLUT5 (~30 g/h), so it is derived from your maltodextrin:fructose ratio (Jeukendrup, 2010–2014 reviews). Dashed line in fluid mode = 750 ml/h gastric emptying.',
+      ' — glucose saturates the SGLT1 transporter at ~60 g/h, fructose adds on top via GLUT5 (~30 g/h), so it is derived from your maltodextrin:fructose ratio (Jeukendrup, 2010–2014 reviews).',
+    capNoteFluid:
+      'Absorption limit: 750 ml/h — that is how fast the stomach passes fluid on to the gut under load (dashed line). Anything above it is not absorbed, it just sits there. With a higher sweat rate you can limit the deficit, not erase it.',
     tAbsorbed: 'Absorbed',
     tCap: 'Absorption limit',
     tGutPeak: 'Peak in stomach',
