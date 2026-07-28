@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { absCap, planSummary } from '../../domain/fuel';
+import { absCap, planSummary, prof } from '../../domain/fuel';
 import { t } from '../../i18n/strings';
 import { useAppStore, type YMode } from '../../store/appStore';
 import type { XUnit } from '../../domain/types';
@@ -7,6 +7,11 @@ import { FoodLibraryChips } from '../FoodLibraryChips';
 import { LanesSection } from '../lanes/LanesSection';
 import { TimelineSection } from '../timeline/TimelineSection';
 import { Chart } from './Chart';
+import { elevationTicks } from './ElevationLayer';
+
+const CHART_HEIGHT = 300;
+const CHART_PB = 22;
+const ELEVATION_SHARE = 0.62;
 
 function segButton(on: boolean, small = false): CSSProperties {
   return {
@@ -62,6 +67,8 @@ export function ChartCard() {
     { value: 'km', label: 'km' },
     { value: 'h', label: strings.axisTime },
   ];
+
+  const eleTicks = route.gpxTrack ? elevationTicks(prof(route).pts, CHART_HEIGHT, CHART_PB, ELEVATION_SHARE) : [];
 
   return (
     <div style={{ background: '#fff', border: '1px solid var(--border)', borderRadius: 16, padding: '20px 24px 18px' }}>
@@ -120,9 +127,18 @@ export function ChartCard() {
           <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{capNote}</span>
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <Chart height={300} showAxis />
+          <Chart height={CHART_HEIGHT} showAxis />
         </div>
-        <div style={{ width: 40, flex: '0 0 40px' }} />
+        <div style={{ width: 40, flex: '0 0 40px', position: 'relative', height: CHART_HEIGHT }}>
+          {eleTicks.map((tick) => (
+            <span
+              key={tick.value}
+              style={{ position: 'absolute', left: 4, top: tick.y - 6, fontSize: 10, color: 'var(--muted-2)', whiteSpace: 'nowrap' }}
+            >
+              {tick.value} m
+            </span>
+          ))}
+        </div>
       </div>
 
       <LanesSection />
