@@ -50,6 +50,7 @@ export function ChartCard() {
   const legMain = yMode === 'fluid' ? strings.legFluid : strings.absorbed;
   const legNeed = yMode === 'fluid' ? strings.legSweat : strings.need;
   const legMainColor = yMode === 'fluid' ? 'var(--water)' : 'var(--carb)';
+  const showCapLeg = yMode !== 'sum';
   const capNote = strings.capNote + cap + ' g/h' + strings.capNote2;
 
   const yModeOptions: { value: YMode; label: string }[] = [
@@ -81,6 +82,12 @@ export function ChartCard() {
             <span style={{ width: 14, height: 0, borderTop: '2px dashed #A8AEA9' }} />
             {legNeed}
           </span>
+          {showCapLeg && (
+            <span style={legendItemStyle}>
+              <span style={{ width: 14, height: 0, borderTop: '2px dotted ' + (yMode === 'fluid' ? 'var(--water)' : 'var(--carb)') }} />
+              {strings.legCap}
+            </span>
+          )}
           {showGutLane && (
             <span style={legendItemStyle}>
               <span style={{ width: 14, height: 8, borderRadius: 2, background: '#DCC98A' }} />

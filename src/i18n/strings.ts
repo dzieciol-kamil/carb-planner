@@ -47,6 +47,7 @@ export interface StringTable {
   tDry: string;
   legFluid: string;
   legSweat: string;
+  legCap: string;
   capNote: string;
   capNote2: string;
   tAbsorbed: string;
@@ -192,6 +193,7 @@ export const STR: Record<Lang, StringTable> = {
     tDry: 'Najdłuższa dziura',
     legFluid: 'Płyny',
     legSweat: 'Pot',
+    legCap: 'Limit wchłaniania',
     capNote: 'Limit wchłaniania: ',
     capNote2:
       ' — glukoza saturuje transporter SGLT1 ok. 60 g/h, fruktoza dochodzi osobno przez GLUT5 (ok. 30 g/h), dlatego liczę go z proporcji malto:fruktoza (Jeukendrup, przegląd 2010–2014). Przerywana linia na płynach = 750 ml/h opróżniania żołądka.',
@@ -342,6 +344,7 @@ export const STR: Record<Lang, StringTable> = {
     tDry: 'Longest gap',
     legFluid: 'Fluids',
     legSweat: 'Sweat',
+    legCap: 'Absorption limit',
     capNote: 'Absorption limit: ',
     capNote2:
       ' — glucose saturates the SGLT1 transporter at ~60 g/h, fructose adds on top via GLUT5 (~30 g/h), so it is derived from your malto:fructose ratio (Jeukendrup, 2010–2014 reviews). Dashed line in fluid mode = 750 ml/h gastric emptying.',
