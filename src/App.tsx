@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { ChartCard } from './components/chart/ChartCard';
 import { Header } from './components/Header';
 import { RoutePanel } from './components/RoutePanel';
 import { SummaryCards } from './components/SummaryCards';
@@ -34,6 +35,7 @@ function App() {
             <RoutePanel />
             <SummaryCards />
           </div>
+          <ChartCard />
         </div>
       ) : (
         <div style={{ width: '100%', maxWidth: 420, textAlign: 'center', color: 'var(--muted-2)', fontSize: 13, padding: '40px 16px' }}>
