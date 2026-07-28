@@ -114,7 +114,7 @@ const defaultMix: MixSettings = {
   salt: 0.16,
   citric: 0.2,
   gelSalt: 0.4,
-  gelCitric: 0.5,
+  gelCitric: 0.4,
 };
 
 const defaultGear: Vessel[] = [
