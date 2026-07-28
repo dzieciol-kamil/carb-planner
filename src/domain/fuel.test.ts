@@ -11,6 +11,7 @@ import {
   fracFood,
   planExtras,
   planSummary,
+  preRideGut,
   prof,
   rangeLabel,
   rateStats,
@@ -28,6 +29,8 @@ function makeRoute(overrides: Partial<RouteInput> = {}): RouteInput {
     hours: 0,
     minutes: 0,
     weight: 75,
+    preMealCarbs: 0,
+    preMealMinutes: 0,
     intensity: 'mid',
     temp: 20,
     useGpx: false,
@@ -140,6 +143,28 @@ describe('absCap', () => {
 
   test('very low ratio clamps to the 45 g/h floor', () => {
     expect(absCap(makeMix({ ratio: 0.2 }))).toBe(45);
+  });
+});
+
+describe('preRideGut', () => {
+  test('nothing eaten before start: zero gut', () => {
+    const route = makeRoute({ preMealCarbs: 0, preMealMinutes: 45 });
+    expect(preRideGut(route, 60)).toBe(0);
+  });
+
+  test('eaten right at the start line: full carbs still in gut', () => {
+    const route = makeRoute({ preMealCarbs: 50, preMealMinutes: 0 });
+    expect(preRideGut(route, 60)).toBe(50);
+  });
+
+  test('fully digested by start (cap * hours >= carbs): zero gut', () => {
+    const route = makeRoute({ preMealCarbs: 50, preMealMinutes: 60 });
+    expect(preRideGut(route, 60)).toBe(0);
+  });
+
+  test('partially digested: leftover = carbs - cap * hours', () => {
+    const route = makeRoute({ preMealCarbs: 50, preMealMinutes: 45 });
+    expect(preRideGut(route, 60)).toBeCloseTo(5, 6); // 50 - 60*0.75
   });
 });
 

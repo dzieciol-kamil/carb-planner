@@ -70,6 +70,11 @@ export function absCap(mix: MixSettings): number {
   return Math.round(Math.max(45, Math.min(95, Math.min(60 / glu, 32 / fru))));
 }
 
+export function preRideGut(route: RouteInput, cap: number): number {
+  const preRideHours = route.preMealMinutes / 60;
+  return Math.max(0, route.preMealCarbs - cap * preRideHours);
+}
+
 const SYNTHETIC_ANCHORS: [number, number][] = [
   [0, 120],
   [0.1, 165],
@@ -204,7 +209,7 @@ export function samples(state: PlanState): Sample[] {
   const sweatRate = sweat(route);
 
   const out: Sample[] = [];
-  let gut = 0;
+  let gut = preRideGut(route, cap);
   let absorbed = 0;
   let prevIn = 0;
 
