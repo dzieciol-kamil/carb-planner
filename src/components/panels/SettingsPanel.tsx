@@ -1,22 +1,7 @@
 import type { CSSProperties } from 'react';
 import { t } from '../../i18n/strings';
-import { useAppStore, type ViewMode } from '../../store/appStore';
+import { useAppStore } from '../../store/appStore';
 import { PanelShell } from './PanelShell';
-
-function seg(on: boolean): CSSProperties {
-  return {
-    border: 'none',
-    borderRadius: 7,
-    padding: '7px 12px',
-    fontSize: 12,
-    fontWeight: 600,
-    fontFamily: 'Archivo, sans-serif',
-    cursor: 'pointer',
-    background: on ? '#fff' : 'transparent',
-    color: on ? 'var(--ink)' : 'var(--muted)',
-    boxShadow: on ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
-  };
-}
 
 function contStyle(active: boolean): CSSProperties {
   return {
@@ -54,24 +39,14 @@ const numberFieldStyle: CSSProperties = {
 
 export function SettingsPanel() {
   const lang = useAppStore((s) => s.ui.lang);
-  const viewMode = useAppStore((s) => s.ui.viewMode);
-  const autoView = useAppStore((s) => s.ui.autoView);
   const weight = useAppStore((s) => s.route.weight);
   const foodLib = useAppStore((s) => s.foodLib);
   const setWeight = useAppStore((s) => s.setWeight);
-  const setViewMode = useAppStore((s) => s.setViewMode);
   const closePanel = useAppStore((s) => s.closePanel);
   const updateFoodLibEntry = useAppStore((s) => s.updateFoodLibEntry);
   const removeFoodLibEntry = useAppStore((s) => s.removeFoodLibEntry);
   const addFoodLibEntry = useAppStore((s) => s.addFoodLibEntry);
   const strings = t(lang);
-
-  const viewOptions: { value: ViewMode; label: string }[] = [
-    { value: 'auto', label: strings.viewAuto },
-    { value: 'desktop', label: strings.desktop },
-    { value: 'mobile', label: strings.mobile },
-  ];
-  const viewAutoHint = viewMode === 'auto' ? strings.autoDetected + (autoView === 'desktop' ? strings.desktop : strings.mobile) : '';
 
   return (
     <PanelShell title={strings.settings} onClose={closePanel}>
@@ -83,20 +58,6 @@ export function SettingsPanel() {
         </span>
         <input type="range" min={45} max={120} step={1} value={weight} onChange={(e) => setWeight(parseFloat(e.target.value))} style={{ width: '100%' }} />
       </label>
-
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 24 }}>
-        <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{strings.viewLabel}</span>
-          <span style={{ fontSize: 11, color: 'var(--muted-3)' }}>{viewAutoHint}</span>
-        </span>
-        <span style={{ display: 'flex', background: 'var(--track)', borderRadius: 9, padding: 3, gap: 2 }}>
-          {viewOptions.map((opt) => (
-            <button key={opt.value} onClick={() => setViewMode(opt.value)} style={seg(viewMode === opt.value)}>
-              {opt.label}
-            </button>
-          ))}
-        </span>
-      </div>
 
       <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: 6 }}>{strings.foodSection}</div>
       <p style={{ margin: '0 0 14px', fontSize: 12, lineHeight: 1.5, color: 'var(--muted-2)' }}>{strings.foodSectionHint}</p>
