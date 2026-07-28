@@ -125,10 +125,9 @@ export function FillBar({ fill, vessel, distanceKm }: FillBarProps) {
           onPointerDown={createFillDragHandler(fill.fid, 'resize')}
           style={{ position: 'absolute', right: -5, top: -2, bottom: -2, width: 11, cursor: 'ew-resize', touchAction: 'none', zIndex: 5 }}
         />
-        {parts.slice(1).map((_, i) => {
+        {parts.slice(1, -1).map((_, i) => {
           const k = i + 1;
           const rel = ((parts[k] - fill.from) / Math.max(0.1, fill.to - fill.from)) * 100;
-          const isLast = k === n - 1;
           return (
             <span
               key={k}
@@ -137,7 +136,7 @@ export function FillBar({ fill, vessel, distanceKm }: FillBarProps) {
                 position: 'absolute',
                 top: -1,
                 bottom: -1,
-                left: isLast ? 'calc(100% - 14px)' : `calc(${rel}% - 5px)`,
+                left: `calc(${rel}% - 5px)`,
                 width: 10,
                 cursor: 'ew-resize',
                 touchAction: 'none',

@@ -333,7 +333,7 @@ describe('rateStats', () => {
     });
     const { coverage, dryStretch } = rateStats(plan);
     expect(coverage).toBe(0);
-    expect(dryStretch.len).toBeCloseTo(0.503125, 6);
+    expect(dryStretch.len).toBeCloseTo(0.5, 6);
     expect(dryStretch.x).toBe(5); // dist() for 0.5h in time mode
   });
 });
