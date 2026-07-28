@@ -32,7 +32,7 @@ function App() {
   const isDesktop = isDesktopView(viewMode, autoView);
 
   return (
-    <div style={{ minHeight: '100vh', padding: '26px 24px 60px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+    <div style={{ minHeight: '100vh', padding: '14px 24px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
       <Header />
       {panel === 'settings' && <SettingsPanel />}
       {panel === 'mix' && <MixPanel />}
