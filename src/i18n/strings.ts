@@ -194,8 +194,7 @@ export const STR: Record<Lang, StringTable> = {
     curve: 'Planowanie',
     gutHint: 'To Twój żołądek: górny pasek pokazuje, co w nim zalega i jak szybko się trawi, aż do górnego limitu pojemności.',
     curveHint: 'Gruba ciągła linia to tempo, w jakim realnie wchłaniasz węglowodany — rdzawe pola to godziny, w których wchłaniasz mniej, niż potrzebujesz.',
-    curveHintSum:
-      'Gruba ciągła linia to suma węglowodanów, które realnie wchłonąłeś do danej godziny — rdzawe pola to godziny, w których wchłaniasz mniej, niż potrzebujesz.',
+    curveHintSum: 'Gruba ciągła linia to suma węglowodanów, które realnie wchłonąłeś do danej godziny.',
     intake: 'Zjedzone',
     absorbed: 'Wchłonięte',
     gutLane: 'W żołądku',
@@ -363,7 +362,7 @@ export const STR: Record<Lang, StringTable> = {
     curve: 'Planning',
     gutHint: "This is your stomach: the top strip shows what's sitting in it and how fast it's digesting, up to its capacity limit.",
     curveHint: "The thick solid line is the rate you're actually absorbing carbs at — rust areas are the hours you're absorbing less than you need.",
-    curveHintSum: "The thick solid line is the cumulative carbs you've actually absorbed by a given hour — rust areas are the hours you're absorbing less than you need.",
+    curveHintSum: "The thick solid line is the cumulative carbs you've actually absorbed by a given hour.",
     intake: 'Eaten',
     absorbed: 'Absorbed',
     gutLane: 'In the gut',
