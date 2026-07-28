@@ -105,7 +105,7 @@ const defaultRoute: RouteInput = {
 };
 
 const defaultMix: MixSettings = {
-  conc: 11,
+  conc: 8.4,
   gelConc: 60,
   ratio: 2,
   salt: 0.16,
@@ -127,6 +127,7 @@ const defaultFoodLib: FoodLibEntry[] = [
   { key: 'gel', pl: 'Żel energetyczny', en: 'Energy gel', carbs: 22 },
   { key: 'chew', pl: 'Żelki', en: 'Chews', carbs: 30, cont: true, span: 18 },
   { key: 'cola', pl: 'Cola', en: 'Cola', carbs: 35, ml: 330 },
+  { key: 'banana', pl: 'Banan', en: 'Banana', carbs: 23 },
 ];
 
 export const useAppStore = create<AppState>((set) => ({
