@@ -31,6 +31,7 @@ export interface StringTable {
   settingsHint: string;
   curve: string;
   curveHint: string;
+  curveHintSum: string;
   intake: string;
   absorbed: string;
   gutLane: string;
@@ -47,8 +48,10 @@ export interface StringTable {
   tDry: string;
   legFluid: string;
   legSweat: string;
+  legCap: string;
   capNote: string;
   capNote2: string;
+  capNoteFluid: string;
   tAbsorbed: string;
   tCap: string;
   tGutPeak: string;
@@ -142,6 +145,17 @@ export interface StringTable {
   foodSectionHint: string;
   mixHint: string;
   notes: { title: string; body: string }[];
+  ftVersion: string;
+  ftAboutBody: string;
+  ftSources1: string;
+  ftSources2: string;
+  ftPrivacy: string;
+  ftLegal: string;
+  ftLegalBody: string;
+  ftLinks: string;
+  ftIssues: string;
+  ftRepo: string;
+  ftCopyright: string;
 }
 
 export const STR: Record<Lang, StringTable> = {
@@ -176,6 +190,8 @@ export const STR: Record<Lang, StringTable> = {
     curve: 'Planowanie',
     curveHint:
       'Liczy się tempo: g/h, które realnie wchłaniasz, kontra g/h, których potrzebujesz. Nadmiar zalega w żołądku (górny pasek), a rdzawe pola to godziny na deficycie.',
+    curveHintSum:
+      'Gramy narastająco: ile cukru realnie wchłonąłeś do danej godziny kontra ile powinieneś. Nadmiar zalega w żołądku (górny pasek), a rdzawe pola to godziny na deficycie.',
     intake: 'Zjedzone',
     absorbed: 'Wchłonięte',
     gutLane: 'W żołądku',
@@ -192,9 +208,12 @@ export const STR: Record<Lang, StringTable> = {
     tDry: 'Najdłuższa dziura',
     legFluid: 'Płyny',
     legSweat: 'Pot',
+    legCap: 'Limit wchłaniania',
     capNote: 'Limit wchłaniania: ',
     capNote2:
-      ' — glukoza saturuje transporter SGLT1 ok. 60 g/h, fruktoza dochodzi osobno przez GLUT5 (ok. 30 g/h), dlatego liczę go z proporcji malto:fruktoza (Jeukendrup, przegląd 2010–2014). Przerywana linia na płynach = 750 ml/h opróżniania żołądka.',
+      ' — glukoza saturuje transporter SGLT1 ok. 60 g/h, fruktoza dochodzi osobno przez GLUT5 (ok. 30 g/h), dlatego liczę go z proporcji maltodekstryna:fruktoza (Jeukendrup, przegląd 2010–2014).',
+    capNoteFluid:
+      'Limit wchłaniania: 750 ml/h — tyle płynu żołądek oddaje do jelita w wysiłku (przerywana linia). Nadwyżka nie wchłania się, tylko zalega. Przy większym pocie da się deficyt ograniczyć, nie wyzerować.',
     tAbsorbed: 'Wchłonięte',
     tCap: 'Limit wchłaniania',
     tGutPeak: 'Max w żołądku',
@@ -210,7 +229,7 @@ export const STR: Record<Lang, StringTable> = {
     needSum: 'Zapotrzebowanie',
     recipes: 'Skład bidonów',
     recipesHint: 'Gramy do odmierzenia na każde napełnienie — osobno na bidon, flask czy słoiczek.',
-    ratio: 'Malto : fruktoza',
+    ratio: 'Maltodekstryna : Fruktoza',
     concLabel: 'cukry',
     saltLabel: 'sól',
     citricLabel: 'kwasek',
@@ -292,8 +311,21 @@ export const STR: Record<Lang, StringTable> = {
       { title: 'Linia na każdy bidon', body: 'Bidon 720, bidon 610, flask — każdy ma własną linię i nie da się wrzucić żelu do bidonu z izo.' },
       { title: 'Dolewka po wyczerpaniu', body: 'Napełnienia nie zachodzą na siebie: pasek zatrzymuje się na sąsiedzie, a + wstawia dolewkę w wolnej luce.' },
       { title: 'Jedzenie osobno', body: 'Banan i żelki mogą się nakładać, piwo zero bierzesz jednorazowo na stacji — dlatego mają własną linię.' },
-      { title: 'Skład na bidon', body: 'Karta „Skład bidonów” liczy gramy malto, fruktozy, soli i kwasku dla każdego napełnienia osobno.' },
+      { title: 'Skład na bidon', body: 'Karta „Skład bidonów” liczy gramy maltodekstryny, fruktozy, soli i kwasku dla każdego napełnienia osobno.' },
     ],
+    ftVersion: 'wersja demo · projekt hobbystyczny',
+    ftAboutBody:
+      'Carb Planner liczy, ile węglowodanów i płynów zabrać na trasę — z dystansu, tempa, wagi, intensywności i temperatury — a potem rozkłada je na bidony, flaski i jedzenie w czasie. Plan, sprzęt i lista produktów zapisują się w tej przeglądarce.',
+    ftPrivacy: 'Bez konta, bez serwera, bez cookies i trackerów.',
+    ftLegal: 'Zastrzeżenie prawne',
+    ftLegalBody:
+      'To narzędzie edukacyjne i pomocnicze — nie jest poradą medyczną, dietetyczną ani treningową i nie zastępuje kontaktu ze specjalistą. Wyliczenia są szacunkowe, oparte na uśrednionych modelach; Twoje realne zapotrzebowanie, tolerancja żołądkowa, poziom nawodnienia i reakcja na wysiłek mogą się od nich istotnie różnić. Korzystasz z aplikacji na własną odpowiedzialność i wyłącznie na własne ryzyko. Autor nie ponosi odpowiedzialności za jakiekolwiek skutki zdrowotne, kontuzje, szkody, straty ani decyzje podjęte na podstawie wyników — w szczególności nie odpowiada za Twoje zdrowie ani życie. Jeśli chorujesz (m.in. cukrzyca, choroby nerek, serca, przewodu pokarmowego), przyjmujesz leki, jesteś w ciąży albo planujesz długi lub bardzo intensywny start — skonsultuj plan żywieniowy z lekarzem lub dietetykiem sportowym. Nie ignoruj objawów: przy zawrotach głowy, nudnościach, dezorientacji, skurczach lub podejrzeniu hiponatremii przerwij wysiłek i szukaj pomocy. Aplikacja jest dostarczana „taką, jaka jest”, bez żadnych gwarancji.',
+    ftLinks: 'Współtwórz',
+    ftIssues: 'Pomysły i błędy → GitHub Issues',
+    ftRepo: 'Kod źródłowy na GitHubie',
+    ftSources1: 'Limity wchłaniania: przeglądy Jeukendrupa (2010–2014).',
+    ftSources2: 'Utrata potu: przybliżenie z wagi, intensywności i temperatury.',
+    ftCopyright: '© 2026 Carb Planner · open source',
   },
   en: {
     tagline: 'carbohydrate & hydration planner',
@@ -326,6 +358,8 @@ export const STR: Record<Lang, StringTable> = {
     curve: 'Planning',
     curveHint:
       'Rate is what counts: g/h you actually absorb versus g/h you need. Excess sits in the stomach (top strip); rust areas are the hours you ride at a deficit.',
+    curveHintSum:
+      'Grams cumulative: how much carb you have actually absorbed by a given hour versus how much you should have. Excess sits in the stomach (top strip); rust areas are the hours you ride at a deficit.',
     intake: 'Eaten',
     absorbed: 'Absorbed',
     gutLane: 'In the gut',
@@ -342,9 +376,12 @@ export const STR: Record<Lang, StringTable> = {
     tDry: 'Longest gap',
     legFluid: 'Fluids',
     legSweat: 'Sweat',
+    legCap: 'Absorption limit',
     capNote: 'Absorption limit: ',
     capNote2:
-      ' — glucose saturates the SGLT1 transporter at ~60 g/h, fructose adds on top via GLUT5 (~30 g/h), so it is derived from your malto:fructose ratio (Jeukendrup, 2010–2014 reviews). Dashed line in fluid mode = 750 ml/h gastric emptying.',
+      ' — glucose saturates the SGLT1 transporter at ~60 g/h, fructose adds on top via GLUT5 (~30 g/h), so it is derived from your maltodextrin:fructose ratio (Jeukendrup, 2010–2014 reviews).',
+    capNoteFluid:
+      'Absorption limit: 750 ml/h — that is how fast the stomach passes fluid on to the gut under load (dashed line). Anything above it is not absorbed, it just sits there. With a higher sweat rate you can limit the deficit, not erase it.',
     tAbsorbed: 'Absorbed',
     tCap: 'Absorption limit',
     tGutPeak: 'Peak in stomach',
@@ -360,7 +397,7 @@ export const STR: Record<Lang, StringTable> = {
     needSum: 'Requirement',
     recipes: 'Bottle recipes',
     recipesHint: 'Grams to measure out for each fill — per bottle, flask or jar.',
-    ratio: 'Malto : fructose',
+    ratio: 'Maltodextrin : Fructose',
     concLabel: 'carbs',
     saltLabel: 'salt',
     citricLabel: 'citric',
@@ -443,6 +480,19 @@ export const STR: Record<Lang, StringTable> = {
       { title: 'Food apart', body: 'Banana and chews may overlap, a zero beer is one stop — hence their own lane.' },
       { title: 'Per-bottle recipe', body: 'The recipe card computes maltodextrin, fructose, salt and citric grams for every single fill.' },
     ],
+    ftVersion: 'demo build · hobby project',
+    ftAboutBody:
+      'Carb Planner works out how many carbs and how much fluid to take on a ride — from distance, pace, weight, intensity and temperature — then spreads them across bottles, flasks and food over time. Your plan, gear and product list stay in this browser.',
+    ftPrivacy: 'No account, no server, no cookies, no trackers.',
+    ftLegal: 'Disclaimer',
+    ftLegalBody:
+      'This is an educational planning aid — not medical, dietary or coaching advice, and no substitute for a professional. All figures are estimates based on averaged models; your real requirement, gut tolerance, hydration status and response to effort may differ significantly. You use the app on your own responsibility and entirely at your own risk. The author accepts no liability for any health consequences, injury, damage, loss or decisions made on the basis of these results — and specifically takes no responsibility for your health or life. If you have a medical condition (including diabetes, kidney, heart or gastrointestinal disease), take medication, are pregnant, or are preparing for a long or very hard event, discuss your fuelling plan with a doctor or sports dietitian. Never ignore symptoms: if you feel dizzy, nauseous, disoriented, cramping, or suspect hyponatraemia, stop and seek help. The app is provided "as is", without warranty of any kind.',
+    ftLinks: 'Contribute',
+    ftIssues: 'Ideas & bugs → GitHub Issues',
+    ftRepo: 'Source code on GitHub',
+    ftSources1: 'Absorption limits: Jeukendrup reviews (2010–2014).',
+    ftSources2: 'Sweat loss: an estimate from weight, intensity and temperature.',
+    ftCopyright: '© 2026 Carb Planner · open source',
   },
 };
 

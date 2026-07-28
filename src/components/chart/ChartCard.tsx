@@ -50,7 +50,8 @@ export function ChartCard() {
   const legMain = yMode === 'fluid' ? strings.legFluid : strings.absorbed;
   const legNeed = yMode === 'fluid' ? strings.legSweat : strings.need;
   const legMainColor = yMode === 'fluid' ? 'var(--water)' : 'var(--carb)';
-  const capNote = strings.capNote + cap + ' g/h' + strings.capNote2;
+  const showCapLeg = yMode !== 'sum';
+  const capNote = yMode === 'fluid' ? strings.capNoteFluid : strings.capNote + cap + ' g/h' + strings.capNote2;
 
   const yModeOptions: { value: YMode; label: string }[] = [
     { value: 'rate', label: strings.carbMode },
@@ -81,6 +82,12 @@ export function ChartCard() {
             <span style={{ width: 14, height: 0, borderTop: '2px dashed #A8AEA9' }} />
             {legNeed}
           </span>
+          {showCapLeg && (
+            <span style={legendItemStyle}>
+              <span style={{ width: 14, height: 0, borderTop: '2px dotted ' + (yMode === 'fluid' ? 'var(--water)' : 'var(--carb)') }} />
+              {strings.legCap}
+            </span>
+          )}
           {showGutLane && (
             <span style={legendItemStyle}>
               <span style={{ width: 14, height: 8, borderRadius: 2, background: '#DCC98A' }} />
@@ -108,7 +115,8 @@ export function ChartCard() {
 
       <div style={{ display: 'flex', alignItems: 'stretch', gap: 12 }}>
         <div style={{ width: 168, flex: '0 0 168px', display: 'flex', flexDirection: 'column', gap: 44 }}>
-          <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{strings.curveHint}</span>
+          {yMode === 'sum' && <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{strings.curveHintSum}</span>}
+          {yMode === 'rate' && <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{strings.curveHint}</span>}
           <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{capNote}</span>
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>

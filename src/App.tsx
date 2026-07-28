@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { ChartCard } from './components/chart/ChartCard';
+import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { MobileApp } from './components/mobile/MobileApp';
 import { MixPanel } from './components/panels/MixPanel';
@@ -32,7 +33,7 @@ function App() {
   const isDesktop = isDesktopView(viewMode, autoView);
 
   return (
-    <div style={{ minHeight: '100vh', padding: '26px 24px 60px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+    <div style={{ minHeight: '100vh', padding: '14px 24px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
       <Header />
       {panel === 'settings' && <SettingsPanel />}
       {panel === 'mix' && <MixPanel />}
@@ -48,6 +49,7 @@ function App() {
       ) : (
         <MobileApp />
       )}
+      {isDesktop && <Footer />}
     </div>
   );
 }

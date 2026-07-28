@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import { dist, fmtX, prof, samples, totalHours, type Sample } from '../../domain/fuel';
+import { absCap, dist, fmtX, prof, samples, totalHours, type Sample } from '../../domain/fuel';
 import { useAppStore } from '../../store/appStore';
 import { ElevationLayer } from './ElevationLayer';
 import { CHART_COLORS, sourceColor } from './theme';
@@ -39,11 +39,13 @@ export function Chart({ height, showAxis }: ChartProps) {
   const rateMode = yMode === 'rate' || fluidMode;
   const yk: NumericSampleKey = fluidMode ? 'fluidRate' : rateMode ? 'rate' : 'absorbed';
   const nk: NumericSampleKey = fluidMode ? 'sweatRate' : rateMode ? 'needRate' : 'need';
+  const cap = absCap(mix);
+  const capY = fluidMode ? FLUID_CAP : cap;
 
   const maxY = fluidMode
     ? Math.max(FLUID_CAP * 1.1, ...S.map((p) => Math.max(p.fluidRate, p.sweatRate))) * 1.1
     : rateMode
-      ? Math.max(10, ...S.map((p) => Math.max(p.rate, p.needRate))) * 1.15
+      ? Math.max(10, cap * 1.05, ...S.map((p) => Math.max(p.rate, p.needRate))) * 1.15
       : Math.max(1, ...S.map((p) => Math.max(p.intake, p.need))) * 1.08;
 
   const GT = showAxis ? 52 : 26;
@@ -181,8 +183,8 @@ export function Chart({ height, showAxis }: ChartProps) {
         />
       )}
 
-      {fluidMode && (
-        <line x1={0} x2={WIDTH} y1={py(FLUID_CAP)} y2={py(FLUID_CAP)} stroke={CHART_COLORS.water} strokeWidth={1} strokeDasharray="3 5" opacity={0.8} vectorEffect="non-scaling-stroke" />
+      {rateMode && (
+        <line x1={0} x2={WIDTH} y1={py(capY)} y2={py(capY)} stroke={fluidMode ? CHART_COLORS.water : CHART_COLORS.carb} strokeWidth={1} strokeDasharray="3 5" opacity={0.8} vectorEffect="non-scaling-stroke" />
       )}
 
       {!rateMode && <path d={polyline(S, 'intake', px, py)} fill="none" stroke={CHART_COLORS.carb} strokeWidth={1.2} strokeDasharray="2 4" opacity={0.55} vectorEffect="non-scaling-stroke" />}
