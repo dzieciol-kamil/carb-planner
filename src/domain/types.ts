@@ -10,6 +10,8 @@ export interface RouteInput {
   hours: number;
   minutes: number;
   weight: number;
+  preMealCarbs: number;
+  preMealMinutes: number;
   intensity: Intensity;
   temp: number;
   useGpx: boolean;

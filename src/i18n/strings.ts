@@ -14,6 +14,8 @@ export interface StringTable {
   minutes: string;
   duration: string;
   weight: string;
+  preMealCarbs: string;
+  preMealMinutes: string;
   intensity: string;
   low: string;
   medium: string;
@@ -172,6 +174,8 @@ export const STR: Record<Lang, StringTable> = {
     minutes: 'Minuty',
     duration: 'Czas trwania',
     weight: 'Waga',
+    preMealCarbs: 'Węgle przed startem',
+    preMealMinutes: 'Czas przed startem',
     intensity: 'Intensywność',
     low: 'Niska',
     medium: 'Średnia',
@@ -340,6 +344,8 @@ export const STR: Record<Lang, StringTable> = {
     minutes: 'Minutes',
     duration: 'Duration',
     weight: 'Weight',
+    preMealCarbs: 'Carbs before start',
+    preMealMinutes: 'Time before start',
     intensity: 'Intensity',
     low: 'Low',
     medium: 'Medium',

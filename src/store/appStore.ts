@@ -45,6 +45,8 @@ interface AppState {
   setHours: (n: number) => void;
   setMinutes: (n: number) => void;
   setWeight: (n: number) => void;
+  setPreMealCarbs: (n: number) => void;
+  setPreMealMinutes: (n: number) => void;
   setIntensity: (i: Intensity) => void;
   setTemp: (n: number) => void;
   toggleGpx: () => void;
@@ -102,6 +104,8 @@ const defaultRoute: RouteInput = {
   hours: 0,
   minutes: 0,
   weight: 78,
+  preMealCarbs: 50,
+  preMealMinutes: 45,
   intensity: 'mid',
   temp: 24,
   useGpx: true,
@@ -169,6 +173,8 @@ export const useAppStore = create<AppState>()(
     setHours: (n) => set((s) => ({ route: { ...s.route, hours: n } })),
     setMinutes: (n) => set((s) => ({ route: { ...s.route, minutes: n } })),
     setWeight: (n) => set((s) => ({ route: { ...s.route, weight: n } })),
+    setPreMealCarbs: (n) => set((s) => ({ route: { ...s.route, preMealCarbs: n } })),
+    setPreMealMinutes: (n) => set((s) => ({ route: { ...s.route, preMealMinutes: n } })),
     setIntensity: (i) => set((s) => ({ route: { ...s.route, intensity: i } })),
     setTemp: (n) => set((s) => ({ route: { ...s.route, temp: n } })),
     toggleGpx: () => set((s) => ({ route: { ...s.route, useGpx: !s.route.useGpx } })),
@@ -297,6 +303,14 @@ export const useAppStore = create<AppState>()(
       name: 'carb-planner',
       version: 1,
       storage: createJSONStorage(() => createDebouncedLocalStorage(400)),
+      merge: (persistedState, currentState) => {
+        const persisted = persistedState as Partial<AppState> | undefined;
+        return {
+          ...currentState,
+          ...persisted,
+          route: { ...currentState.route, ...persisted?.route },
+        };
+      },
     },
   ),
 );

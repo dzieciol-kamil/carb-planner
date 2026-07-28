@@ -82,6 +82,8 @@ export function RoutePanel() {
   const setMinutes = useAppStore((s) => s.setMinutes);
   const setIntensity = useAppStore((s) => s.setIntensity);
   const setTemp = useAppStore((s) => s.setTemp);
+  const setPreMealCarbs = useAppStore((s) => s.setPreMealCarbs);
+  const setPreMealMinutes = useAppStore((s) => s.setPreMealMinutes);
   const toggleGpx = useAppStore((s) => s.toggleGpx);
   const loadGpxFromFile = useAppStore((s) => s.loadGpxFromFile);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -107,10 +109,10 @@ export function RoutePanel() {
         gap: '14px 44px',
         flexWrap: 'wrap',
         alignItems: 'flex-start',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
       }}
     >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 14, flex: '1 1 210px', minWidth: 200 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 14, flex: '0 0 272px', width: 272 }}>
         <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>{strings.route}</span>
 
         <div style={{ display: 'flex', alignSelf: 'flex-start', width: 272, maxWidth: '100%', boxSizing: 'border-box', background: 'var(--track)', borderRadius: 9, padding: 3, gap: 2 }}>
@@ -147,25 +149,48 @@ export function RoutePanel() {
         )}
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16, flex: '1 1 210px', minWidth: 200, paddingTop: 20 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.intensity}</span>
-          <div style={{ display: 'flex', gap: 6 }}>
-            {intensityOptions.map((opt) => (
-              <button key={opt.value} onClick={() => setIntensity(opt.value)} style={chip(route.intensity === opt.value)}>
-                {opt.label}
-              </button>
-            ))}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px 44px', flex: '0 0 394px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, flex: '0 0 220px', width: 220, paddingTop: 20 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.intensity}</span>
+            <div style={{ display: 'flex', gap: 6 }}>
+              {intensityOptions.map((opt) => (
+                <button key={opt.value} onClick={() => setIntensity(opt.value)} style={chip(route.intensity === opt.value)}>
+                  {opt.label}
+                </button>
+              ))}
+            </div>
           </div>
+
+          <label style={{ display: 'flex', flexDirection: 'column', gap: 7, width: '100%' }}>
+            <span style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--muted-2)' }}>
+              <span>{strings.temp}</span>
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--ink)', fontWeight: 700 }}>{route.temp} °C</span>
+            </span>
+            <input type="range" min={0} max={40} step={1} value={route.temp} onChange={(e) => setTemp(numberField(e))} style={{ width: '100%' }} />
+          </label>
         </div>
 
-        <label style={{ display: 'flex', flexDirection: 'column', gap: 7, width: '100%' }}>
-          <span style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--muted-2)' }}>
-            <span>{strings.temp}</span>
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--ink)', fontWeight: 700 }}>{route.temp} °C</span>
-          </span>
-          <input type="range" min={0} max={40} step={1} value={route.temp} onChange={(e) => setTemp(numberField(e))} style={{ width: '100%' }} />
-        </label>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, flex: '0 0 130px', width: 130, paddingTop: 20 }}>
+          <label style={{ ...labelStyle, gap: 7 }}>
+            <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.preMealCarbs} (g)</span>
+            <input
+              type="number"
+              value={displayValue(route.preMealCarbs)}
+              onChange={(e) => setPreMealCarbs(numberField(e))}
+              style={inputStyle}
+            />
+          </label>
+          <label style={{ ...labelStyle, gap: 7 }}>
+            <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.preMealMinutes} (min)</span>
+            <input
+              type="number"
+              value={displayValue(route.preMealMinutes)}
+              onChange={(e) => setPreMealMinutes(numberField(e))}
+              style={inputStyle}
+            />
+          </label>
+        </div>
       </div>
 
       <div
