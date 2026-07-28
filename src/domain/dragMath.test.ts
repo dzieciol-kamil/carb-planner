@@ -1,0 +1,203 @@
+import { describe, expect, test } from 'vitest';
+import {
+  bestGapSpan,
+  dragGelPart,
+  fillBounds,
+  gaps,
+  moveFill,
+  moveFood,
+  rescalePositions,
+  resizeFillLeft,
+  resizeFillRight,
+  resizeFoodLeft,
+  resizeFoodRight,
+} from './dragMath';
+import type { Fill, FoodItem, Vessel } from './types';
+
+const gear: Vessel[] = [{ gid: 'g1', name: 'Bottle', vol: 500, allowed: ['izo', 'gel'], gelParts: 3 }];
+
+function fill(overrides: Partial<Fill>): Fill {
+  return { fid: 1, gid: 'g1', content: 'izo', from: 0, to: 50, ...overrides };
+}
+
+describe('fillBounds', () => {
+  test('unbounded when no siblings', () => {
+    const f = fill({ fid: 1, from: 20, to: 40 });
+    expect(fillBounds(f, [f], 100)).toEqual({ lo: 0, hi: 100 });
+  });
+
+  test('clamped by a sibling on each side', () => {
+    const f = fill({ fid: 1, from: 20, to: 40 });
+    const left = fill({ fid: 2, from: 0, to: 10 });
+    const right = fill({ fid: 3, from: 60, to: 80 });
+    expect(fillBounds(f, [f, left, right], 100)).toEqual({ lo: 10, hi: 60 });
+  });
+});
+
+describe('moveFill', () => {
+  test('moves freely within [0, D-width] when no siblings block it', () => {
+    const f = fill({ fid: 1, from: 20, to: 40 });
+    expect(moveFill(f, [f], 100, 10)).toEqual({ from: 30, to: 50 });
+  });
+
+  test('clamps at 0 when dragged past the start', () => {
+    const f = fill({ fid: 1, from: 20, to: 40 });
+    expect(moveFill(f, [f], 100, -50)).toEqual({ from: 0, to: 20 });
+  });
+
+  test('clamps against a left neighbour', () => {
+    const f = fill({ fid: 1, from: 30, to: 50 });
+    const left = fill({ fid: 2, from: 0, to: 20 });
+    expect(moveFill(f, [f, left], 100, -100)).toEqual({ from: 20, to: 40 });
+  });
+
+  test('clamps against a right neighbour', () => {
+    // want must stay short of the neighbour's own "from" (60) — a delta big enough to land
+    // the raw target *inside* the neighbour's span is a same-event jump no continuous drag
+    // produces, and the ported algorithm (like the prototype) doesn't resolve that case.
+    const f = fill({ fid: 1, from: 30, to: 50 });
+    const right = fill({ fid: 2, from: 60, to: 100 });
+    expect(moveFill(f, [f, right], 100, 20)).toEqual({ from: 40, to: 60 });
+  });
+
+  test('shrinks to fit when dragged into a gap tighter than its own width', () => {
+    // width=20, dragged into a gap [40,55] (15 wide) which is still >= min (1 for D=100)
+    const f = fill({ fid: 1, from: 0, to: 20 });
+    const left = fill({ fid: 2, from: 0, to: 40 });
+    const right = fill({ fid: 3, from: 55, to: 100 });
+    // note: left neighbour occupies [0,40], so dragged fill must start after 40
+    expect(moveFill(f, [f, left, right], 100, 45)).toEqual({ from: 40, to: 55 });
+  });
+
+  test('does not move when the target gap is smaller than the minimum width', () => {
+    const f = fill({ fid: 1, from: 0, to: 20 });
+    const left = fill({ fid: 2, from: 0, to: 41 });
+    const right = fill({ fid: 3, from: 41.5, to: 100 }); // gap of 0.5, min is max(2, round(100*0.01))=2
+    const result = moveFill(f, [f, left, right], 100, 45);
+    expect(result).toEqual({ from: f.from, to: f.to });
+  });
+});
+
+describe('resizeFillLeft / resizeFillRight', () => {
+  test('left edge stops at the lower bound', () => {
+    const f = fill({ fid: 1, from: 30, to: 50 });
+    const bounds = { lo: 10, hi: 100 };
+    expect(resizeFillLeft(f, bounds, -100, 30)).toBe(10);
+  });
+
+  test('left edge cannot cross within 2 units of the right edge', () => {
+    const f = fill({ fid: 1, from: 30, to: 50 });
+    const bounds = { lo: 0, hi: 100 };
+    expect(resizeFillLeft(f, bounds, 100, 30)).toBe(48);
+  });
+
+  test('right edge stops at the upper bound', () => {
+    const f = fill({ fid: 1, from: 30, to: 50 });
+    const bounds = { lo: 0, hi: 70 };
+    expect(resizeFillRight(f, bounds, 100, 50)).toBe(70);
+  });
+
+  test('right edge cannot cross within 2 units of the left edge', () => {
+    const f = fill({ fid: 1, from: 30, to: 50 });
+    const bounds = { lo: 0, hi: 100 };
+    expect(resizeFillRight(f, bounds, -100, 50)).toBe(32);
+  });
+});
+
+describe('rescalePositions', () => {
+  test('proportionally maps positions from the old span to the new span', () => {
+    expect(rescalePositions([25, 50, 75], 0, 100, 0, 50)).toEqual([12.5, 25, 37.5]);
+  });
+
+  test('returns undefined when there are no positions to rescale', () => {
+    expect(rescalePositions(undefined, 0, 100, 0, 50)).toBeUndefined();
+  });
+});
+
+describe('gaps', () => {
+  test('finds the free stretches around existing fills, ignoring slivers under 4 units', () => {
+    const fills: Fill[] = [fill({ fid: 1, from: 10, to: 30 }), fill({ fid: 2, from: 32, to: 60 })];
+    expect(gaps(fills, 100)).toEqual([
+      [0, 10],
+      [60, 100],
+    ]);
+  });
+
+  test('empty when fills cover the whole distance', () => {
+    const fills: Fill[] = [fill({ fid: 1, from: 0, to: 100 })];
+    expect(gaps(fills, 100)).toEqual([]);
+  });
+});
+
+describe('bestGapSpan', () => {
+  test('picks the widest gap and spans up to 28% of distance', () => {
+    const result = bestGapSpan(
+      [
+        [0, 10],
+        [40, 90],
+      ],
+      100,
+    );
+    expect(result).toEqual({ from: 40, to: 68 }); // min(50, max(20, round(28))) = 28 -> 40+28=68
+  });
+
+  test('spans the full gap when narrower than the 28% cap', () => {
+    const result = bestGapSpan([[0, 15]], 100);
+    expect(result).toEqual({ from: 0, to: 15 });
+  });
+
+  test('returns null when there are no gaps', () => {
+    expect(bestGapSpan([], 100)).toBeNull();
+  });
+});
+
+describe('dragGelPart', () => {
+  test('clamps a middle portion between its neighbours with minimum spacing', () => {
+    const f = fill({ fid: 1, content: 'gel', from: 0, to: 90 });
+    // 3 parts -> even positions [0, 45, 90]; dragging k=1 far right should stop short of k=2 (min spacing = max(1, round(90*0.004))=1)
+    const result = dragGelPart(f, gear, 1, 1000, 90);
+    expect(result[1]).toBe(89); // hi = arr[2] - min = 90 - 1
+  });
+
+  test('first portion cannot move before fill.from', () => {
+    const f = fill({ fid: 1, content: 'gel', from: 0, to: 90 });
+    const result = dragGelPart(f, gear, 0, -1000, 90);
+    expect(result[0]).toBe(0);
+  });
+
+  test('last portion cannot move past fill.to', () => {
+    const f = fill({ fid: 1, content: 'gel', from: 0, to: 90 });
+    const result = dragGelPart(f, gear, 2, 1000, 90);
+    expect(result[2]).toBe(90);
+  });
+});
+
+describe('moveFood', () => {
+  test('moves freely within [0, D-width]', () => {
+    const fd: FoodItem = { id: 1, key: 'ban', name: 'Banana', carbs: 25, from: 20, to: 20 };
+    expect(moveFood(fd, 100, 30)).toEqual({ from: 50, to: 50 });
+  });
+
+  test('clamps at the route boundaries', () => {
+    const fd: FoodItem = { id: 1, key: 'chew', name: 'Chews', carbs: 30, cont: true, from: 10, to: 30 };
+    expect(moveFood(fd, 100, -50)).toEqual({ from: 0, to: 20 });
+    expect(moveFood(fd, 100, 500)).toEqual({ from: 80, to: 100 });
+  });
+});
+
+describe('resizeFoodLeft / resizeFoodRight', () => {
+  test('left cannot cross within 1 unit of the right edge', () => {
+    const fd: FoodItem = { id: 1, key: 'chew', name: 'Chews', carbs: 30, cont: true, from: 10, to: 30 };
+    expect(resizeFoodLeft(fd, 1000, 10)).toBe(29);
+  });
+
+  test('right cannot cross within 1 unit of the left edge', () => {
+    const fd: FoodItem = { id: 1, key: 'chew', name: 'Chews', carbs: 30, cont: true, from: 10, to: 30 };
+    expect(resizeFoodRight(fd, 100, -1000, 30)).toBe(11);
+  });
+
+  test('right is clamped to the route distance', () => {
+    const fd: FoodItem = { id: 1, key: 'chew', name: 'Chews', carbs: 30, cont: true, from: 10, to: 30 };
+    expect(resizeFoodRight(fd, 100, 1000, 30)).toBe(100);
+  });
+});

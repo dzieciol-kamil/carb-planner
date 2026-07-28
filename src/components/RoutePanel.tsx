@@ -24,6 +24,11 @@ function numberField(e: ChangeEvent<HTMLInputElement>): number {
   return v === '' ? 0 : parseFloat(v) || 0;
 }
 
+// Unset trip parameters are stored as 0; render them as an empty field rather than a literal "0".
+function displayValue(n: number): number | string {
+  return n || '';
+}
+
 function seg(on: boolean): CSSProperties {
   return {
     flex: '1 1 0',
@@ -121,22 +126,22 @@ export function RoutePanel() {
           <div style={{ display: 'flex', gap: 12, alignItems: 'flex-end', width: 272, maxWidth: '100%' }}>
             <label style={labelStyle}>
               <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.distance} (km)</span>
-              <input type="number" value={route.distance} onChange={(e) => setDistance(numberField(e))} style={inputStyle} />
+              <input type="number" value={displayValue(route.distance)} onChange={(e) => setDistance(numberField(e))} style={inputStyle} />
             </label>
             <label style={labelStyle}>
               <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.speed} (km/h)</span>
-              <input type="number" value={route.speed} onChange={(e) => setSpeed(numberField(e))} style={inputStyle} />
+              <input type="number" value={displayValue(route.speed)} onChange={(e) => setSpeed(numberField(e))} style={inputStyle} />
             </label>
           </div>
         ) : (
           <div style={{ display: 'flex', gap: 12, alignItems: 'flex-end', width: 272, maxWidth: '100%' }}>
             <label style={labelStyle}>
               <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.hours}</span>
-              <input type="number" value={route.hours} onChange={(e) => setHours(numberField(e))} style={inputStyle} />
+              <input type="number" value={displayValue(route.hours)} onChange={(e) => setHours(numberField(e))} style={inputStyle} />
             </label>
             <label style={labelStyle}>
               <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.minutes}</span>
-              <input type="number" value={route.minutes} onChange={(e) => setMinutes(numberField(e))} style={inputStyle} />
+              <input type="number" value={displayValue(route.minutes)} onChange={(e) => setMinutes(numberField(e))} style={inputStyle} />
             </label>
           </div>
         )}

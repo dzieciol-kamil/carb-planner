@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { bestGapSpan, gaps } from '../domain/dragMath';
+import { dist } from '../domain/fuel';
 import { loadGpxFile } from '../domain/gpx';
 import type { Lang } from '../i18n/strings';
 import type { FoodItem, FoodLibEntry, Intensity, Mode, MixSettings, RouteInput, Vessel, Fill, XUnit } from '../domain/types';
@@ -51,16 +53,29 @@ interface AppState {
   closePanel: () => void;
   setXUnit: (u: XUnit) => void;
   setYMode: (m: YMode) => void;
+
+  setHoverKey: (key: string | null) => void;
+  setDragKey: (key: string | null) => void;
+  setSelKey: (key: string | null) => void;
+
+  updateFill: (fid: number, patch: Partial<Fill>) => void;
+  removeFill: (fid: number) => void;
+  addFillInGap: (gid: string) => void;
+  setFillContent: (fid: number, content: Fill['content']) => void;
+
+  updateFood: (id: number, patch: Partial<FoodItem>) => void;
+  removeFood: (id: number) => void;
+  setFoodContinuous: (id: number, cont: boolean) => void;
 }
 
 const defaultRoute: RouteInput = {
   mode: 'route',
-  distance: 200,
-  speed: 27,
-  hours: 7,
-  minutes: 30,
+  distance: 0,
+  speed: 0,
+  hours: 0,
+  minutes: 0,
   weight: 78,
-  intensity: 'low',
+  intensity: 'mid',
   temp: 24,
   useGpx: true,
   gpxTrack: null,
@@ -78,35 +93,15 @@ const defaultMix: MixSettings = {
   gelCitric: 0.5,
 };
 
-const defaultGear: Vessel[] = [
-  { gid: 'g1', name: 'Bidon duży', vol: 720, allowed: ['water', 'izo'], gelParts: 4 },
-  { gid: 'g2', name: 'Bidon mały', vol: 610, allowed: ['water', 'izo'], gelParts: 4 },
-  { gid: 'g3', name: 'Flask', vol: 250, allowed: ['izo', 'gel'], gelParts: 4 },
-];
+const defaultGear: Vessel[] = [{ gid: 'g1', name: 'Bidon', vol: 650, allowed: ['water', 'izo', 'gel'], gelParts: 4 }];
 
-const defaultFills: Fill[] = [
-  { fid: 1, gid: 'g1', content: 'izo', from: 0, to: 55 },
-  { fid: 2, gid: 'g1', content: 'izo', from: 58, to: 115 },
-  { fid: 3, gid: 'g1', content: 'water', from: 120, to: 175 },
-  { fid: 4, gid: 'g2', content: 'izo', from: 0, to: 62 },
-  { fid: 5, gid: 'g2', content: 'water', from: 70, to: 140 },
-  { fid: 6, gid: 'g3', content: 'gel', from: 25, to: 160 },
-];
+const defaultFills: Fill[] = [];
 
-const defaultFoods: FoodItem[] = [
-  { id: 101, key: 'ban', name: 'Banan', carbs: 25, from: 62, to: 62 },
-  { id: 102, key: 'chew', name: 'Żelki', carbs: 30, cont: true, from: 146, to: 168 },
-  { id: 103, key: 'beer', name: 'Piwo zero', carbs: 20, ml: 500, from: 172, to: 172 },
-];
+const defaultFoods: FoodItem[] = [];
 
 const defaultFoodLib: FoodLibEntry[] = [
   { key: 'gel', pl: 'Żel energetyczny', en: 'Energy gel', carbs: 22 },
-  { key: 'ban', pl: 'Banan', en: 'Banana', carbs: 25 },
   { key: 'chew', pl: 'Żelki', en: 'Chews', carbs: 30, cont: true, span: 18 },
-  { key: 'bar', pl: 'Baton', en: 'Bar', carbs: 28 },
-  { key: 'ice', pl: 'Lody', en: 'Ice cream', carbs: 30, ml: 120 },
-  { key: 'cake', pl: 'Ciasto', en: 'Cake', carbs: 45 },
-  { key: 'beer', pl: 'Piwo zero', en: 'Zero beer', carbs: 20, ml: 500 },
   { key: 'cola', pl: 'Cola', en: 'Cola', carbs: 35, ml: 330 },
 ];
 
@@ -129,9 +124,9 @@ export const useAppStore = create<AppState>((set) => ({
     dragKey: null,
     timelineOpen: false,
   },
-  nextGid: 4,
-  nextFid: 7,
-  nextFoodId: 104,
+  nextGid: 2,
+  nextFid: 1,
+  nextFoodId: 101,
   nextFoodKey: 1,
 
   setMode: (mode) => set((s) => ({ route: { ...s.route, mode } })),
@@ -161,6 +156,46 @@ export const useAppStore = create<AppState>((set) => ({
   closePanel: () => set((s) => ({ ui: { ...s.ui, panel: null } })),
   setXUnit: (xUnit) => set((s) => ({ ui: { ...s.ui, xUnit } })),
   setYMode: (yMode) => set((s) => ({ ui: { ...s.ui, yMode } })),
+
+  setHoverKey: (hoverKey) => set((s) => ({ ui: { ...s.ui, hoverKey } })),
+  setDragKey: (dragKey) => set((s) => ({ ui: { ...s.ui, dragKey } })),
+  setSelKey: (selKey) => set((s) => ({ ui: { ...s.ui, selKey } })),
+
+  updateFill: (fid, patch) => set((s) => ({ fills: s.fills.map((f) => (f.fid === fid ? { ...f, ...patch } : f)) })),
+  removeFill: (fid) =>
+    set((s) => ({ fills: s.fills.filter((f) => f.fid !== fid), ui: { ...s.ui, hoverKey: null, selKey: null } })),
+  addFillInGap: (gid) =>
+    set((s) => {
+      const vessel = s.gear.find((g) => g.gid === gid);
+      if (!vessel) return {};
+      const distanceKm = dist(s.route);
+      const span = bestGapSpan(
+        gaps(
+          s.fills.filter((f) => f.gid === gid),
+          distanceKm,
+        ),
+        distanceKm,
+      );
+      if (!span) return {};
+      const allowed: Fill['content'][] = vessel.allowed?.length ? vessel.allowed : ['izo'];
+      const content: Fill['content'] = allowed.includes('izo') ? 'izo' : allowed[0];
+      return {
+        fills: [...s.fills, { fid: s.nextFid, gid, content, from: span.from, to: span.to }],
+        nextFid: s.nextFid + 1,
+      };
+    }),
+  setFillContent: (fid, content) => set((s) => ({ fills: s.fills.map((f) => (f.fid === fid ? { ...f, content } : f)) })),
+
+  updateFood: (id, patch) => set((s) => ({ foods: s.foods.map((f) => (f.id === id ? { ...f, ...patch } : f)) })),
+  removeFood: (id) =>
+    set((s) => ({ foods: s.foods.filter((f) => f.id !== id), ui: { ...s.ui, hoverKey: null, selKey: null } })),
+  setFoodContinuous: (id, cont) =>
+    set((s) => {
+      const distanceKm = dist(s.route);
+      return {
+        foods: s.foods.map((f) => (f.id === id ? { ...f, cont, to: cont ? Math.min(distanceKm, f.from + 18) : f.from } : f)),
+      };
+    }),
 }));
 
 export function isDesktopView(viewMode: ViewMode, autoView: 'desktop' | 'mobile'): boolean {
