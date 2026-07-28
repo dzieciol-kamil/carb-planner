@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { ChartCard } from './components/chart/ChartCard';
 import { Header } from './components/Header';
+import { RecipesSection } from './components/recipes/RecipesSection';
 import { RoutePanel } from './components/RoutePanel';
 import { SummaryCards } from './components/SummaryCards';
 import { isDesktopView, useAppStore } from './store/appStore';
@@ -36,6 +37,7 @@ function App() {
             <SummaryCards />
           </div>
           <ChartCard />
+          <RecipesSection />
         </div>
       ) : (
         <div style={{ width: '100%', maxWidth: 420, textAlign: 'center', color: 'var(--muted-2)', fontSize: 13, padding: '40px 16px' }}>

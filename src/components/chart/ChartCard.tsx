@@ -3,7 +3,9 @@ import { absCap, planSummary } from '../../domain/fuel';
 import { t } from '../../i18n/strings';
 import { useAppStore, type YMode } from '../../store/appStore';
 import type { XUnit } from '../../domain/types';
+import { FoodLibraryChips } from '../FoodLibraryChips';
 import { LanesSection } from '../lanes/LanesSection';
+import { TimelineSection } from '../timeline/TimelineSection';
 import { Chart } from './Chart';
 
 function segButton(on: boolean, small = false): CSSProperties {
@@ -116,6 +118,8 @@ export function ChartCard() {
       </div>
 
       <LanesSection />
+      <FoodLibraryChips />
+      <TimelineSection />
     </div>
   );
 }

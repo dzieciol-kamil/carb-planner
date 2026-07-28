@@ -53,6 +53,7 @@ interface AppState {
   closePanel: () => void;
   setXUnit: (u: XUnit) => void;
   setYMode: (m: YMode) => void;
+  toggleTimelineOpen: () => void;
 
   setHoverKey: (key: string | null) => void;
   setDragKey: (key: string | null) => void;
@@ -66,6 +67,7 @@ interface AppState {
   updateFood: (id: number, patch: Partial<FoodItem>) => void;
   removeFood: (id: number) => void;
   setFoodContinuous: (id: number, cont: boolean) => void;
+  addFoodFromLibrary: (key: string) => void;
 }
 
 const defaultRoute: RouteInput = {
@@ -156,6 +158,7 @@ export const useAppStore = create<AppState>((set) => ({
   closePanel: () => set((s) => ({ ui: { ...s.ui, panel: null } })),
   setXUnit: (xUnit) => set((s) => ({ ui: { ...s.ui, xUnit } })),
   setYMode: (yMode) => set((s) => ({ ui: { ...s.ui, yMode } })),
+  toggleTimelineOpen: () => set((s) => ({ ui: { ...s.ui, timelineOpen: !s.ui.timelineOpen } })),
 
   setHoverKey: (hoverKey) => set((s) => ({ ui: { ...s.ui, hoverKey } })),
   setDragKey: (dragKey) => set((s) => ({ ui: { ...s.ui, dragKey } })),
@@ -194,6 +197,19 @@ export const useAppStore = create<AppState>((set) => ({
       const distanceKm = dist(s.route);
       return {
         foods: s.foods.map((f) => (f.id === id ? { ...f, cont, to: cont ? Math.min(distanceKm, f.from + 18) : f.from } : f)),
+      };
+    }),
+  addFoodFromLibrary: (key) =>
+    set((s) => {
+      const entry = s.foodLib.find((f) => f.key === key);
+      if (!entry) return {};
+      const distanceKm = dist(s.route);
+      const start = Math.round(distanceKm * 0.5);
+      const to = entry.cont ? Math.min(distanceKm, start + (entry.span || 18)) : start;
+      const name = entry[s.ui.lang] || entry.en;
+      return {
+        foods: [...s.foods, { id: s.nextFoodId, key: entry.key, name, carbs: entry.carbs, ml: entry.ml, cont: !!entry.cont, from: start, to }],
+        nextFoodId: s.nextFoodId + 1,
       };
     }),
 }));
