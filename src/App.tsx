@@ -1,5 +1,5 @@
 function App() {
-  return <div>FuelPlan — szkielet projektu, UI jeszcze nie zbudowane.</div>;
+  return <div>FuelPlan — project skeleton, UI not built yet.</div>;
 }
 
 export default App;
