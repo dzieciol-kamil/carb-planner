@@ -1,9 +1,10 @@
-import type { ChangeEvent, CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 import { useRef } from 'react';
 import { prof } from '../domain/fuel';
 import type { Intensity, RouteInput } from '../domain/types';
 import { t } from '../i18n/strings';
 import { useAppStore } from '../store/appStore';
+import { NumberInput } from './ui/NumberInput';
 
 const inputStyle: CSSProperties = {
   width: '100%',
@@ -18,16 +19,6 @@ const inputStyle: CSSProperties = {
 };
 
 const labelStyle: CSSProperties = { display: 'flex', flexDirection: 'column', gap: 5, flex: '1 1 0', minWidth: 0 };
-
-function numberField(e: ChangeEvent<HTMLInputElement>): number {
-  const v = e.target.value;
-  return v === '' ? 0 : parseFloat(v) || 0;
-}
-
-// Unset trip parameters are stored as 0; render them as an empty field rather than a literal "0".
-function displayValue(n: number): number | string {
-  return n || '';
-}
 
 function seg(on: boolean): CSSProperties {
   return {
@@ -128,22 +119,22 @@ export function RoutePanel() {
           <div style={{ display: 'flex', gap: 12, alignItems: 'flex-end', width: 272, maxWidth: '100%' }}>
             <label style={labelStyle}>
               <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.distance} (km)</span>
-              <input type="number" value={displayValue(route.distance)} onChange={(e) => setDistance(numberField(e))} style={inputStyle} />
+              <NumberInput value={route.distance} onChange={setDistance} zeroAsEmpty style={inputStyle} />
             </label>
             <label style={labelStyle}>
               <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.speed} (km/h)</span>
-              <input type="number" value={displayValue(route.speed)} onChange={(e) => setSpeed(numberField(e))} style={inputStyle} />
+              <NumberInput value={route.speed} onChange={setSpeed} zeroAsEmpty style={inputStyle} />
             </label>
           </div>
         ) : (
           <div style={{ display: 'flex', gap: 12, alignItems: 'flex-end', width: 272, maxWidth: '100%' }}>
             <label style={labelStyle}>
               <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.hours}</span>
-              <input type="number" value={displayValue(route.hours)} onChange={(e) => setHours(numberField(e))} style={inputStyle} />
+              <NumberInput value={route.hours} onChange={setHours} zeroAsEmpty style={inputStyle} />
             </label>
             <label style={labelStyle}>
               <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.minutes}</span>
-              <input type="number" value={displayValue(route.minutes)} onChange={(e) => setMinutes(numberField(e))} style={inputStyle} />
+              <NumberInput value={route.minutes} onChange={setMinutes} zeroAsEmpty style={inputStyle} />
             </label>
           </div>
         )}
@@ -167,28 +158,18 @@ export function RoutePanel() {
               <span>{strings.temp}</span>
               <span style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--ink)', fontWeight: 700 }}>{route.temp} °C</span>
             </span>
-            <input type="range" min={0} max={40} step={1} value={route.temp} onChange={(e) => setTemp(numberField(e))} style={{ width: '100%' }} />
+            <input type="range" min={0} max={40} step={1} value={route.temp} onChange={(e) => setTemp(parseFloat(e.target.value))} style={{ width: '100%' }} />
           </label>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8, flex: '0 0 130px', width: 130, paddingTop: 20 }}>
           <label style={{ ...labelStyle, gap: 7 }}>
             <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.preMealCarbs} (g)</span>
-            <input
-              type="number"
-              value={displayValue(route.preMealCarbs)}
-              onChange={(e) => setPreMealCarbs(numberField(e))}
-              style={inputStyle}
-            />
+            <NumberInput value={route.preMealCarbs} onChange={setPreMealCarbs} zeroAsEmpty style={inputStyle} />
           </label>
           <label style={{ ...labelStyle, gap: 7 }}>
             <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.preMealMinutes} (min)</span>
-            <input
-              type="number"
-              value={displayValue(route.preMealMinutes)}
-              onChange={(e) => setPreMealMinutes(numberField(e))}
-              style={inputStyle}
-            />
+            <NumberInput value={route.preMealMinutes} onChange={setPreMealMinutes} zeroAsEmpty style={inputStyle} />
           </label>
         </div>
       </div>

@@ -3,6 +3,7 @@ import type { Content } from '../../domain/types';
 import { t } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
 import { sourceColor } from '../chart/theme';
+import { NumberInput } from '../ui/NumberInput';
 import { createVesselReorderHandler } from './gearDragHandler';
 import { PanelShell } from './PanelShell';
 
@@ -88,16 +89,13 @@ export function MixPanel() {
             }}
           >
             <span style={{ fontSize: 10.5, color: 'var(--muted)' }}>{strings.ratioCustom}</span>
-            <input
-              type="number"
+            <NumberInput
               min={0.2}
               max={10}
               step={0.1}
               value={mix.ratio}
-              onChange={(e) => {
-                const v = parseFloat(e.target.value);
-                setRatio(isNaN(v) ? 2 : v);
-              }}
+              onChange={setRatio}
+              fallback={2}
               style={{ width: 44, border: 'none', background: 'transparent', fontFamily: "'JetBrains Mono', monospace", fontSize: 12, fontWeight: 700, textAlign: 'right' }}
             />
             <span style={{ fontSize: 10.5, color: 'var(--muted)' }}>:1</span>
@@ -113,21 +111,21 @@ export function MixPanel() {
               <span style={{ fontSize: 11, color: 'var(--ink-soft)', fontWeight: 600 }}>{strings.concLabel}</span>
               <span style={{ fontSize: 10, color: 'var(--muted-3)' }}>{strings.per100}</span>
             </span>
-            <input type="number" step={0.5} value={mix.conc} onChange={(e) => setConc(parseFloat(e.target.value) || 0)} style={miniInputStyle} />
+            <NumberInput step={0.5} value={mix.conc} onChange={setConc} style={miniInputStyle} />
           </label>
           <label style={miniLabelStyle}>
             <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
               <span style={{ fontSize: 11, color: 'var(--ink-soft)', fontWeight: 600 }}>{strings.saltLabel}</span>
               <span style={{ fontSize: 10, color: 'var(--muted-3)' }}>{strings.per100}</span>
             </span>
-            <input type="number" step={0.05} value={mix.salt} onChange={(e) => setSalt(parseFloat(e.target.value) || 0)} style={miniInputStyle} />
+            <NumberInput step={0.05} value={mix.salt} onChange={setSalt} style={miniInputStyle} />
           </label>
           <label style={miniLabelStyle}>
             <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
               <span style={{ fontSize: 11, color: 'var(--ink-soft)', fontWeight: 600 }}>{strings.citricLabel}</span>
               <span style={{ fontSize: 10, color: 'var(--muted-3)' }}>{strings.per100}</span>
             </span>
-            <input type="number" step={0.05} value={mix.citric} onChange={(e) => setCitric(parseFloat(e.target.value) || 0)} style={miniInputStyle} />
+            <NumberInput step={0.05} value={mix.citric} onChange={setCitric} style={miniInputStyle} />
           </label>
         </div>
       </div>
@@ -140,21 +138,21 @@ export function MixPanel() {
               <span style={{ fontSize: 11, color: 'var(--ink-soft)', fontWeight: 600 }}>{strings.gelConcLabel}</span>
               <span style={{ fontSize: 10, color: 'var(--muted-3)' }}>{strings.per100}</span>
             </span>
-            <input type="number" step={1} value={mix.gelConc} onChange={(e) => setGelConc(parseFloat(e.target.value) || 0)} style={miniInputStyle} />
+            <NumberInput step={1} value={mix.gelConc} onChange={setGelConc} style={miniInputStyle} />
           </label>
           <label style={miniLabelStyle}>
             <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
               <span style={{ fontSize: 11, color: 'var(--ink-soft)', fontWeight: 600 }}>{strings.saltLabel}</span>
               <span style={{ fontSize: 10, color: 'var(--muted-3)' }}>{strings.per100}</span>
             </span>
-            <input type="number" step={0.05} value={mix.gelSalt} onChange={(e) => setGelSalt(parseFloat(e.target.value) || 0)} style={miniInputStyle} />
+            <NumberInput step={0.05} value={mix.gelSalt} onChange={setGelSalt} style={miniInputStyle} />
           </label>
           <label style={miniLabelStyle}>
             <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
               <span style={{ fontSize: 11, color: 'var(--ink-soft)', fontWeight: 600 }}>{strings.citricLabel}</span>
               <span style={{ fontSize: 10, color: 'var(--muted-3)' }}>{strings.per100}</span>
             </span>
-            <input type="number" step={0.05} value={mix.gelCitric} onChange={(e) => setGelCitric(parseFloat(e.target.value) || 0)} style={miniInputStyle} />
+            <NumberInput step={0.05} value={mix.gelCitric} onChange={setGelCitric} style={miniInputStyle} />
           </label>
         </div>
       </div>
@@ -190,10 +188,9 @@ export function MixPanel() {
                 style={{ flex: 1, border: '1px solid var(--chip-border)', borderRadius: 10, padding: '9px 11px', fontFamily: 'Archivo, sans-serif', fontSize: 13, fontWeight: 600, background: '#fff' }}
               />
               <span style={{ display: 'flex', alignItems: 'center', gap: 6, border: '1px solid var(--chip-border)', borderRadius: 10, padding: '0 10px', width: 92, background: '#fff' }}>
-                <input
-                  type="number"
+                <NumberInput
                   value={vessel.vol}
-                  onChange={(e) => updateVessel(vessel.gid, { vol: parseFloat(e.target.value) || 0 })}
+                  onChange={(vol) => updateVessel(vessel.gid, { vol })}
                   style={{ width: '100%', border: 'none', padding: '9px 0', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, fontWeight: 600 }}
                 />
                 <span style={{ fontSize: 11, color: 'var(--muted-3)' }}>ml</span>
@@ -230,13 +227,14 @@ export function MixPanel() {
                   }}
                 >
                   <span style={{ fontSize: 11, color: 'var(--muted-3)' }}>{strings.gelPartsLabel}</span>
-                  <input
-                    type="number"
+                  <NumberInput
                     min={1}
                     max={12}
                     step={1}
+                    parser="int"
+                    fallback={1}
                     value={vessel.gelParts}
-                    onChange={(e) => setVesselGelParts(vessel.gid, parseInt(e.target.value, 10) || 1)}
+                    onChange={(gelParts) => setVesselGelParts(vessel.gid, gelParts)}
                     style={{ width: 26, border: 'none', padding: '9px 0', background: 'transparent', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, fontWeight: 600, textAlign: 'right' }}
                   />
                 </label>

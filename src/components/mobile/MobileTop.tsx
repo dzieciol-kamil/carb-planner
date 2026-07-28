@@ -1,17 +1,8 @@
-import type { ChangeEvent } from 'react';
 import { planSummary, totalHours } from '../../domain/fuel';
 import { t } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
+import { NumberInput } from '../ui/NumberInput';
 import { durationLabel, routeLabel } from './mobileFormat';
-
-function numberField(e: ChangeEvent<HTMLInputElement>): number {
-  const v = e.target.value;
-  return v === '' ? 0 : parseFloat(v) || 0;
-}
-
-function displayValue(n: number): number | string {
-  return n || '';
-}
 
 export function MobileTopBar() {
   const route = useAppStore((s) => s.route);
@@ -63,11 +54,11 @@ export function MobileRouteInputs() {
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
       <label style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
         <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.distance} (km)</span>
-        <input type="number" value={displayValue(route.distance)} onChange={(e) => setDistance(numberField(e))} style={inputStyle} />
+        <NumberInput value={route.distance} onChange={setDistance} zeroAsEmpty style={inputStyle} />
       </label>
       <label style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
         <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.speed} (km/h)</span>
-        <input type="number" value={displayValue(route.speed)} onChange={(e) => setSpeed(numberField(e))} style={inputStyle} />
+        <NumberInput value={route.speed} onChange={setSpeed} zeroAsEmpty style={inputStyle} />
       </label>
     </div>
   );
