@@ -62,6 +62,7 @@ export interface StringTable {
   dragHint: string;
   addFuel: string;
   removeItem?: string;
+  addShopStop: string;
   coverage: string;
   summary: string;
   hydration: string;
@@ -71,6 +72,8 @@ export interface StringTable {
   recipes: string;
   recipesHint: string;
   ratio: string;
+  ratioLabelSugar: string;
+  ratioLabelHoney: string;
   concLabel: string;
   saltLabel: string;
   citricLabel: string;
@@ -224,6 +227,7 @@ export const STR: Record<Lang, StringTable> = {
     dragHint: 'Paski nie nachodzą na siebie — w ciasnej luce przeciągany pasek się skraca. Kreski porcji żelu przesuwasz osobno.',
     addFuel: 'Dodaj jedzenie:',
     removeItem: 'Usuń',
+    addShopStop: 'Dodaj sklep',
     coverage: 'Pokrycie zapotrzebowania',
     summary: 'Podsumowanie',
     hydration: 'Nawodnienie',
@@ -233,6 +237,8 @@ export const STR: Record<Lang, StringTable> = {
     recipes: 'Skład bidonów',
     recipesHint: 'Gramy do odmierzenia na każde napełnienie — osobno na bidon, flask czy słoiczek.',
     ratio: 'Maltodekstryna : Fruktoza',
+    ratioLabelSugar: 'Cukier',
+    ratioLabelHoney: 'Miód',
     concLabel: 'cukry',
     saltLabel: 'sól',
     citricLabel: 'kwasek',
@@ -392,6 +398,7 @@ export const STR: Record<Lang, StringTable> = {
     dragHint: 'Bars never overlap — a dragged bar shortens to fit a tight gap. Gel portion marks drag on their own.',
     addFuel: 'Add food:',
     removeItem: 'Remove',
+    addShopStop: 'Add shop stop',
     coverage: 'Requirement covered',
     summary: 'Summary',
     hydration: 'Hydration',
@@ -401,6 +408,8 @@ export const STR: Record<Lang, StringTable> = {
     recipes: 'Bottle recipes',
     recipesHint: 'Grams to measure out for each fill — per bottle, flask or jar.',
     ratio: 'Maltodextrin : Fructose',
+    ratioLabelSugar: 'Sugar',
+    ratioLabelHoney: 'Honey',
     concLabel: 'carbs',
     saltLabel: 'salt',
     citricLabel: 'citric',
