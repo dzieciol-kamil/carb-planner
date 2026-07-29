@@ -13,6 +13,7 @@ const CONTENT_OPTIONS: Content[] = ['water', 'izo', 'gel'];
 const sectionCardStyle: CSSProperties = { border: '1px solid #E9EBE5', borderRadius: 12, padding: '12px 14px 14px', background: '#FBFCFA', marginBottom: 10 };
 const miniLabelStyle: CSSProperties = { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6, border: '1px solid var(--chip-border)', borderRadius: 10, padding: '9px 10px', background: '#fff' };
 const miniInputStyle: CSSProperties = { width: 46, border: 'none', background: 'transparent', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, fontWeight: 700, textAlign: 'right' };
+const stepBtnStyle: CSSProperties = { border: 'none', background: 'transparent', color: 'var(--muted)', cursor: 'pointer', fontSize: 14, fontWeight: 700, width: 16, height: 22, padding: 0, lineHeight: 1, flex: '0 0 auto' };
 
 function contentLabel(content: Content, lang: 'pl' | 'en'): string {
   const strings = t(lang);
@@ -232,9 +233,8 @@ export function MixPanel() {
                     gap: 4,
                     border: '1px solid var(--chip-border)',
                     borderRadius: 10,
-                    padding: '0 10px',
+                    padding: '0 4px 0 10px',
                     background: '#fff',
-                    width: 92,
                     boxSizing: 'content-box',
                     marginLeft: 'auto',
                     marginRight: 35,
@@ -242,16 +242,24 @@ export function MixPanel() {
                   }}
                 >
                   <span style={{ fontSize: 11, color: 'var(--muted-3)' }}>{strings.gelPartsLabel}</span>
-                  <NumberInput
-                    min={1}
-                    max={12}
-                    step={1}
-                    parser="int"
-                    fallback={1}
-                    value={vessel.gelParts}
-                    onChange={(gelParts) => setVesselGelParts(vessel.gid, gelParts)}
-                    style={{ width: 26, border: 'none', padding: '9px 0', background: 'transparent', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, fontWeight: 600, textAlign: 'right' }}
-                  />
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <button type="button" onClick={() => setVesselGelParts(vessel.gid, vessel.gelParts - 1)} style={stepBtnStyle} aria-label="-">
+                      −
+                    </button>
+                    <NumberInput
+                      min={1}
+                      max={12}
+                      step={1}
+                      parser="int"
+                      fallback={1}
+                      value={vessel.gelParts}
+                      onChange={(gelParts) => setVesselGelParts(vessel.gid, gelParts)}
+                      style={{ width: 16, border: 'none', padding: '9px 0', background: 'transparent', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, fontWeight: 600, textAlign: 'center' }}
+                    />
+                    <button type="button" onClick={() => setVesselGelParts(vessel.gid, vessel.gelParts + 1)} style={stepBtnStyle} aria-label="+">
+                      +
+                    </button>
+                  </span>
                 </label>
               )}
             </div>

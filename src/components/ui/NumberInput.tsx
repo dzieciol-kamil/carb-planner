@@ -12,6 +12,8 @@ interface NumberInputProps {
   step?: number;
   style?: CSSProperties;
   className?: string;
+  /** Fires once the value is committed (blur), after the final onChange — for work that should react to the settled value, not every keystroke. */
+  onCommit?: () => void;
 }
 
 function parse(text: string, parser: 'float' | 'int'): number {
@@ -22,7 +24,7 @@ function display(value: number, zeroAsEmpty: boolean): string {
   return zeroAsEmpty && value === 0 ? '' : String(value);
 }
 
-export function NumberInput({ value, onChange, fallback = 0, parser = 'float', zeroAsEmpty = false, min, max, step, style, className }: NumberInputProps) {
+export function NumberInput({ value, onChange, fallback = 0, parser = 'float', zeroAsEmpty = false, min, max, step, style, className, onCommit }: NumberInputProps) {
   const [text, setText] = useState(display(value, zeroAsEmpty));
   const focused = useRef(false);
 
@@ -54,6 +56,7 @@ export function NumberInput({ value, onChange, fallback = 0, parser = 'float', z
         const committed = Number.isNaN(n) ? fallback : n;
         setText(display(committed, zeroAsEmpty));
         if (committed !== value) onChange(committed);
+        onCommit?.();
       }}
     />
   );

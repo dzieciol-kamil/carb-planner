@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import { bestGapSpan, gaps, moveListItem, nextShopAt } from '../domain/dragMath';
+import { bestGapSpan, clampFillToDistance, clampFoodToDistance, clampShopToDistance, gaps, moveListItem, nextShopAt } from '../domain/dragMath';
 import { dist } from '../domain/fuel';
 import { loadGpxFile } from '../domain/gpx';
 import { t, type Lang } from '../i18n/strings';
@@ -10,6 +10,19 @@ import type { FoodItem, FoodLibEntry, Intensity, Mode, MixSettings, RouteInput, 
 function defaultLang(): Lang {
   const browserLang = typeof navigator !== 'undefined' ? navigator.language : '';
   return browserLang.toLowerCase().startsWith('pl') ? 'pl' : 'en';
+}
+
+// A route edit (shorter distance, fewer hours, switching mode, a shorter GPX
+// track...) can pull the plan's distance domain in under fills/foods/shops
+// placed further out — clamp them back onto the route instead of letting
+// them render off the end of the chart.
+function reconcileToRoute(route: RouteInput, fills: Fill[], foods: FoodItem[], shops: ShopStop[]) {
+  const distanceKm = dist(route);
+  return {
+    fills: fills.map((f) => clampFillToDistance(f, distanceKm)),
+    foods: foods.map((f) => clampFoodToDistance(f, distanceKm)),
+    shops: shops.map((sh) => clampShopToDistance(sh, distanceKm)),
+  };
 }
 
 export type ViewMode = 'auto' | 'desktop' | 'mobile';
@@ -54,6 +67,7 @@ interface AppState {
   setSpeed: (n: number) => void;
   setHours: (n: number) => void;
   setMinutes: (n: number) => void;
+  reconcilePlan: () => void;
   setWeight: (n: number) => void;
   setPreMealCarbs: (n: number) => void;
   setPreMealMinutes: (n: number) => void;
@@ -192,11 +206,23 @@ export const useAppStore = create<AppState>()(
     nextFoodKey: 1,
     nextShopId: 1,
 
-    setMode: (mode) => set((s) => ({ route: { ...s.route, mode } })),
+    setMode: (mode) =>
+      set((s) => {
+        const route = { ...s.route, mode };
+        return { route, ...reconcileToRoute(route, s.fills, s.foods, s.shops) };
+      }),
+    // Distance/hours/minutes are edited through free-typing number fields, which
+    // commit a value on every keystroke (for live chart feedback) — reconciling
+    // fills/foods/shops right here would clamp them against transient in-progress
+    // digits (e.g. typing "50" over "90" passes through "5"), destructively
+    // collapsing them before the final value ever lands. Reconcile once the field
+    // is actually committed instead — see reconcilePlan, wired to onCommit.
     setDistance: (n) => set((s) => ({ route: { ...s.route, distance: n } })),
     setSpeed: (n) => set((s) => ({ route: { ...s.route, speed: n } })),
     setHours: (n) => set((s) => ({ route: { ...s.route, hours: n } })),
     setMinutes: (n) => set((s) => ({ route: { ...s.route, minutes: n } })),
+    reconcilePlan: () =>
+      set((s) => ({ ...reconcileToRoute(s.route, s.fills, s.foods, s.shops) })),
     setWeight: (n) => set((s) => ({ route: { ...s.route, weight: n } })),
     setPreMealCarbs: (n) => set((s) => ({ route: { ...s.route, preMealCarbs: n } })),
     setPreMealMinutes: (n) => set((s) => ({ route: { ...s.route, preMealMinutes: n } })),
@@ -206,9 +232,10 @@ export const useAppStore = create<AppState>()(
     loadGpxFromFile: async (file) => {
       try {
         const { track, distanceKm, fileName } = await loadGpxFile(file);
-        set((s) => ({
-          route: { ...s.route, gpxTrack: track, gpxName: fileName, gpxError: null, useGpx: true, distance: distanceKm },
-        }));
+        set((s) => {
+          const route: RouteInput = { ...s.route, gpxTrack: track, gpxName: fileName, gpxError: null, useGpx: true, distance: distanceKm };
+          return { route, ...reconcileToRoute(route, s.fills, s.foods, s.shops) };
+        });
       } catch {
         set((s) => ({ route: { ...s.route, gpxError: 'gpxBad' } }));
       }

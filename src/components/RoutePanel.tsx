@@ -71,6 +71,7 @@ export function RoutePanel() {
   const setSpeed = useAppStore((s) => s.setSpeed);
   const setHours = useAppStore((s) => s.setHours);
   const setMinutes = useAppStore((s) => s.setMinutes);
+  const reconcilePlan = useAppStore((s) => s.reconcilePlan);
   const setIntensity = useAppStore((s) => s.setIntensity);
   const setTemp = useAppStore((s) => s.setTemp);
   const setPreMealCarbs = useAppStore((s) => s.setPreMealCarbs);
@@ -119,7 +120,7 @@ export function RoutePanel() {
           <div style={{ display: 'flex', gap: 12, alignItems: 'flex-end', width: 272, maxWidth: '100%' }}>
             <label style={labelStyle}>
               <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.distance} (km)</span>
-              <NumberInput value={route.distance} onChange={setDistance} zeroAsEmpty style={inputStyle} />
+              <NumberInput value={route.distance} onChange={setDistance} onCommit={reconcilePlan} zeroAsEmpty style={inputStyle} />
             </label>
             <label style={labelStyle}>
               <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.speed} (km/h)</span>
@@ -130,11 +131,11 @@ export function RoutePanel() {
           <div style={{ display: 'flex', gap: 12, alignItems: 'flex-end', width: 272, maxWidth: '100%' }}>
             <label style={labelStyle}>
               <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.hours}</span>
-              <NumberInput value={route.hours} onChange={setHours} zeroAsEmpty style={inputStyle} />
+              <NumberInput value={route.hours} onChange={setHours} onCommit={reconcilePlan} zeroAsEmpty style={inputStyle} />
             </label>
             <label style={labelStyle}>
               <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.minutes}</span>
-              <NumberInput value={route.minutes} onChange={setMinutes} zeroAsEmpty style={inputStyle} />
+              <NumberInput value={route.minutes} onChange={setMinutes} onCommit={reconcilePlan} zeroAsEmpty style={inputStyle} />
             </label>
           </div>
         )}

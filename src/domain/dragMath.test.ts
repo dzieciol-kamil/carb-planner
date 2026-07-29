@@ -1,6 +1,9 @@
 import { describe, expect, test } from 'vitest';
 import {
   bestGapSpan,
+  clampFillToDistance,
+  clampFoodToDistance,
+  clampShopToDistance,
   dragGelPart,
   fillBounds,
   gaps,
@@ -240,6 +243,55 @@ describe('moveShop', () => {
   test('clamps at the route end', () => {
     const shop: ShopStop = { id: 1, at: 90 };
     expect(moveShop(shop, 100, 50)).toBe(100);
+  });
+});
+
+describe('clampFillToDistance', () => {
+  test('leaves a fill alone when it already fits', () => {
+    const f = fill({ from: 20, to: 40 });
+    expect(clampFillToDistance(f, 100)).toBe(f);
+  });
+
+  test('shifts a fill left, preserving its width, when the route shrinks past its end', () => {
+    const f = fill({ from: 70, to: 90 });
+    expect(clampFillToDistance(f, 50)).toEqual({ ...f, from: 30, to: 50 });
+  });
+
+  test('shrinks the width too when the route is shorter than the fill itself', () => {
+    const f = fill({ from: 70, to: 90 });
+    expect(clampFillToDistance(f, 15)).toEqual({ ...f, from: 0, to: 15 });
+  });
+
+  test('rescales gel part positions along with the shifted span', () => {
+    const f = fill({ content: 'gel', from: 70, to: 90, pos: [75, 85] });
+    const result = clampFillToDistance(f, 50);
+    expect(result.from).toBe(30);
+    expect(result.to).toBe(50);
+    expect(result.pos).toEqual([35, 45]);
+  });
+});
+
+describe('clampFoodToDistance', () => {
+  test('leaves a food item alone when it already fits', () => {
+    const fd: FoodItem = { id: 1, key: 'ban', name: 'Banana', carbs: 25, from: 20, to: 20 };
+    expect(clampFoodToDistance(fd, 100)).toBe(fd);
+  });
+
+  test('shifts left, preserving its width, when the route shrinks past its end', () => {
+    const fd: FoodItem = { id: 1, key: 'chew', name: 'Chews', carbs: 30, cont: true, from: 70, to: 90 };
+    expect(clampFoodToDistance(fd, 50)).toEqual({ ...fd, from: 30, to: 50 });
+  });
+});
+
+describe('clampShopToDistance', () => {
+  test('leaves a shop stop alone when it already fits', () => {
+    const shop: ShopStop = { id: 1, at: 40 };
+    expect(clampShopToDistance(shop, 100)).toBe(shop);
+  });
+
+  test('pulls it back to the new end of the route', () => {
+    const shop: ShopStop = { id: 1, at: 90 };
+    expect(clampShopToDistance(shop, 50)).toEqual({ ...shop, at: 50 });
   });
 });
 

@@ -101,6 +101,27 @@ export function moveShop(shop: ShopStop, distanceKm: number, deltaKm: number): n
   return Math.max(0, Math.min(distanceKm, Math.round(shop.at + deltaKm)));
 }
 
+export function clampFillToDistance(fill: Fill, distanceKm: number): Fill {
+  if (fill.to <= distanceKm) return fill;
+  const width = Math.min(fill.to - fill.from, distanceKm);
+  const to = distanceKm;
+  const from = to - width;
+  return { ...fill, from, to, pos: rescalePositions(fill.pos, fill.from, fill.to, from, to) };
+}
+
+export function clampFoodToDistance(food: FoodItem, distanceKm: number): FoodItem {
+  if (food.to <= distanceKm) return food;
+  const width = Math.min(food.to - food.from, distanceKm);
+  const to = distanceKm;
+  const from = to - width;
+  return { ...food, from, to };
+}
+
+export function clampShopToDistance(shop: ShopStop, distanceKm: number): ShopStop {
+  if (shop.at <= distanceKm) return shop;
+  return { ...shop, at: distanceKm };
+}
+
 export function nextShopAt(shops: ShopStop[], distanceKm: number): number {
   const lastAt = shops.length ? Math.max(...shops.map((s) => s.at)) : 0;
   return Math.round((lastAt + distanceKm) / 2);

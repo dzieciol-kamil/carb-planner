@@ -48,6 +48,61 @@ beforeEach(() => {
   useAppStore.setState(initialState, true);
 });
 
+describe('setMode reconciling existing plan items', () => {
+  test('pulls a fill back onto the route when switching to time mode shrinks the domain', () => {
+    useAppStore.setState({
+      route: route({ mode: 'route', distance: 100, hours: 1, minutes: 0 }),
+      fills: [{ fid: 1, gid: 'g1', content: 'water', from: 70, to: 90 }],
+    });
+    useAppStore.getState().setMode('time'); // dist() in time mode = round(hours*10) = 10
+    expect(useAppStore.getState().fills[0]).toMatchObject({ from: 0, to: 10 });
+  });
+});
+
+describe('setDistance (live typing) vs reconcilePlan (commit)', () => {
+  test('setDistance alone does not touch existing fills, even once the new distance no longer fits them', () => {
+    // This mirrors typing a new distance character by character: each keystroke calls
+    // setDistance with a transient value before the field settles. Fills must not be
+    // destructively clamped against those in-progress numbers.
+    const fills = [{ fid: 1, gid: 'g1', content: 'water' as const, from: 70, to: 90 }];
+    useAppStore.setState({ route: route({ distance: 100 }), fills });
+    useAppStore.getState().setDistance(50);
+    expect(useAppStore.getState().fills[0]).toEqual(fills[0]);
+  });
+
+  test('reconcilePlan pulls a fill back onto the route once the smaller distance is committed', () => {
+    useAppStore.setState({
+      route: route({ distance: 100 }),
+      fills: [{ fid: 1, gid: 'g1', content: 'water', from: 70, to: 90 }],
+    });
+    useAppStore.getState().setDistance(50);
+    useAppStore.getState().reconcilePlan();
+    expect(useAppStore.getState().fills[0]).toMatchObject({ from: 30, to: 50 });
+  });
+
+  test('reconcilePlan pulls a food marker and a shop stop back too', () => {
+    useAppStore.setState({
+      route: route({ distance: 100 }),
+      foods: [{ id: 1, key: 'gel', name: 'Gel', carbs: 25, from: 80, to: 80 }],
+      shops: [{ id: 1, at: 95 }],
+    });
+    useAppStore.getState().setDistance(50);
+    useAppStore.getState().reconcilePlan();
+    const s = useAppStore.getState();
+    expect(s.foods[0].from).toBeLessThanOrEqual(50);
+    expect(s.foods[0].to).toBeLessThanOrEqual(50);
+    expect(s.shops[0].at).toBeLessThanOrEqual(50);
+  });
+
+  test('reconcilePlan leaves items untouched when the distance still fits them', () => {
+    const fills = [{ fid: 1, gid: 'g1', content: 'water' as const, from: 10, to: 20 }];
+    useAppStore.setState({ route: route({ distance: 100 }), fills });
+    useAppStore.getState().setDistance(80);
+    useAppStore.getState().reconcilePlan();
+    expect(useAppStore.getState().fills[0]).toEqual(fills[0]);
+  });
+});
+
 describe('tour lifecycle', () => {
   test('startTour opens at step 0 and marks tourSeen', () => {
     useAppStore.getState().startTour();

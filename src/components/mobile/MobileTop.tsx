@@ -47,6 +47,7 @@ export function MobileRouteInputs() {
   const lang = useAppStore((s) => s.ui.lang);
   const setDistance = useAppStore((s) => s.setDistance);
   const setSpeed = useAppStore((s) => s.setSpeed);
+  const reconcilePlan = useAppStore((s) => s.reconcilePlan);
   const strings = t(lang);
   const inputStyle = { border: '1px solid var(--chip-border)', borderRadius: 10, padding: '11px 12px', fontFamily: "'JetBrains Mono', monospace", fontSize: 15, fontWeight: 600, width: '100%' } as const;
 
@@ -54,7 +55,7 @@ export function MobileRouteInputs() {
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
       <label style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
         <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.distance} (km)</span>
-        <NumberInput value={route.distance} onChange={setDistance} zeroAsEmpty style={inputStyle} />
+        <NumberInput value={route.distance} onChange={setDistance} onCommit={reconcilePlan} zeroAsEmpty style={inputStyle} />
       </label>
       <label style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
         <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.speed} (km/h)</span>
