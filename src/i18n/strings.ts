@@ -161,6 +161,26 @@ export interface StringTable {
   ftIssues: string;
   ftRepo: string;
   ftCopyright: string;
+  tourWelcomeTitle: string;
+  tourWelcomeBody: string;
+  tourRouteTitle: string;
+  tourRouteBody: string;
+  tourChartTitle: string;
+  tourChartBody: string;
+  tourFillTitle: string;
+  tourFillBody: string;
+  tourClosingTitle: string;
+  tourClosingBody: string;
+  tourNext: string;
+  tourBack: string;
+  tourSkip: string;
+  tourFinish: string;
+  tourStepLabel: string;
+  tourReplayButton: string;
+  tourConfirmTitle: string;
+  tourConfirmBody: string;
+  tourConfirmCancel: string;
+  tourConfirmStart: string;
 }
 
 export const STR: Record<Lang, StringTable> = {
@@ -334,6 +354,30 @@ export const STR: Record<Lang, StringTable> = {
     ftRepo: 'Kod źródłowy na GitHubie',
     ftSources2: 'Utrata potu: przybliżenie z wagi, intensywności i temperatury.',
     ftCopyright: '© 2026 Carb Planner · open source',
+    tourWelcomeTitle: 'Witaj w Carb Plannerze',
+    tourWelcomeBody: 'W kilku krokach pokażemy, jak zaplanować węglowodany i płyny na trasę oraz jak czytać wynik. Zajmie to około minuty.',
+    tourRouteTitle: 'Trasa i wynik',
+    tourRouteBody:
+      'Tu opisujesz przejazd — dystansem i tempem albo czasem trwania — oraz warunki (intensywność, temperatura, posiłek przed startem). Karty obok pokazują, czy Twój plan pokrywa zapotrzebowanie na węglowodany i płyny.',
+    tourChartTitle: 'Wykres: podaż kontra zapotrzebowanie',
+    tourChartBody:
+      'Górna linia to ile węglowodanów realnie dostarczasz, dolna przerywana — ile potrzebujesz. Teraz jest pusto, bo nie masz jeszcze żadnego bidonu ani jedzenia w planie. Zaraz dodamy przykładowy bidon, żebyś zobaczył, jak linia się zmienia.',
+    tourFillTitle: 'Bidon: przesuwanie, zwężanie, zmiana zawartości',
+    tourFillBody:
+      'Ten pasek to właśnie dodany bidon. Chwyć środek, żeby przesunąć go po trasie. Chwyć lewą lub prawą krawędź, żeby skrócić lub wydłużyć odcinek, na którym z niego pijesz. Najedź kursorem, a pojawią się przyciski zmiany zawartości (woda / izotonik / żel), jeśli bidon obsługuje więcej niż jeden rodzaj.',
+    tourClosingTitle: 'To wszystko na start',
+    tourClosingBody:
+      'Oś czasu, przepisy na mieszankę i ustawienia (waga, limit wchłaniania, proporcje) znajdziesz niżej i w przyciskach w nagłówku. Ten tour możesz odpalić ponownie w każdej chwili przyciskiem w stopce.',
+    tourNext: 'Dalej',
+    tourBack: 'Wstecz',
+    tourSkip: 'Pomiń',
+    tourFinish: 'Zakończ',
+    tourStepLabel: 'Krok',
+    tourReplayButton: 'Pokaż tour ponownie',
+    tourConfirmTitle: 'Uruchomić tour ponownie?',
+    tourConfirmBody: 'Tour wczyta przykładowe dane (trasa i jeden bidon) w miejsce Twojego aktualnego planu. Tej zmiany nie da się cofnąć.',
+    tourConfirmCancel: 'Anuluj',
+    tourConfirmStart: 'Uruchom tour',
   },
   en: {
     tagline: 'carbohydrate & hydration planner',
@@ -504,6 +548,30 @@ export const STR: Record<Lang, StringTable> = {
     ftRepo: 'Source code on GitHub',
     ftSources2: 'Sweat loss: an estimate from weight, intensity and temperature.',
     ftCopyright: '© 2026 Carb Planner · open source',
+    tourWelcomeTitle: 'Welcome to Carb Planner',
+    tourWelcomeBody: "A few steps to show you how to plan carbs and fluids for your ride, and how to read the result. Takes about a minute.",
+    tourRouteTitle: 'Route & result',
+    tourRouteBody:
+      "Describe your ride here — distance and pace, or a duration — plus conditions (intensity, temperature, pre-ride meal). The cards next to it show whether your plan covers your carb and fluid needs.",
+    tourChartTitle: 'The chart: supply vs. requirement',
+    tourChartBody:
+      "The top line is how many carbs you're actually delivering, the dashed line below is how many you need. It's empty right now because there's no bottle or food in the plan yet. We'll add a sample bottle next so you can see the line change.",
+    tourFillTitle: 'A bottle: move it, resize it, change its contents',
+    tourFillBody:
+      "This bar is the bottle we just added. Drag the middle to move it along the route. Drag either edge to shorten or lengthen the stretch you drink it over. Hover it and buttons appear to switch its contents (water / isotonic / gel) if the bottle allows more than one.",
+    tourClosingTitle: "That's the essentials",
+    tourClosingBody:
+      "The timeline, the mix recipe and settings (weight, absorption limit, ratios) are further down and in the header buttons. Replay this tour any time from the button in the footer.",
+    tourNext: 'Next',
+    tourBack: 'Back',
+    tourSkip: 'Skip',
+    tourFinish: 'Finish',
+    tourStepLabel: 'Step',
+    tourReplayButton: 'Replay tour',
+    tourConfirmTitle: 'Replay the tour?',
+    tourConfirmBody: "The tour will load sample data (a route and one bottle) over your current plan. This can't be undone.",
+    tourConfirmCancel: 'Cancel',
+    tourConfirmStart: 'Start tour',
   },
 };
 
