@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import { bestGapSpan, gaps, moveListItem } from '../domain/dragMath';
+import { bestGapSpan, gaps, moveListItem, nextShopAt } from '../domain/dragMath';
 import { dist } from '../domain/fuel';
 import { loadGpxFile } from '../domain/gpx';
 import { t, type Lang } from '../i18n/strings';
 import { createDebouncedLocalStorage } from './persistStorage';
-import type { FoodItem, FoodLibEntry, Intensity, Mode, MixSettings, RouteInput, Vessel, Fill, XUnit } from '../domain/types';
+import type { FoodItem, FoodLibEntry, Intensity, Mode, MixSettings, RouteInput, Vessel, Fill, ShopStop, XUnit } from '../domain/types';
 
 export type ViewMode = 'auto' | 'desktop' | 'mobile';
 export type YMode = 'rate' | 'fluid' | 'sum';
@@ -32,12 +32,14 @@ interface AppState {
   gear: Vessel[];
   fills: Fill[];
   foods: FoodItem[];
+  shops: ShopStop[];
   foodLib: FoodLibEntry[];
   ui: UiState;
   nextGid: number;
   nextFid: number;
   nextFoodId: number;
   nextFoodKey: number;
+  nextShopId: number;
 
   setMode: (mode: Mode) => void;
   setDistance: (n: number) => void;
@@ -75,6 +77,10 @@ interface AppState {
   removeFood: (id: number) => void;
   setFoodContinuous: (id: number, cont: boolean) => void;
   addFoodFromLibrary: (key: string) => void;
+
+  addShop: () => void;
+  updateShop: (id: number, patch: Partial<ShopStop>) => void;
+  removeShop: (id: number) => void;
 
   setRatio: (n: number) => void;
   setConc: (n: number) => void;
@@ -133,6 +139,8 @@ const defaultFills: Fill[] = [];
 
 const defaultFoods: FoodItem[] = [];
 
+const defaultShops: ShopStop[] = [];
+
 const defaultFoodLib: FoodLibEntry[] = [
   { key: 'gel', pl: 'Żel energetyczny', en: 'Energy gel', carbs: 22 },
   { key: 'chew', pl: 'Żelki', en: 'Chews', carbs: 30, cont: true, span: 18 },
@@ -148,6 +156,7 @@ export const useAppStore = create<AppState>()(
     gear: defaultGear,
     fills: defaultFills,
     foods: defaultFoods,
+    shops: defaultShops,
     foodLib: defaultFoodLib,
     ui: {
       lang: 'pl',
@@ -166,6 +175,7 @@ export const useAppStore = create<AppState>()(
     nextFid: 1,
     nextFoodId: 101,
     nextFoodKey: 1,
+    nextShopId: 1,
 
     setMode: (mode) => set((s) => ({ route: { ...s.route, mode } })),
     setDistance: (n) => set((s) => ({ route: { ...s.route, distance: n } })),
@@ -251,6 +261,16 @@ export const useAppStore = create<AppState>()(
           nextFoodId: s.nextFoodId + 1,
         };
       }),
+
+    addShop: () =>
+      set((s) => {
+        const distanceKm = dist(s.route);
+        const at = nextShopAt(s.shops, distanceKm);
+        return { shops: [...s.shops, { id: s.nextShopId, at }], nextShopId: s.nextShopId + 1 };
+      }),
+    updateShop: (id, patch) => set((s) => ({ shops: s.shops.map((x) => (x.id === id ? { ...x, ...patch } : x)) })),
+    removeShop: (id) =>
+      set((s) => ({ shops: s.shops.filter((x) => x.id !== id), ui: { ...s.ui, hoverKey: null, dragKey: null } })),
 
     setRatio: (n) => set((s) => ({ mix: { ...s.mix, ratio: Math.min(10, Math.max(0.2, n)) } })),
     setConc: (n) => set((s) => ({ mix: { ...s.mix, conc: n } })),
