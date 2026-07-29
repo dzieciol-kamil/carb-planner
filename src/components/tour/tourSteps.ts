@@ -9,7 +9,6 @@ export type TourCopyKey =
   | 'tourRouteBody'
   | 'tourChartTitle'
   | 'tourChartBody'
-  | 'tourChartBodyAfter'
   | 'tourFillTitle'
   | 'tourFillBody'
   | 'tourAddFillTitle'
@@ -27,31 +26,21 @@ export interface TourStep {
 }
 
 export const TOUR_STEPS: TourStep[] = [
-  { target: null, titleKey: 'tourWelcomeTitle', bodyKey: 'tourWelcomeBody' },
-  { target: 'route-summary', titleKey: 'tourRouteTitle', bodyKey: 'tourRouteBody' },
   {
-    target: 'chart',
-    titleKey: 'tourChartTitle',
-    bodyKey: 'tourChartBody',
-    onEnter: () => {
-      // Deliberate delay: the point of this step is to show the chart
-      // empty first, then watch the supply line rise once demo data
-      // lands. loadTourDemoData() is idempotent, so revisiting this
-      // step via Back/Next can't add a second demo fill.
-      const timer = setTimeout(() => useAppStore.getState().loadTourDemoData(), 900);
-      return () => clearTimeout(timer);
-    },
-  },
-  {
-    target: 'demo-fill',
-    titleKey: 'tourFillTitle',
-    bodyKey: 'tourFillBody',
-    // Safety net for a user who clicks Next before the previous step's
-    // 900ms delay fires — guarantees the demo fill exists by now.
+    target: null,
+    titleKey: 'tourWelcomeTitle',
+    bodyKey: 'tourWelcomeBody',
+    // Loaded here, before any step ever renders the chart or lanes, so the
+    // demo bottle always already exists by the time the user reaches those
+    // steps — no empty-then-filled flash. Idempotent, so revisiting this
+    // step via Back/Next can't add a second demo fill.
     onEnter: () => {
       useAppStore.getState().loadTourDemoData();
     },
   },
+  { target: 'route-summary', titleKey: 'tourRouteTitle', bodyKey: 'tourRouteBody' },
+  { target: 'chart', titleKey: 'tourChartTitle', bodyKey: 'tourChartBody' },
+  { target: 'demo-fill', titleKey: 'tourFillTitle', bodyKey: 'tourFillBody' },
   { target: 'demo-add-fill', titleKey: 'tourAddFillTitle', bodyKey: 'tourAddFillBody' },
   { target: 'add-shop', titleKey: 'tourAddShopTitle', bodyKey: 'tourAddShopBody' },
   { target: null, titleKey: 'tourClosingTitle', bodyKey: 'tourClosingBody' },

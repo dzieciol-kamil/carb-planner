@@ -168,7 +168,6 @@ export interface StringTable {
   tourRouteBody: string;
   tourChartTitle: string;
   tourChartBody: string;
-  tourChartBodyAfter: string;
   tourFillTitle: string;
   tourFillBody: string;
   tourAddFillTitle: string;
@@ -365,12 +364,10 @@ export const STR: Record<Lang, StringTable> = {
     tourWelcomeBody: 'W kilku krokach pokażemy, jak zaplanować węglowodany i płyny na trasę oraz jak czytać wynik. Zajmie to około minuty.',
     tourRouteTitle: 'Trasa i wynik',
     tourRouteBody:
-      'Tu opisujesz przejazd — dystansem i tempem albo czasem trwania — oraz warunki (intensywność, temperatura, posiłek przed startem). Karty obok pokazują, czy Twój plan pokrywa zapotrzebowanie na węglowodany i płyny.',
+      'Tu opisujesz przejazd — dystansem i tempem albo czasem trwania — oraz warunki (intensywność, temperatura, posiłek przed startem). Karty obok pokazują, czy Twój plan pokrywa zapotrzebowanie na węglowodany i płyny. Możesz też wczytać własny plik GPX — wtedy tempo i zapotrzebowanie dopasują się do prawdziwego profilu Twojej trasy (podjazdów i zjazdów), a nie uśrednionego.',
     tourChartTitle: 'Wykres: podaż kontra zapotrzebowanie',
     tourChartBody:
-      'Liczby po lewej to skala: ile gramów węglowodanów na godzinę (g/h). Przerywana linia pokazuje, ile potrzebujesz w każdej godzinie. Teraz nie masz jeszcze żadnego bidonu ani jedzenia w planie, więc nie ma jeszcze linii tego, co realnie dostarczasz. Zaraz dodamy przykładowy bidon, żebyś zobaczył, jak ta linia rośnie.',
-    tourChartBodyAfter:
-      'Ciągła linia to ile węglowodanów realnie dostarczasz, przerywana — ile potrzebujesz. Dodaliśmy przykładowy bidon: widzisz, jak linia dostaw rośnie i zbliża się do zapotrzebowania.',
+      'Liczby po lewej to skala: gramy węglowodanów na godzinę (g/h). Ciągła linia to ile realnie dostarczasz, przerywana — ile potrzebujesz. Kropkowana pozioma linia to limit wchłaniania: tyle maksymalnie na godzinę wchłonie Twoje jelito, niezależnie od tego, ile zjesz — nadwyżka czeka w żołądku. Pasek nad wykresem to właśnie ten żołądek: pokazuje, co w nim aktualnie zalega. Dodaliśmy przykładowy bidon, żebyś zobaczył, jak to wygląda w praktyce.',
     tourFillTitle: 'Bidon: przesuwanie, zwężanie, zmiana zawartości',
     tourFillBody:
       'Ten pasek to właśnie dodany bidon. Środek można chwycić i przesunąć po trasie, a lewą lub prawą krawędź — żeby skrócić lub wydłużyć odcinek, na którym z niego pijesz. Po najechaniu kursorem pojawiają się przyciski zmiany zawartości (woda / izotonik / żel), jeśli bidon obsługuje więcej niż jeden rodzaj. Spróbuj tego po zamknięciu touru.',
@@ -568,12 +565,10 @@ export const STR: Record<Lang, StringTable> = {
     tourWelcomeBody: "A few steps to show you how to plan carbs and fluids for your ride, and how to read the result. Takes about a minute.",
     tourRouteTitle: 'Route & result',
     tourRouteBody:
-      "Describe your ride here — distance and pace, or a duration — plus conditions (intensity, temperature, pre-ride meal). The cards next to it show whether your plan covers your carb and fluid needs.",
+      "Describe your ride here — distance and pace, or a duration — plus conditions (intensity, temperature, pre-ride meal). The cards next to it show whether your plan covers your carb and fluid needs. You can also load your own GPX file — pace and requirement will then match your route's real profile (climbs and descents) instead of an averaged one.",
     tourChartTitle: 'The chart: supply vs. requirement',
     tourChartBody:
-      "The numbers on the left are the scale: grams of carbs per hour (g/h). The dashed line shows how many carbs you need each hour. There's no bottle or food in the plan yet, so there's no line yet for what you're actually delivering. We'll add a sample bottle next so you can watch that line appear.",
-    tourChartBodyAfter:
-      "The solid line is how many carbs you're actually delivering, the dashed line is how many you need. We added a sample bottle — watch the delivery line rise toward the requirement.",
+      "The numbers on the left are the scale: grams of carbs per hour (g/h). The solid line is how many carbs you're actually delivering, the dashed line is how many you need. The dotted horizontal line is the absorption limit: the most your gut can absorb per hour no matter how much you eat — anything above it waits in the stomach. The bar above the chart is that stomach: it shows what's currently sitting in it. We added a sample bottle so you can see how this looks in practice.",
     tourFillTitle: 'A bottle: move it, resize it, change its contents',
     tourFillBody:
       "This bar is the bottle we just added. You can drag the middle to move it along the route, or either edge to shorten or lengthen the stretch you drink it over. Hovering it reveals buttons to switch its contents (water / isotonic / gel) if the bottle allows more than one. Try it once you close the tour.",
