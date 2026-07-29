@@ -141,7 +141,7 @@ export function ChartCard() {
             title="Add shop stop"
             style={{
               position: 'absolute',
-              top: -2,
+              top: 3,
               right: 0,
               width: 24,
               height: 24,
