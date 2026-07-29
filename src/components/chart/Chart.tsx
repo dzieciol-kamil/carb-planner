@@ -49,7 +49,7 @@ export function Chart({ height, showAxis }: ChartProps) {
       : Math.max(1, ...S.map((p) => Math.max(p.intake, p.need))) * 1.08;
 
   const yUnit = fluidMode ? ' ml/h' : rateMode ? ' g/h' : ' g';
-  const yStep = niceStep(maxY);
+  const yStep = niceStep(maxY, 3);
   const yTicks: number[] = [];
   for (let v = 0; v <= maxY + 0.001; v += yStep) yTicks.push(v);
 

@@ -373,7 +373,7 @@ export const STR: Record<Lang, StringTable> = {
       'Ciągła linia to ile węglowodanów realnie dostarczasz, przerywana — ile potrzebujesz. Dodaliśmy przykładowy bidon: widzisz, jak linia dostaw rośnie i zbliża się do zapotrzebowania.',
     tourFillTitle: 'Bidon: przesuwanie, zwężanie, zmiana zawartości',
     tourFillBody:
-      'Ten pasek to właśnie dodany bidon. Chwyć środek, żeby przesunąć go po trasie. Chwyć lewą lub prawą krawędź, żeby skrócić lub wydłużyć odcinek, na którym z niego pijesz. Najedź kursorem, a pojawią się przyciski zmiany zawartości (woda / izotonik / żel), jeśli bidon obsługuje więcej niż jeden rodzaj.',
+      'Ten pasek to właśnie dodany bidon. Środek można chwycić i przesunąć po trasie, a lewą lub prawą krawędź — żeby skrócić lub wydłużyć odcinek, na którym z niego pijesz. Po najechaniu kursorem pojawiają się przyciski zmiany zawartości (woda / izotonik / żel), jeśli bidon obsługuje więcej niż jeden rodzaj. Spróbuj tego po zamknięciu touru.',
     tourAddFillTitle: 'Dodaj kolejną dolewkę',
     tourAddFillBody:
       'Ten przycisk „+” wstawia kolejną dolewkę w pierwszej wolnej luce na trasie — przydaje się, gdy bidon się skończy i trzeba go napełnić czymś innym. To samo dotyczy jedzenia: przyciski z listą produktów pod wykresem dodają kolejne pozycje jednym kliknięciem.',
@@ -576,7 +576,7 @@ export const STR: Record<Lang, StringTable> = {
       "The solid line is how many carbs you're actually delivering, the dashed line is how many you need. We added a sample bottle — watch the delivery line rise toward the requirement.",
     tourFillTitle: 'A bottle: move it, resize it, change its contents',
     tourFillBody:
-      "This bar is the bottle we just added. Drag the middle to move it along the route. Drag either edge to shorten or lengthen the stretch you drink it over. Hover it and buttons appear to switch its contents (water / isotonic / gel) if the bottle allows more than one.",
+      "This bar is the bottle we just added. You can drag the middle to move it along the route, or either edge to shorten or lengthen the stretch you drink it over. Hovering it reveals buttons to switch its contents (water / isotonic / gel) if the bottle allows more than one. Try it once you close the tour.",
     tourAddFillTitle: 'Add another fill',
     tourAddFillBody:
       "This \"+\" button inserts another fill into the first free gap on the route — useful once a bottle runs dry and needs refilling with something else. The same idea applies to food: the product buttons under the chart add another item with one click.",
