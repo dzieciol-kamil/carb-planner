@@ -131,12 +131,13 @@ export function ChartCard() {
           {yMode === 'rate' && <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{strings.curveHint}</span>}
           {yMode === 'fluid' && <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{strings.capNoteFluid}</span>}
         </div>
-        <div style={{ flex: 1, minWidth: 0, position: 'relative' }}>
+        <div data-tour="chart" style={{ flex: 1, minWidth: 0, position: 'relative' }}>
           <Chart height={CHART_HEIGHT} showAxis />
           <ShopMarkers distanceKm={dist(route)} height={CHART_HEIGHT} bottomPadding={CHART_PB} route={route} xUnit={xUnit} />
         </div>
         <div style={{ width: 40, flex: '0 0 40px', position: 'relative', height: CHART_HEIGHT }}>
           <button
+            data-tour="add-shop"
             onClick={addShop}
             title={strings.addShopStop}
             style={{

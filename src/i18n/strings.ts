@@ -63,6 +63,7 @@ export interface StringTable {
   addFuel: string;
   removeItem?: string;
   addShopStop: string;
+  addFillTo: string;
   coverage: string;
   summary: string;
   hydration: string;
@@ -161,6 +162,30 @@ export interface StringTable {
   ftIssues: string;
   ftRepo: string;
   ftCopyright: string;
+  tourWelcomeTitle: string;
+  tourWelcomeBody: string;
+  tourRouteTitle: string;
+  tourRouteBody: string;
+  tourChartTitle: string;
+  tourChartBody: string;
+  tourFillTitle: string;
+  tourFillBody: string;
+  tourAddFillTitle: string;
+  tourAddFillBody: string;
+  tourAddShopTitle: string;
+  tourAddShopBody: string;
+  tourClosingTitle: string;
+  tourClosingBody: string;
+  tourNext: string;
+  tourBack: string;
+  tourSkip: string;
+  tourFinish: string;
+  tourStepLabel: string;
+  tourReplayButton: string;
+  tourConfirmTitle: string;
+  tourConfirmBody: string;
+  tourConfirmCancel: string;
+  tourConfirmStart: string;
 }
 
 export const STR: Record<Lang, StringTable> = {
@@ -228,6 +253,7 @@ export const STR: Record<Lang, StringTable> = {
     addFuel: 'Dodaj jedzenie:',
     removeItem: 'Usuń',
     addShopStop: 'Dodaj sklep',
+    addFillTo: 'Dodaj dolewkę do ',
     coverage: 'Pokrycie zapotrzebowania',
     summary: 'Podsumowanie',
     hydration: 'Nawodnienie',
@@ -334,6 +360,36 @@ export const STR: Record<Lang, StringTable> = {
     ftRepo: 'Kod źródłowy na GitHubie',
     ftSources2: 'Utrata potu: przybliżenie z wagi, intensywności i temperatury.',
     ftCopyright: '© 2026 Carb Planner · open source',
+    tourWelcomeTitle: 'Witaj w Carb Plannerze',
+    tourWelcomeBody: 'W kilku krokach pokażemy, jak zaplanować węglowodany i płyny na trasę oraz jak czytać wynik. Zajmie to około minuty.',
+    tourRouteTitle: 'Trasa i wynik',
+    tourRouteBody:
+      'Tu opisujesz przejazd — dystansem i tempem albo czasem trwania — oraz warunki (intensywność, temperatura, posiłek przed startem). Karty obok pokazują, czy Twój plan pokrywa zapotrzebowanie na węglowodany i płyny. Możesz też wczytać własny plik GPX — wtedy tempo i zapotrzebowanie dopasują się do prawdziwego profilu Twojej trasy (podjazdów i zjazdów), a nie uśrednionego.',
+    tourChartTitle: 'Wykres: podaż kontra zapotrzebowanie',
+    tourChartBody:
+      'Liczby po lewej to skala: gramy węglowodanów na godzinę (g/h). Ciągła linia to ile realnie dostarczasz, przerywana — ile potrzebujesz. Kropkowana pozioma linia to limit wchłaniania: tyle maksymalnie na godzinę wchłonie Twoje jelito, niezależnie od tego, ile zjesz — nadwyżka czeka w żołądku. Pasek nad wykresem to właśnie ten żołądek: pokazuje, co w nim aktualnie zalega. Dodaliśmy przykładowy bidon, żebyś zobaczył, jak to wygląda w praktyce.',
+    tourFillTitle: 'Bidon: przesuwanie, zwężanie, zmiana zawartości',
+    tourFillBody:
+      'Ten pasek to właśnie dodany bidon. Środek można chwycić i przesunąć po trasie, a lewą lub prawą krawędź — żeby skrócić lub wydłużyć odcinek, na którym z niego pijesz. Po najechaniu kursorem pojawiają się przyciski zmiany zawartości (woda / izotonik / żel), jeśli bidon obsługuje więcej niż jeden rodzaj. Spróbuj tego po zamknięciu touru.',
+    tourAddFillTitle: 'Dodaj kolejną dolewkę',
+    tourAddFillBody:
+      'Ten przycisk „+” wstawia kolejną dolewkę w pierwszej wolnej luce na trasie — przydaje się, gdy bidon się skończy i trzeba go napełnić czymś innym. To samo dotyczy jedzenia: przyciski z listą produktów pod wykresem dodają kolejne pozycje jednym kliknięciem.',
+    tourAddShopTitle: 'Punkty zaopatrzenia',
+    tourAddShopBody:
+      'Ten „+” dodaje na wykresie znacznik punktu zaopatrzenia (np. sklepu) — możesz przeciągnąć go w dowolne miejsce trasy, żeby zaznaczyć, na którym kilometrze planujesz dokupić jedzenie lub napój.',
+    tourClosingTitle: 'To wszystko na start',
+    tourClosingBody:
+      'Przepisy na uzupełnianie dodanych bidonów i dolewek znajdziesz pod wykresem. Ustawienia (waga, ustawienia dostępnych produktów) oraz Mieszanka i bidony (pozwala ustalić proporcje i dostępne bidony) znajdziesz w nagłówku. Ten tour możesz odpalić ponownie w każdej chwili przyciskiem w stopce.',
+    tourNext: 'Dalej',
+    tourBack: 'Wstecz',
+    tourSkip: 'Pomiń',
+    tourFinish: 'Zakończ',
+    tourStepLabel: 'Krok',
+    tourReplayButton: 'Pokaż tour ponownie',
+    tourConfirmTitle: 'Uruchomić tour ponownie?',
+    tourConfirmBody: 'Tour wczyta przykładowe dane (trasa i jeden bidon) w miejsce Twojego aktualnego planu. Tej zmiany nie da się cofnąć.',
+    tourConfirmCancel: 'Anuluj',
+    tourConfirmStart: 'Uruchom tour',
   },
   en: {
     tagline: 'carbohydrate & hydration planner',
@@ -399,6 +455,7 @@ export const STR: Record<Lang, StringTable> = {
     addFuel: 'Add food:',
     removeItem: 'Remove',
     addShopStop: 'Add shop stop',
+    addFillTo: 'Add a fill to ',
     coverage: 'Requirement covered',
     summary: 'Summary',
     hydration: 'Hydration',
@@ -504,6 +561,36 @@ export const STR: Record<Lang, StringTable> = {
     ftRepo: 'Source code on GitHub',
     ftSources2: 'Sweat loss: an estimate from weight, intensity and temperature.',
     ftCopyright: '© 2026 Carb Planner · open source',
+    tourWelcomeTitle: 'Welcome to Carb Planner',
+    tourWelcomeBody: "A few steps to show you how to plan carbs and fluids for your ride, and how to read the result. Takes about a minute.",
+    tourRouteTitle: 'Route & result',
+    tourRouteBody:
+      "Describe your ride here — distance and pace, or a duration — plus conditions (intensity, temperature, pre-ride meal). The cards next to it show whether your plan covers your carb and fluid needs. You can also load your own GPX file — pace and requirement will then match your route's real profile (climbs and descents) instead of an averaged one.",
+    tourChartTitle: 'The chart: supply vs. requirement',
+    tourChartBody:
+      "The numbers on the left are the scale: grams of carbs per hour (g/h). The solid line is how many carbs you're actually delivering, the dashed line is how many you need. The dotted horizontal line is the absorption limit: the most your gut can absorb per hour no matter how much you eat — anything above it waits in the stomach. The bar above the chart is that stomach: it shows what's currently sitting in it. We added a sample bottle so you can see how this looks in practice.",
+    tourFillTitle: 'A bottle: move it, resize it, change its contents',
+    tourFillBody:
+      "This bar is the bottle we just added. You can drag the middle to move it along the route, or either edge to shorten or lengthen the stretch you drink it over. Hovering it reveals buttons to switch its contents (water / isotonic / gel) if the bottle allows more than one. Try it once you close the tour.",
+    tourAddFillTitle: 'Add another fill',
+    tourAddFillBody:
+      "This \"+\" button inserts another fill into the first free gap on the route — useful once a bottle runs dry and needs refilling with something else. The same idea applies to food: the product buttons under the chart add another item with one click.",
+    tourAddShopTitle: 'Resupply points',
+    tourAddShopBody:
+      "This \"+\" adds a resupply marker on the chart (e.g. a shop) — drag it anywhere on the route to mark which kilometer you plan to buy more food or drink at.",
+    tourClosingTitle: "That's the essentials",
+    tourClosingBody:
+      "Recipes for topping up the bottles and fills you've added are under the chart. Settings (weight, available-product settings) and Mix & bottles (set ratios and available bottles) are in the header. Replay this tour any time from the button in the footer.",
+    tourNext: 'Next',
+    tourBack: 'Back',
+    tourSkip: 'Skip',
+    tourFinish: 'Finish',
+    tourStepLabel: 'Step',
+    tourReplayButton: 'Replay tour',
+    tourConfirmTitle: 'Replay the tour?',
+    tourConfirmBody: "The tour will load sample data (a route and one bottle) over your current plan. This can't be undone.",
+    tourConfirmCancel: 'Cancel',
+    tourConfirmStart: 'Start tour',
   },
 };
 

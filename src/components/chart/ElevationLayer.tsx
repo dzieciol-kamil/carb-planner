@@ -11,7 +11,7 @@ interface ElevationLayerProps {
   visible: boolean;
 }
 
-function niceStep(max: number, targetTicks = 4): number {
+export function niceStep(max: number, targetTicks = 4): number {
   const raw = max / targetTicks || 1;
   const mag = Math.pow(10, Math.floor(Math.log10(raw)));
   const norm = raw / mag;
