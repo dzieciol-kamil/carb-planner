@@ -2,6 +2,14 @@ import type { Content, Fill, FoodItem, MixSettings, PlanState, RouteInput, Vesse
 
 const FLUID_ABSORPTION_CAP_ML_H = 750;
 const PROFILE_SAMPLES = 160;
+const PACE_UP_K = 0.1;
+const PACE_DOWN_K = 0.07;
+const PACE_DOWN_FLOOR = 0.55;
+
+export function timeWeight(gradPercent: number): number {
+  if (gradPercent >= 0) return 1 + gradPercent * PACE_UP_K;
+  return Math.max(PACE_DOWN_FLOOR, 1 + gradPercent * PACE_DOWN_K);
+}
 
 export interface ProfilePoint {
   x: number;

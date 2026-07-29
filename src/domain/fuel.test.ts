@@ -17,6 +17,7 @@ import {
   rateStats,
   samples,
   sweat,
+  timeWeight,
   totalHours,
 } from './fuel';
 import type { Fill, FoodItem, MixSettings, PlanState, RouteInput, Vessel } from './types';
@@ -65,6 +66,28 @@ function makePlan(overrides: Partial<PlanState> = {}): PlanState {
     ...overrides,
   };
 }
+
+describe('timeWeight', () => {
+  test('flat ground: weight 1', () => {
+    expect(timeWeight(0)).toBe(1);
+  });
+
+  test('moderate uphill (5%): 50% longer per km', () => {
+    expect(timeWeight(5)).toBeCloseTo(1.5, 6);
+  });
+
+  test('steep uphill (15%): scales linearly, no cap', () => {
+    expect(timeWeight(15)).toBeCloseTo(2.5, 6);
+  });
+
+  test('moderate downhill (-5%): faster than flat', () => {
+    expect(timeWeight(-5)).toBeCloseTo(0.65, 6);
+  });
+
+  test('steep downhill (-20%): clamped at the 0.55 floor', () => {
+    expect(timeWeight(-20)).toBe(0.55);
+  });
+});
 
 describe('totalHours', () => {
   test('route mode: distance / speed', () => {
