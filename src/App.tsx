@@ -8,7 +8,7 @@ import { RecipesSection } from './components/recipes/RecipesSection';
 import { RoutePanel } from './components/RoutePanel';
 import { SummaryCards } from './components/SummaryCards';
 import { TourOverlay } from './components/tour/TourOverlay';
-import { useAppStore } from './store/appStore';
+import { hasPlanData, useAppStore } from './store/appStore';
 
 function App() {
   const panel = useAppStore((s) => s.ui.panel);
@@ -16,7 +16,7 @@ function App() {
   const startTour = useAppStore((s) => s.startTour);
 
   useEffect(() => {
-    if (tourSeen) return;
+    if (tourSeen || hasPlanData(useAppStore.getState())) return;
     const id = setTimeout(startTour, 400);
     return () => clearTimeout(id);
   }, [tourSeen, startTour]);

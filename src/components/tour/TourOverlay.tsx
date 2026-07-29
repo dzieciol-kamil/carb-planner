@@ -142,7 +142,7 @@ function TourTooltip({ cutout, children }: TourTooltipProps) {
   const pos: CSSProperties = cutout
     ? (() => {
         const spaceBelow = window.innerHeight - (cutout.top + cutout.height);
-        const placeBelow = spaceBelow > 180 || spaceBelow > cutout.top;
+        const placeBelow = spaceBelow > 280 || spaceBelow > cutout.top;
         const left = Math.min(Math.max(MARGIN, cutout.left), window.innerWidth - TOOLTIP_WIDTH - MARGIN);
         return placeBelow
           ? { position: 'fixed', top: cutout.top + cutout.height + 14, left }
@@ -164,6 +164,8 @@ function TourTooltip({ cutout, children }: TourTooltipProps) {
         flexDirection: 'column',
         gap: 10,
         boxSizing: 'border-box',
+        maxHeight: 'calc(100vh - 28px)',
+        overflowY: 'auto',
       }}
     >
       {children}
