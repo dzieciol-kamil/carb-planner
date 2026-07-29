@@ -1,5 +1,5 @@
 import type { PointerEvent as ReactPointerEvent } from 'react';
-import { dragGelPart, moveFill, moveFood, rescalePositions, resizeFillLeft, resizeFillRight, resizeFoodLeft, resizeFoodRight } from '../../domain/dragMath';
+import { dragGelPart, moveFill, moveFood, moveShop, rescalePositions, resizeFillLeft, resizeFillRight, resizeFoodLeft, resizeFoodRight } from '../../domain/dragMath';
 import { dist } from '../../domain/fuel';
 import { useAppStore } from '../../store/appStore';
 
@@ -136,6 +136,37 @@ export function createFoodDragHandler(id: number, mode: FoodDragMode) {
     window.addEventListener('pointermove', move);
     window.addEventListener('pointerup', up);
     useAppStore.getState().setDragKey('x' + id);
+  };
+}
+
+export function createShopDragHandler(id: number) {
+  return (ev: ReactPointerEvent) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    const track = (ev.currentTarget as HTMLElement).parentElement;
+    if (!track) return;
+
+    const state = useAppStore.getState();
+    const shop = state.shops.find((x) => x.id === id);
+    if (!shop) return;
+    const distanceKm = dist(state.route);
+    const kpp = trackWidthKmPerPixel(track, distanceKm);
+    const x0 = ev.clientX;
+    const at0 = shop.at;
+
+    const move = (e2: PointerEvent) => {
+      const d = (e2.clientX - x0) * kpp;
+      const at = moveShop({ id, at: at0 }, distanceKm, d);
+      useAppStore.getState().updateShop(id, { at });
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+      useAppStore.getState().setDragKey(null);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+    useAppStore.getState().setDragKey('s' + id);
   };
 }
 
