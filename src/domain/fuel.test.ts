@@ -453,6 +453,18 @@ describe('fmtX', () => {
     const route = makeRoute({ mode: 'time', hours: 2, minutes: 0 }); // dist=20, 10 km/h
     expect(fmtX(10, true, route, 'km')).toBe('1:00 h');
   });
+
+  test('time axis reflects gradient when useGpx is true (climb gets a later label than flat division would)', () => {
+    const route = makeRoute({
+      mode: 'route',
+      distance: 100,
+      speed: 25, // flat-division would put 50km at exactly "2:00"
+      useGpx: true,
+      gpxTrack: { id: 1, ele: [0, 500, 500] },
+    });
+    const label = fmtX(50, true, route, 'h');
+    expect(label).not.toBe('2:00 h');
+  });
 });
 
 describe('rangeLabel', () => {

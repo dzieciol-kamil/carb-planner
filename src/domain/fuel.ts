@@ -382,8 +382,7 @@ function xu(route: RouteInput, xUnit: XUnit): XUnit | 'time' {
 
 export function fmtX(km: number, withUnit: boolean, route: RouteInput, xUnit: XUnit): string {
   if (xu(route, xUnit) === 'km') return Math.round(km) + (withUnit ? ' km' : '');
-  const kmh = dist(route) / Math.max(0.01, totalHours(route));
-  return fmtHM(km / kmh) + (withUnit ? ' h' : '');
+  return fmtHM(timeAtDistance(route, km)) + (withUnit ? ' h' : '');
 }
 
 export function rangeLabel(a: number, b: number, point: boolean, route: RouteInput, xUnit: XUnit): string {
