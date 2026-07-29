@@ -21,6 +21,7 @@ export interface ProfilePoint {
 export interface Profile {
   pts: ProfilePoint[];
   cum: number[];
+  /** Raw, unnormalized cumulative pace-weighted distance — divide by cumTime[N] for a 0-1 ratio. */
   cumTime: number[];
   N: number;
   D: number;
@@ -244,6 +245,9 @@ export function samples(state: PlanState): Sample[] {
   const N = PROFILE_SAMPLES;
   const tot = effTotal(route);
   const cap = absCap(mix);
+  // Assumes equal time per equal-distance sample (flat-pace approximation); the chart's
+  // time axis is now terrain-aware (see timeAtDistance) but this absorption model is not — a
+  // known, deliberate scope boundary, not an oversight.
   const dt = hrs / N;
   const sweatRate = sweat(route);
 

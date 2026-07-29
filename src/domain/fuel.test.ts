@@ -296,6 +296,19 @@ describe('timeAtDistance / distanceAtTime', () => {
     expect(distanceAtTime(route, 0)).toBe(0);
     expect(distanceAtTime(route, 4)).toBeCloseTo(100, 6);
   });
+
+  test('chart ticks and their labels agree (distanceAtTime -> fmtX round-trip)', () => {
+    const route = makeRoute({
+      mode: 'route',
+      distance: 100,
+      speed: 25,
+      useGpx: true,
+      gpxTrack: { id: 1, ele: [0, 500, 500] },
+    });
+    for (const hh of [0, 0.5, 1, 2, 3, 4]) {
+      expect(fmtX(distanceAtTime(route, hh), false, route, 'h')).toBe(fmtHM(hh));
+    }
+  });
 });
 
 describe('carbsFill', () => {
