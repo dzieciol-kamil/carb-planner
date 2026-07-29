@@ -91,4 +91,22 @@ describe('loadTourDemoData', () => {
     useAppStore.getState().loadTourDemoData();
     expect(useAppStore.getState().fills).toHaveLength(1);
   });
+
+  test('replacing the plan across separate tour runs does not accumulate fills', () => {
+    useAppStore.getState().startTour();
+    useAppStore.getState().loadTourDemoData();
+    useAppStore.getState().startTour(); // resets tourDemoFid, simulating a footer replay
+    useAppStore.getState().loadTourDemoData();
+    const s = useAppStore.getState();
+    expect(s.fills).toHaveLength(1);
+    expect(s.fills[0].fid).toBe(s.ui.tourDemoFid);
+  });
+
+  test('clears pre-existing foods and shops, not just fills', () => {
+    useAppStore.getState().addShop();
+    useAppStore.getState().loadTourDemoData();
+    const s = useAppStore.getState();
+    expect(s.shops).toHaveLength(0);
+    expect(s.foods).toHaveLength(0);
+  });
 });

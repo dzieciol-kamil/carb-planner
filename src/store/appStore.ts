@@ -224,24 +224,23 @@ export const useAppStore = create<AppState>()(
     loadTourDemoData: () =>
       set((s) => {
         if (s.ui.tourDemoFid !== null) return {};
+        // Clears fills/foods/shops rather than appending to them: the replay
+        // confirmation promises demo data "in place of" the current plan, so
+        // repeated replays must not accumulate fills instead of replacing them.
         const route: RouteInput = { ...s.route, mode: 'route', distance: 90, speed: 28 };
         const distanceKm = dist(route);
         const vessel = s.gear[0];
-        if (!vessel) return { route };
-        const span = bestGapSpan(
-          gaps(
-            s.fills.filter((f) => f.gid === vessel.gid),
-            distanceKm,
-          ),
-          distanceKm,
-        );
-        if (!span) return { route };
+        if (!vessel) return { route, fills: [], foods: [], shops: [] };
+        const span = bestGapSpan(gaps([], distanceKm), distanceKm);
+        if (!span) return { route, fills: [], foods: [], shops: [] };
         const allowed: Fill['content'][] = vessel.allowed?.length ? vessel.allowed : ['izo'];
         const content: Fill['content'] = allowed.includes('izo') ? 'izo' : allowed[0];
         const fid = s.nextFid;
         return {
           route,
-          fills: [...s.fills, { fid, gid: vessel.gid, content, from: span.from, to: span.to }],
+          fills: [{ fid, gid: vessel.gid, content, from: span.from, to: span.to }],
+          foods: [],
+          shops: [],
           nextFid: fid + 1,
           ui: { ...s.ui, tourDemoFid: fid },
         };
