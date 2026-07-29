@@ -85,9 +85,9 @@ export function MixPanel() {
               <button
                 key={r}
                 onClick={() => setRatio(r)}
-                style={{ ...cOpt(mix.ratio === r, 'var(--ink)'), display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1, lineHeight: 1.15 }}
+                style={{ ...cOpt(mix.ratio === r, 'var(--ink)'), display: 'flex', flexDirection: 'row', alignItems: 'baseline', gap: 4 }}
               >
-                {caption && <span style={{ fontSize: 8.5, fontWeight: 600, opacity: 0.75, textTransform: 'uppercase', letterSpacing: '0.03em' }}>{caption}</span>}
+                {caption && <span style={{ fontSize: 10, fontWeight: 600, opacity: 0.75 }}>{caption}</span>}
                 <span>{r}:1</span>
               </button>
             );
