@@ -71,7 +71,8 @@ export interface StringTable {
   recipes: string;
   recipesHint: string;
   ratio: string;
-  ratioPresetInfo: string;
+  ratioLabelSugar: string;
+  ratioLabelHoney: string;
   concLabel: string;
   saltLabel: string;
   citricLabel: string;
@@ -234,7 +235,8 @@ export const STR: Record<Lang, StringTable> = {
     recipes: 'Skład bidonów',
     recipesHint: 'Gramy do odmierzenia na każde napełnienie — osobno na bidon, flask czy słoiczek.',
     ratio: 'Maltodekstryna : Fruktoza',
-    ratioPresetInfo: '2:1 – izotonik, 1:1 – cukier, 0,8:1 – miód',
+    ratioLabelSugar: 'Cukier',
+    ratioLabelHoney: 'Miód',
     concLabel: 'cukry',
     saltLabel: 'sól',
     citricLabel: 'kwasek',
@@ -403,7 +405,8 @@ export const STR: Record<Lang, StringTable> = {
     recipes: 'Bottle recipes',
     recipesHint: 'Grams to measure out for each fill — per bottle, flask or jar.',
     ratio: 'Maltodextrin : Fructose',
-    ratioPresetInfo: '2:1 – isotonic, 1:1 – sugar, 0.8:1 – honey',
+    ratioLabelSugar: 'Sugar',
+    ratioLabelHoney: 'Honey',
     concLabel: 'carbs',
     saltLabel: 'salt',
     citricLabel: 'citric',

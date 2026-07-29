@@ -19,6 +19,13 @@ function contentLabel(content: Content, lang: 'pl' | 'en'): string {
   return content === 'water' ? strings.water : content === 'gel' ? strings.gel : strings.izo;
 }
 
+function presetCaption(r: number, strings: ReturnType<typeof t>): string | null {
+  if (r === 2) return strings.izo;
+  if (r === 1) return strings.ratioLabelSugar;
+  if (r === 0.8) return strings.ratioLabelHoney;
+  return null;
+}
+
 function cOpt(on: boolean, color: string): CSSProperties {
   return {
     border: '1px solid ' + (on ? color : 'var(--chip-border)'),
@@ -70,34 +77,21 @@ export function MixPanel() {
       <p style={{ margin: '0 0 12px', fontSize: 12, lineHeight: 1.5, color: 'var(--muted-2)' }}>{strings.mixHint}</p>
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 10, flexWrap: 'wrap' }}>
-        <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-          <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{strings.ratio}</span>
-          <span
-            title={strings.ratioPresetInfo}
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 14,
-              height: 14,
-              borderRadius: '50%',
-              border: '1px solid var(--chip-border)',
-              color: 'var(--muted-2)',
-              fontSize: 10,
-              fontWeight: 700,
-              cursor: 'default',
-              flex: '0 0 auto',
-            }}
-          >
-            i
-          </span>
-        </span>
+        <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{strings.ratio}</span>
         <span style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-          {RATIO_PRESETS.map((r) => (
-            <button key={r} onClick={() => setRatio(r)} style={cOpt(mix.ratio === r, 'var(--ink)')}>
-              {r}:1
-            </button>
-          ))}
+          {RATIO_PRESETS.map((r) => {
+            const caption = presetCaption(r, strings);
+            return (
+              <button
+                key={r}
+                onClick={() => setRatio(r)}
+                style={{ ...cOpt(mix.ratio === r, 'var(--ink)'), display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1, lineHeight: 1.15 }}
+              >
+                {caption && <span style={{ fontSize: 8.5, fontWeight: 600, opacity: 0.75, textTransform: 'uppercase', letterSpacing: '0.03em' }}>{caption}</span>}
+                <span>{r}:1</span>
+              </button>
+            );
+          })}
           <label
             style={{
               display: 'inline-flex',
