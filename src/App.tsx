@@ -17,7 +17,7 @@ function App() {
       {panel === 'settings' && <SettingsPanel />}
       {panel === 'mix' && <MixPanel />}
       <div style={{ width: '100%', maxWidth: 1420, display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <div style={{ display: 'flex', gap: 14, alignItems: 'stretch', flexWrap: 'wrap' }}>
+        <div data-tour="route-summary" style={{ display: 'flex', gap: 14, alignItems: 'stretch', flexWrap: 'wrap' }}>
           <RoutePanel />
           <SummaryCards />
         </div>

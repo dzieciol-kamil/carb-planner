@@ -64,6 +64,7 @@ export function FillBar({ fill, vessel, distanceKm }: FillBarProps) {
   const removeFill = useAppStore((s) => s.removeFill);
   const setFillContent = useAppStore((s) => s.setFillContent);
   const gear = useAppStore((s) => s.gear);
+  const tourDemoFid = useAppStore((s) => s.ui.tourDemoFid);
   const strings = t(lang);
 
   const key = 'f' + fill.fid;
@@ -85,6 +86,7 @@ export function FillBar({ fill, vessel, distanceKm }: FillBarProps) {
   return (
     <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
       <div
+        data-tour={fill.fid === tourDemoFid ? 'demo-fill' : undefined}
         onPointerDown={createFillDragHandler(fill.fid, 'move')}
         onPointerEnter={() => setHoverKey(key)}
         onPointerLeave={() => setHoverKey(null)}
