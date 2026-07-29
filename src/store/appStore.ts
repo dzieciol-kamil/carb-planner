@@ -7,6 +7,11 @@ import { t, type Lang } from '../i18n/strings';
 import { createDebouncedLocalStorage } from './persistStorage';
 import type { FoodItem, FoodLibEntry, Intensity, Mode, MixSettings, RouteInput, Vessel, Fill, ShopStop, XUnit } from '../domain/types';
 
+function defaultLang(): Lang {
+  const browserLang = typeof navigator !== 'undefined' ? navigator.language : '';
+  return browserLang.toLowerCase().startsWith('pl') ? 'pl' : 'en';
+}
+
 export type ViewMode = 'auto' | 'desktop' | 'mobile';
 export type YMode = 'rate' | 'fluid' | 'sum';
 export type PanelId = 'settings' | 'mix' | null;
@@ -166,7 +171,7 @@ export const useAppStore = create<AppState>()(
     shops: defaultShops,
     foodLib: defaultFoodLib,
     ui: {
-      lang: 'pl',
+      lang: defaultLang(),
       viewMode: 'auto',
       autoView: 'desktop',
       panel: null,
