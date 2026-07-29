@@ -62,6 +62,7 @@ export interface StringTable {
   dragHint: string;
   addFuel: string;
   removeItem?: string;
+  addShopStop: string;
   coverage: string;
   summary: string;
   hydration: string;
@@ -224,6 +225,7 @@ export const STR: Record<Lang, StringTable> = {
     dragHint: 'Paski nie nachodzą na siebie — w ciasnej luce przeciągany pasek się skraca. Kreski porcji żelu przesuwasz osobno.',
     addFuel: 'Dodaj jedzenie:',
     removeItem: 'Usuń',
+    addShopStop: 'Dodaj sklep',
     coverage: 'Pokrycie zapotrzebowania',
     summary: 'Podsumowanie',
     hydration: 'Nawodnienie',
@@ -392,6 +394,7 @@ export const STR: Record<Lang, StringTable> = {
     dragHint: 'Bars never overlap — a dragged bar shortens to fit a tight gap. Gel portion marks drag on their own.',
     addFuel: 'Add food:',
     removeItem: 'Remove',
+    addShopStop: 'Add shop stop',
     coverage: 'Requirement covered',
     summary: 'Summary',
     hydration: 'Hydration',

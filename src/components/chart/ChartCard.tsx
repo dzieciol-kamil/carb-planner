@@ -133,12 +133,12 @@ export function ChartCard() {
         </div>
         <div style={{ flex: 1, minWidth: 0, position: 'relative' }}>
           <Chart height={CHART_HEIGHT} showAxis />
-          <ShopMarkers distanceKm={dist(route)} height={CHART_HEIGHT} bottomPadding={CHART_PB} />
+          <ShopMarkers distanceKm={dist(route)} height={CHART_HEIGHT} bottomPadding={CHART_PB} route={route} xUnit={xUnit} />
         </div>
         <div style={{ width: 40, flex: '0 0 40px', position: 'relative', height: CHART_HEIGHT }}>
           <button
             onClick={addShop}
-            title="Add shop stop"
+            title={strings.addShopStop}
             style={{
               position: 'absolute',
               top: 3,

@@ -1,5 +1,8 @@
 import type { CSSProperties } from 'react';
 import { createShopDragHandler, stopPointerDown } from '../lanes/dragHandlers';
+import { fmtX } from '../../domain/fuel';
+import type { RouteInput, XUnit } from '../../domain/types';
+import { t } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
 import { CHART_COLORS } from './theme';
 
@@ -10,6 +13,8 @@ interface ShopMarkersProps {
   distanceKm: number;
   height: number;
   bottomPadding: number;
+  route: RouteInput;
+  xUnit: XUnit;
 }
 
 function pinButtonStyle(leftPct: number): CSSProperties {
@@ -61,12 +66,14 @@ function removeButtonStyle(show: boolean): CSSProperties {
   };
 }
 
-export function ShopMarkers({ distanceKm, height, bottomPadding }: ShopMarkersProps) {
+export function ShopMarkers({ distanceKm, height, bottomPadding, route, xUnit }: ShopMarkersProps) {
   const shops = useAppStore((s) => s.shops);
   const hoverKey = useAppStore((s) => s.ui.hoverKey);
   const dragKey = useAppStore((s) => s.ui.dragKey);
+  const lang = useAppStore((s) => s.ui.lang);
   const setHoverKey = useAppStore((s) => s.setHoverKey);
   const removeShop = useAppStore((s) => s.removeShop);
+  const strings = t(lang);
 
   return (
     <>
@@ -91,7 +98,7 @@ export function ShopMarkers({ distanceKm, height, bottomPadding }: ShopMarkersPr
                   opacity={on || dragging ? 1 : 0.75}
                 />
               </svg>
-              <button onClick={() => removeShop(shop.id)} onPointerDown={stopPointerDown} title="Remove" style={removeButtonStyle(on && !dragging)}>
+              <button onClick={() => removeShop(shop.id)} onPointerDown={stopPointerDown} title={strings.removeItem} style={removeButtonStyle(on && !dragging)}>
                 ✕
               </button>
               {dragging && (
@@ -111,7 +118,7 @@ export function ShopMarkers({ distanceKm, height, bottomPadding }: ShopMarkersPr
                     whiteSpace: 'nowrap',
                   }}
                 >
-                  {Math.round(shop.at)} km
+                  {fmtX(shop.at, true, route, xUnit)}
                 </span>
               )}
             </div>
