@@ -1,7 +1,7 @@
 import { Fragment } from 'react';
 import { absCap, dist, distanceAtTime, fmtX, prof, samples, totalHours, type Sample } from '../../domain/fuel';
 import { useAppStore } from '../../store/appStore';
-import { ElevationLayer } from './ElevationLayer';
+import { ElevationLayer, niceStep } from './ElevationLayer';
 import { CHART_COLORS, sourceColor } from './theme';
 
 const FLUID_CAP = 750;
@@ -47,6 +47,11 @@ export function Chart({ height, showAxis }: ChartProps) {
     : rateMode
       ? Math.max(10, cap * 1.05, ...S.map((p) => Math.max(p.rate, p.needRate))) * 1.15
       : Math.max(1, ...S.map((p) => Math.max(p.intake, p.need))) * 1.08;
+
+  const yUnit = fluidMode ? ' ml/h' : rateMode ? ' g/h' : ' g';
+  const yStep = niceStep(maxY);
+  const yTicks: number[] = [];
+  for (let v = 0; v <= maxY + 0.001; v += yStep) yTicks.push(v);
 
   const GT = showAxis ? 52 : 26;
   const gutPeak = Math.max(GUT_LIMIT * 1.25, ...S.map((p) => p.gut)) * 1.05;
@@ -207,11 +212,15 @@ export function Chart({ height, showAxis }: ChartProps) {
         <line x1={px(worst.x)} x2={px(worst.x)} y1={4} y2={height - PB} stroke={CHART_COLORS.climb} strokeWidth={1.5} strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
       )}
 
-      {showAxis && (
-        <text x={4} y={GT + 6} fill={CHART_COLORS.muted} fontSize={10} fontFamily="JetBrains Mono, monospace">
-          {fluidMode ? Math.round(maxY) + ' ml/h' : rateMode ? Math.round(maxY) + ' g/h' : Math.round(maxY) + ' g'}
-        </text>
-      )}
+      {showAxis &&
+        yTicks.map((v, i) => (
+          <Fragment key={'yg' + i}>
+            {v > 0 && <line x1={0} x2={WIDTH} y1={py(v)} y2={py(v)} stroke="#EDEFEA" strokeWidth={1} vectorEffect="non-scaling-stroke" />}
+            <text x={4} y={py(v) - 4} fill={CHART_COLORS.muted} fontSize={10} fontFamily="JetBrains Mono, monospace">
+              {Math.round(v) + yUnit}
+            </text>
+          </Fragment>
+        ))}
       {showAxis &&
         ticks.map((k, i) => (
           <Fragment key={'t' + i}>

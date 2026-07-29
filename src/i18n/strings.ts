@@ -368,7 +368,7 @@ export const STR: Record<Lang, StringTable> = {
       'Tu opisujesz przejazd — dystansem i tempem albo czasem trwania — oraz warunki (intensywność, temperatura, posiłek przed startem). Karty obok pokazują, czy Twój plan pokrywa zapotrzebowanie na węglowodany i płyny.',
     tourChartTitle: 'Wykres: podaż kontra zapotrzebowanie',
     tourChartBody:
-      'Przerywana linia pokazuje, ile węglowodanów potrzebujesz w każdej godzinie. Teraz nie masz jeszcze żadnego bidonu ani jedzenia w planie, więc nie ma jeszcze linii tego, co realnie dostarczasz. Zaraz dodamy przykładowy bidon, żebyś zobaczył, jak ta linia rośnie.',
+      'Liczby po lewej to skala: ile gramów węglowodanów na godzinę (g/h). Przerywana linia pokazuje, ile potrzebujesz w każdej godzinie. Teraz nie masz jeszcze żadnego bidonu ani jedzenia w planie, więc nie ma jeszcze linii tego, co realnie dostarczasz. Zaraz dodamy przykładowy bidon, żebyś zobaczył, jak ta linia rośnie.',
     tourChartBodyAfter:
       'Ciągła linia to ile węglowodanów realnie dostarczasz, przerywana — ile potrzebujesz. Dodaliśmy przykładowy bidon: widzisz, jak linia dostaw rośnie i zbliża się do zapotrzebowania.',
     tourFillTitle: 'Bidon: przesuwanie, zwężanie, zmiana zawartości',
@@ -571,7 +571,7 @@ export const STR: Record<Lang, StringTable> = {
       "Describe your ride here — distance and pace, or a duration — plus conditions (intensity, temperature, pre-ride meal). The cards next to it show whether your plan covers your carb and fluid needs.",
     tourChartTitle: 'The chart: supply vs. requirement',
     tourChartBody:
-      "The dashed line shows how many carbs you need each hour. There's no bottle or food in the plan yet, so there's no line yet for what you're actually delivering. We'll add a sample bottle next so you can watch that line appear.",
+      "The numbers on the left are the scale: grams of carbs per hour (g/h). The dashed line shows how many carbs you need each hour. There's no bottle or food in the plan yet, so there's no line yet for what you're actually delivering. We'll add a sample bottle next so you can watch that line appear.",
     tourChartBodyAfter:
       "The solid line is how many carbs you're actually delivering, the dashed line is how many you need. We added a sample bottle — watch the delivery line rise toward the requirement.",
     tourFillTitle: 'A bottle: move it, resize it, change its contents',
