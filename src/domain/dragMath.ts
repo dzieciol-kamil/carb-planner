@@ -1,5 +1,5 @@
 import { partArray, partsOf } from './fuel';
-import type { Fill, FoodItem, Vessel } from './types';
+import type { Fill, FoodItem, ShopStop, Vessel } from './types';
 
 export interface Bounds {
   lo: number;
@@ -95,6 +95,15 @@ export function resizeFoodLeft(food: FoodItem, deltaKm: number, originalFrom: nu
 
 export function resizeFoodRight(food: FoodItem, distanceKm: number, deltaKm: number, originalTo: number): number {
   return Math.min(distanceKm, Math.max(food.from + 1, Math.round(originalTo + deltaKm)));
+}
+
+export function moveShop(shop: ShopStop, distanceKm: number, deltaKm: number): number {
+  return Math.max(0, Math.min(distanceKm, Math.round(shop.at + deltaKm)));
+}
+
+export function nextShopAt(shops: ShopStop[], distanceKm: number): number {
+  const lastAt = shops.length ? Math.max(...shops.map((s) => s.at)) : 0;
+  return Math.round((lastAt + distanceKm) / 2);
 }
 
 export function moveListItem<T>(list: T[], fromIndex: number, toIndex: number): T[] {

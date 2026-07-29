@@ -1,10 +1,11 @@
 import type { CSSProperties } from 'react';
-import { planSummary, prof } from '../../domain/fuel';
+import { dist, planSummary, prof } from '../../domain/fuel';
 import { t } from '../../i18n/strings';
 import { useAppStore, type YMode } from '../../store/appStore';
 import type { XUnit } from '../../domain/types';
 import { FoodLibraryChips } from '../FoodLibraryChips';
 import { LanesSection } from '../lanes/LanesSection';
+import { ShopMarkers } from './ShopMarkers';
 import { TimelineSection } from '../timeline/TimelineSection';
 import { Chart } from './Chart';
 import { elevationTicks } from './ElevationLayer';
@@ -44,6 +45,7 @@ export function ChartCard() {
   const xUnit = useAppStore((s) => s.ui.xUnit);
   const setYMode = useAppStore((s) => s.setYMode);
   const setXUnit = useAppStore((s) => s.setXUnit);
+  const addShop = useAppStore((s) => s.addShop);
   const strings = t(lang);
 
   const planState = { route, mix, gear, fills, foods, foodLib };
@@ -129,10 +131,35 @@ export function ChartCard() {
           {yMode === 'rate' && <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{strings.curveHint}</span>}
           {yMode === 'fluid' && <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{strings.capNoteFluid}</span>}
         </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ flex: 1, minWidth: 0, position: 'relative' }}>
           <Chart height={CHART_HEIGHT} showAxis />
+          <ShopMarkers distanceKm={dist(route)} height={CHART_HEIGHT} bottomPadding={CHART_PB} route={route} xUnit={xUnit} />
         </div>
         <div style={{ width: 40, flex: '0 0 40px', position: 'relative', height: CHART_HEIGHT }}>
+          <button
+            onClick={addShop}
+            title={strings.addShopStop}
+            style={{
+              position: 'absolute',
+              top: 3,
+              right: 0,
+              width: 24,
+              height: 24,
+              borderRadius: 7,
+              cursor: 'pointer',
+              border: '1px dashed #B9C0B7',
+              background: '#F7F8F5',
+              color: 'var(--ink-soft)',
+              fontSize: 13,
+              fontWeight: 700,
+              lineHeight: 1,
+              padding: 0,
+              fontFamily: 'Archivo, sans-serif',
+              pointerEvents: 'auto',
+            }}
+          >
+            +
+          </button>
           {eleTicks.map((tick) => (
             <span
               key={tick.value}
