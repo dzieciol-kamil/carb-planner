@@ -7,7 +7,7 @@ import { NumberInput } from '../ui/NumberInput';
 import { createVesselReorderHandler } from './gearDragHandler';
 import { PanelShell } from './PanelShell';
 
-const RATIO_PRESETS = [2, 1.5, 1];
+const RATIO_PRESETS = [2, 1.5, 1, 0.8];
 const CONTENT_OPTIONS: Content[] = ['water', 'izo', 'gel'];
 
 const sectionCardStyle: CSSProperties = { border: '1px solid #E9EBE5', borderRadius: 12, padding: '12px 14px 14px', background: '#FBFCFA', marginBottom: 10 };
@@ -17,6 +17,13 @@ const miniInputStyle: CSSProperties = { width: 46, border: 'none', background: '
 function contentLabel(content: Content, lang: 'pl' | 'en'): string {
   const strings = t(lang);
   return content === 'water' ? strings.water : content === 'gel' ? strings.gel : strings.izo;
+}
+
+function presetCaption(r: number, strings: ReturnType<typeof t>): string | null {
+  if (r === 2) return strings.izo;
+  if (r === 1) return strings.ratioLabelSugar;
+  if (r === 0.8) return strings.ratioLabelHoney;
+  return null;
 }
 
 function cOpt(on: boolean, color: string): CSSProperties {
@@ -72,11 +79,19 @@ export function MixPanel() {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 10, flexWrap: 'wrap' }}>
         <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{strings.ratio}</span>
         <span style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-          {RATIO_PRESETS.map((r) => (
-            <button key={r} onClick={() => setRatio(r)} style={cOpt(mix.ratio === r, 'var(--ink)')}>
-              {r}:1
-            </button>
-          ))}
+          {RATIO_PRESETS.map((r) => {
+            const caption = presetCaption(r, strings);
+            return (
+              <button
+                key={r}
+                onClick={() => setRatio(r)}
+                style={{ ...cOpt(mix.ratio === r, 'var(--ink)'), display: 'flex', flexDirection: 'row', alignItems: 'baseline', gap: 4 }}
+              >
+                {caption && <span style={{ fontSize: 10, fontWeight: 600, opacity: 0.75 }}>{caption}</span>}
+                <span>{r}:1</span>
+              </button>
+            );
+          })}
           <label
             style={{
               display: 'inline-flex',
