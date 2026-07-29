@@ -24,6 +24,9 @@ interface UiState {
   dragKey: string | null;
   timelineOpen: boolean;
   tab: MobileTab;
+  tourStep: number | null;
+  tourSeen: boolean;
+  tourDemoFid: number | null;
 }
 
 interface AppState {
@@ -63,6 +66,10 @@ interface AppState {
   setYMode: (m: YMode) => void;
   toggleTimelineOpen: () => void;
   setTab: (tab: MobileTab) => void;
+  startTour: () => void;
+  closeTour: () => void;
+  setTourStep: (n: number) => void;
+  loadTourDemoData: () => void;
 
   setHoverKey: (key: string | null) => void;
   setDragKey: (key: string | null) => void;
@@ -170,6 +177,9 @@ export const useAppStore = create<AppState>()(
       dragKey: null,
       timelineOpen: false,
       tab: 'plan',
+      tourStep: null,
+      tourSeen: false,
+      tourDemoFid: null,
     },
     nextGid: 3,
     nextFid: 1,
@@ -208,6 +218,34 @@ export const useAppStore = create<AppState>()(
     setYMode: (yMode) => set((s) => ({ ui: { ...s.ui, yMode } })),
     toggleTimelineOpen: () => set((s) => ({ ui: { ...s.ui, timelineOpen: !s.ui.timelineOpen } })),
     setTab: (tab) => set((s) => ({ ui: { ...s.ui, tab } })),
+    startTour: () => set((s) => ({ ui: { ...s.ui, tourStep: 0, tourSeen: true, tourDemoFid: null } })),
+    closeTour: () => set((s) => ({ ui: { ...s.ui, tourStep: null } })),
+    setTourStep: (n) => set((s) => ({ ui: { ...s.ui, tourStep: Math.max(0, n) } })),
+    loadTourDemoData: () =>
+      set((s) => {
+        if (s.ui.tourDemoFid !== null) return {};
+        const route: RouteInput = { ...s.route, mode: 'route', distance: 90, speed: 28 };
+        const distanceKm = dist(route);
+        const vessel = s.gear[0];
+        if (!vessel) return { route };
+        const span = bestGapSpan(
+          gaps(
+            s.fills.filter((f) => f.gid === vessel.gid),
+            distanceKm,
+          ),
+          distanceKm,
+        );
+        if (!span) return { route };
+        const allowed: Fill['content'][] = vessel.allowed?.length ? vessel.allowed : ['izo'];
+        const content: Fill['content'] = allowed.includes('izo') ? 'izo' : allowed[0];
+        const fid = s.nextFid;
+        return {
+          route,
+          fills: [...s.fills, { fid, gid: vessel.gid, content, from: span.from, to: span.to }],
+          nextFid: fid + 1,
+          ui: { ...s.ui, tourDemoFid: fid },
+        };
+      }),
 
     setHoverKey: (hoverKey) => set((s) => ({ ui: { ...s.ui, hoverKey } })),
     setDragKey: (dragKey) => set((s) => ({ ui: { ...s.ui, dragKey } })),
@@ -337,4 +375,18 @@ export const useAppStore = create<AppState>()(
 
 export function isDesktopView(viewMode: ViewMode, autoView: 'desktop' | 'mobile'): boolean {
   return viewMode === 'auto' ? autoView === 'desktop' : viewMode === 'desktop';
+}
+
+export function hasPlanData(state: Pick<AppState, 'route' | 'fills' | 'foods' | 'shops'>): boolean {
+  const r = state.route;
+  return (
+    r.distance > 0 ||
+    r.speed > 0 ||
+    r.hours > 0 ||
+    r.minutes > 0 ||
+    r.gpxTrack !== null ||
+    state.fills.length > 0 ||
+    state.foods.length > 0 ||
+    state.shops.length > 0
+  );
 }
