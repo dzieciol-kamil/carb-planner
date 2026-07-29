@@ -14,12 +14,17 @@ function App() {
   const panel = useAppStore((s) => s.ui.panel);
   const tourSeen = useAppStore((s) => s.ui.tourSeen);
   const startTour = useAppStore((s) => s.startTour);
+  const lang = useAppStore((s) => s.ui.lang);
 
   useEffect(() => {
     if (tourSeen || hasPlanData(useAppStore.getState())) return;
     const id = setTimeout(startTour, 400);
     return () => clearTimeout(id);
   }, [tourSeen, startTour]);
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
 
   return (
     <div style={{ minHeight: '100vh', padding: '14px 24px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
