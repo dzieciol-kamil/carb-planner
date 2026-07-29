@@ -15,9 +15,15 @@ average speed, so time ticks should bunch closer together on climbs and spread o
 descents.
 
 Gradient (`ProfilePoint.grad`) is already computed for every profile point in `prof()`
-(`fuel.ts`), for both real GPX tracks and the synthetic demo profile — it's not gated
-behind `route.useGpx` (only the fuel-need `effort` multiplier is). So a gradient-based
-pace model can apply uniformly regardless of whether a real GPX is loaded.
+(`fuel.ts`), for both real GPX tracks and the synthetic demo profile. The existing
+fuel-need `effort` multiplier only *applies* that gradient when `route.useGpx` is true
+(`effort = route.useGpx ? ... : 1`) — and `ElevationLayer` only renders the terrain
+curve at all when `route.useGpx` is true (`visible={route.useGpx}`). So whenever
+`useGpx` is off, the user sees no elevation curve, and the synthetic anchor profile
+(which has its own noise-driven `grad` values) is invisible scaffolding, not a route.
+The new pace model must follow that same gating — apply gradient weighting only when
+`route.useGpx` is true — otherwise time ticks would jitter based on synthetic noise the
+user never sees or asked to be modeled, with no visible terrain to explain why.
 
 GPX files uploaded to this app are planned routes (lat/lon/ele only — `gpx.ts` never
 parses a `<time>` tag, and there is no timestamp anywhere in the data model), not
@@ -69,11 +75,14 @@ approximation feels off in practice.
 ## Data flow / implementation
 
 In `prof()` (`fuel.ts`), alongside the existing `cum` (effort) accumulation, compute a
-second raw cumulative array weighted by `timeWeight`:
+second raw cumulative array. Each point's pace weight is gated by `route.useGpx` exactly
+like `effort` already is:
 
 ```
+paceWeight[i] = route.useGpx ? timeWeight(pts[i].grad) : 1
+
 cumTime[0] = 0
-cumTime[i] = cumTime[i-1] + segmentDistanceKm * avg(timeWeight(grad[i-1]), timeWeight(grad[i]))
+cumTime[i] = cumTime[i-1] + segmentDistanceKm * avg(paceWeight[i-1], paceWeight[i])
 ```
 
 Extend `Profile` with `cumTime: number[]`.
@@ -101,10 +110,12 @@ Two new exported functions:
 - `totalHours(route) === 0` (no distance/speed set yet): guard with the same
   `Math.max(0.01, ...)` pattern already used elsewhere in `fuel.ts`, avoiding
   division by zero in the normalization step.
-- Flat profile (`grad === 0` everywhere, e.g. no elevation data): `timeWeight` is 1
-  everywhere, so `cumTime` is linear in distance and `timeAtDistance`/`distanceAtTime`
-  reduce to today's constant-speed behavior exactly — no regression for flat routes or
-  routes without a loaded profile.
+- `route.useGpx` is false (no GPX loaded, or loaded but toggled off): `paceWeight` is 1
+  everywhere (same gating as `effort`), so `cumTime` is linear in distance and
+  `timeAtDistance`/`distanceAtTime` reduce to today's constant-speed behavior exactly —
+  no regression for the no-elevation case.
+- Flat real/synthetic profile with `useGpx` true (`grad === 0` everywhere): same result,
+  `timeWeight` is 1 everywhere so `cumTime` is linear.
 
 ## Testing
 
