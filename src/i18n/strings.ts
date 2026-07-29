@@ -379,7 +379,7 @@ export const STR: Record<Lang, StringTable> = {
       'Ten przycisk „+” wstawia kolejną dolewkę w pierwszej wolnej luce na trasie — przydaje się, gdy bidon się skończy i trzeba go napełnić czymś innym. To samo dotyczy jedzenia: przyciski z listą produktów pod wykresem dodają kolejne pozycje jednym kliknięciem.',
     tourAddShopTitle: 'Punkty zaopatrzenia',
     tourAddShopBody:
-      'Ten „+” dodaje na wykresie znacznik punktu zaopatrzenia (np. sklepu) — możesz przeciągnąć go w dowolne miejsce trasy, żeby zaznaczyć, gdzie planujesz dokupić jedzenie lub napój.',
+      'Ten „+” dodaje na wykresie znacznik punktu zaopatrzenia (np. sklepu) — możesz przeciągnąć go w dowolne miejsce trasy, żeby zaznaczyć, na którym kilometrze planujesz dokupić jedzenie lub napój.',
     tourClosingTitle: 'To wszystko na start',
     tourClosingBody:
       'Oś czasu, przepisy na mieszankę i ustawienia (waga, limit wchłaniania, proporcje) znajdziesz niżej i w przyciskach w nagłówku. Ten tour możesz odpalić ponownie w każdej chwili przyciskiem w stopce.',
@@ -582,7 +582,7 @@ export const STR: Record<Lang, StringTable> = {
       "This \"+\" button inserts another fill into the first free gap on the route — useful once a bottle runs dry and needs refilling with something else. The same idea applies to food: the product buttons under the chart add another item with one click.",
     tourAddShopTitle: 'Resupply points',
     tourAddShopBody:
-      "This \"+\" adds a resupply marker on the chart (e.g. a shop) — drag it anywhere on the route to mark where you plan to buy more food or drink.",
+      "This \"+\" adds a resupply marker on the chart (e.g. a shop) — drag it anywhere on the route to mark which kilometer you plan to buy more food or drink at.",
     tourClosingTitle: "That's the essentials",
     tourClosingBody:
       "The timeline, the mix recipe and settings (weight, absorption limit, ratios) are further down and in the header buttons. Replay this tour any time from the button in the footer.",
