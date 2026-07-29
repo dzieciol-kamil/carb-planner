@@ -16,7 +16,7 @@ function pinButtonStyle(leftPct: number): CSSProperties {
   return {
     position: 'absolute',
     left: `calc(${leftPct}% - ${PIN_W / 2}px)`,
-    top: -2,
+    top: -8,
     width: PIN_W,
     height: PIN_H,
     cursor: 'grab',
@@ -29,9 +29,9 @@ function lineStyle(leftPct: number, height: number, bottomPadding: number, on: b
   return {
     position: 'absolute',
     left: `calc(${leftPct}% - 0.75px)`,
-    top: PIN_H - 3,
+    top: 9,
     width: 1.5,
-    height: height - bottomPadding - (PIN_H - 3),
+    height: height - bottomPadding - 9,
     background: CHART_COLORS.ink,
     opacity: on ? 0.9 : 0.55,
     pointerEvents: 'none',
@@ -41,16 +41,17 @@ function lineStyle(leftPct: number, height: number, bottomPadding: number, on: b
 function removeButtonStyle(show: boolean): CSSProperties {
   return {
     position: 'absolute',
-    left: 3,
-    top: 1,
-    width: 10,
-    height: 10,
+    left: '50%',
+    top: -14,
+    transform: 'translateX(-50%)',
+    width: 14,
+    height: 14,
     padding: 0,
     border: 'none',
-    borderRadius: 3,
-    background: 'rgba(255,255,255,0.9)',
-    color: CHART_COLORS.ink,
-    fontSize: 7,
+    borderRadius: 4,
+    background: 'rgba(0,0,0,0.55)',
+    color: '#fff',
+    fontSize: 8,
     lineHeight: 1,
     cursor: 'pointer',
     zIndex: 3,
@@ -60,32 +61,12 @@ function removeButtonStyle(show: boolean): CSSProperties {
   };
 }
 
-const addButtonStyle: CSSProperties = {
-  position: 'absolute',
-  top: -2,
-  right: 0,
-  width: 20,
-  height: 20,
-  borderRadius: 6,
-  cursor: 'pointer',
-  border: '1px dashed #B9C0B7',
-  background: '#F7F8F5',
-  color: 'var(--ink-soft)',
-  fontSize: 12,
-  fontWeight: 700,
-  lineHeight: 1,
-  padding: 0,
-  fontFamily: 'Archivo, sans-serif',
-  pointerEvents: 'auto',
-};
-
 export function ShopMarkers({ distanceKm, height, bottomPadding }: ShopMarkersProps) {
   const shops = useAppStore((s) => s.shops);
   const hoverKey = useAppStore((s) => s.ui.hoverKey);
   const dragKey = useAppStore((s) => s.ui.dragKey);
   const setHoverKey = useAppStore((s) => s.setHoverKey);
   const removeShop = useAppStore((s) => s.removeShop);
-  const addShop = useAppStore((s) => s.addShop);
 
   return (
     <>
@@ -137,9 +118,6 @@ export function ShopMarkers({ distanceKm, height, bottomPadding }: ShopMarkersPr
           </div>
         );
       })}
-      <button onClick={addShop} title="Add shop stop" style={addButtonStyle}>
-        +
-      </button>
     </>
   );
 }

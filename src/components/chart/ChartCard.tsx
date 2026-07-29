@@ -45,6 +45,7 @@ export function ChartCard() {
   const xUnit = useAppStore((s) => s.ui.xUnit);
   const setYMode = useAppStore((s) => s.setYMode);
   const setXUnit = useAppStore((s) => s.setXUnit);
+  const addShop = useAppStore((s) => s.addShop);
   const strings = t(lang);
 
   const planState = { route, mix, gear, fills, foods, foodLib };
@@ -135,6 +136,30 @@ export function ChartCard() {
           <ShopMarkers distanceKm={dist(route)} height={CHART_HEIGHT} bottomPadding={CHART_PB} />
         </div>
         <div style={{ width: 40, flex: '0 0 40px', position: 'relative', height: CHART_HEIGHT }}>
+          <button
+            onClick={addShop}
+            title="Add shop stop"
+            style={{
+              position: 'absolute',
+              top: -8,
+              right: 0,
+              width: 20,
+              height: 20,
+              borderRadius: 6,
+              cursor: 'pointer',
+              border: '1px dashed #B9C0B7',
+              background: '#F7F8F5',
+              color: 'var(--ink-soft)',
+              fontSize: 12,
+              fontWeight: 700,
+              lineHeight: 1,
+              padding: 0,
+              fontFamily: 'Archivo, sans-serif',
+              pointerEvents: 'auto',
+            }}
+          >
+            +
+          </button>
           {eleTicks.map((tick) => (
             <span
               key={tick.value}
