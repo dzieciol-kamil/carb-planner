@@ -1,6 +1,6 @@
 import { useAppStore } from '../../store/appStore';
 
-export type TourTarget = 'route-summary' | 'chart' | 'demo-fill';
+export type TourTarget = 'route-summary' | 'chart' | 'demo-fill' | 'demo-add-fill' | 'add-shop';
 
 export type TourCopyKey =
   | 'tourWelcomeTitle'
@@ -9,8 +9,13 @@ export type TourCopyKey =
   | 'tourRouteBody'
   | 'tourChartTitle'
   | 'tourChartBody'
+  | 'tourChartBodyAfter'
   | 'tourFillTitle'
   | 'tourFillBody'
+  | 'tourAddFillTitle'
+  | 'tourAddFillBody'
+  | 'tourAddShopTitle'
+  | 'tourAddShopBody'
   | 'tourClosingTitle'
   | 'tourClosingBody';
 
@@ -47,5 +52,7 @@ export const TOUR_STEPS: TourStep[] = [
       useAppStore.getState().loadTourDemoData();
     },
   },
+  { target: 'demo-add-fill', titleKey: 'tourAddFillTitle', bodyKey: 'tourAddFillBody' },
+  { target: 'add-shop', titleKey: 'tourAddShopTitle', bodyKey: 'tourAddShopBody' },
   { target: null, titleKey: 'tourClosingTitle', bodyKey: 'tourClosingBody' },
 ];

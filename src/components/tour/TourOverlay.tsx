@@ -26,12 +26,17 @@ const BACKDROP = 'rgba(18,20,18,0.55)';
 export function TourOverlay() {
   const tourStep = useAppStore((s) => s.ui.tourStep);
   const lang = useAppStore((s) => s.ui.lang);
+  const tourDemoFid = useAppStore((s) => s.ui.tourDemoFid);
   const setTourStep = useAppStore((s) => s.setTourStep);
   const closeTour = useAppStore((s) => s.closeTour);
   const strings = t(lang);
   const [rect, setRect] = useState<Rect | null>(null);
 
   const step: TourStep | null = tourStep !== null ? TOUR_STEPS[tourStep] : null;
+  // The chart step's copy describes an empty-plan state; once the demo fill
+  // exists (fresh injection, or revisiting via Back/Next) the chart is no
+  // longer empty, so swap in the "after" copy rather than leave stale text.
+  const bodyKey = step && step.target === 'chart' && tourDemoFid !== null ? 'tourChartBodyAfter' : step?.bodyKey;
 
   useLayoutEffect(() => {
     if (!step?.target) {
@@ -112,7 +117,7 @@ export function TourOverlay() {
           </button>
         </div>
         <span style={{ fontSize: 15, fontWeight: 700 }}>{strings[step.titleKey]}</span>
-        <span style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--ink-soft)' }}>{strings[step.bodyKey]}</span>
+        <span style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--ink-soft)' }}>{bodyKey && strings[bodyKey]}</span>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginTop: 4 }}>
           <button onClick={closeTour} style={tourGhostBtn}>
             {strings.tourSkip}

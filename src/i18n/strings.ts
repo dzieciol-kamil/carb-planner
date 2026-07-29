@@ -63,6 +63,7 @@ export interface StringTable {
   addFuel: string;
   removeItem?: string;
   addShopStop: string;
+  addFillTo: string;
   coverage: string;
   summary: string;
   hydration: string;
@@ -167,8 +168,13 @@ export interface StringTable {
   tourRouteBody: string;
   tourChartTitle: string;
   tourChartBody: string;
+  tourChartBodyAfter: string;
   tourFillTitle: string;
   tourFillBody: string;
+  tourAddFillTitle: string;
+  tourAddFillBody: string;
+  tourAddShopTitle: string;
+  tourAddShopBody: string;
   tourClosingTitle: string;
   tourClosingBody: string;
   tourNext: string;
@@ -248,6 +254,7 @@ export const STR: Record<Lang, StringTable> = {
     addFuel: 'Dodaj jedzenie:',
     removeItem: 'Usuń',
     addShopStop: 'Dodaj sklep',
+    addFillTo: 'Dodaj dolewkę do ',
     coverage: 'Pokrycie zapotrzebowania',
     summary: 'Podsumowanie',
     hydration: 'Nawodnienie',
@@ -361,10 +368,18 @@ export const STR: Record<Lang, StringTable> = {
       'Tu opisujesz przejazd — dystansem i tempem albo czasem trwania — oraz warunki (intensywność, temperatura, posiłek przed startem). Karty obok pokazują, czy Twój plan pokrywa zapotrzebowanie na węglowodany i płyny.',
     tourChartTitle: 'Wykres: podaż kontra zapotrzebowanie',
     tourChartBody:
-      'Górna linia to ile węglowodanów realnie dostarczasz, dolna przerywana — ile potrzebujesz. Teraz jest pusto, bo nie masz jeszcze żadnego bidonu ani jedzenia w planie. Zaraz dodamy przykładowy bidon, żebyś zobaczył, jak linia się zmienia.',
+      'Przerywana linia pokazuje, ile węglowodanów potrzebujesz w każdej godzinie. Teraz nie masz jeszcze żadnego bidonu ani jedzenia w planie, więc nie ma jeszcze linii tego, co realnie dostarczasz. Zaraz dodamy przykładowy bidon, żebyś zobaczył, jak ta linia rośnie.',
+    tourChartBodyAfter:
+      'Ciągła linia to ile węglowodanów realnie dostarczasz, przerywana — ile potrzebujesz. Dodaliśmy przykładowy bidon: widzisz, jak linia dostaw rośnie i zbliża się do zapotrzebowania.',
     tourFillTitle: 'Bidon: przesuwanie, zwężanie, zmiana zawartości',
     tourFillBody:
       'Ten pasek to właśnie dodany bidon. Chwyć środek, żeby przesunąć go po trasie. Chwyć lewą lub prawą krawędź, żeby skrócić lub wydłużyć odcinek, na którym z niego pijesz. Najedź kursorem, a pojawią się przyciski zmiany zawartości (woda / izotonik / żel), jeśli bidon obsługuje więcej niż jeden rodzaj.',
+    tourAddFillTitle: 'Dodaj kolejną dolewkę',
+    tourAddFillBody:
+      'Ten przycisk „+” wstawia kolejną dolewkę w pierwszej wolnej luce na trasie — przydaje się, gdy bidon się skończy i trzeba go napełnić czymś innym. To samo dotyczy jedzenia: przyciski z listą produktów pod wykresem dodają kolejne pozycje jednym kliknięciem.',
+    tourAddShopTitle: 'Punkty zaopatrzenia',
+    tourAddShopBody:
+      'Ten „+” dodaje na wykresie znacznik punktu zaopatrzenia (np. sklepu) — możesz przeciągnąć go w dowolne miejsce trasy, żeby zaznaczyć, gdzie planujesz dokupić jedzenie lub napój.',
     tourClosingTitle: 'To wszystko na start',
     tourClosingBody:
       'Oś czasu, przepisy na mieszankę i ustawienia (waga, limit wchłaniania, proporcje) znajdziesz niżej i w przyciskach w nagłówku. Ten tour możesz odpalić ponownie w każdej chwili przyciskiem w stopce.',
@@ -443,6 +458,7 @@ export const STR: Record<Lang, StringTable> = {
     addFuel: 'Add food:',
     removeItem: 'Remove',
     addShopStop: 'Add shop stop',
+    addFillTo: 'Add a fill to ',
     coverage: 'Requirement covered',
     summary: 'Summary',
     hydration: 'Hydration',
@@ -555,10 +571,18 @@ export const STR: Record<Lang, StringTable> = {
       "Describe your ride here — distance and pace, or a duration — plus conditions (intensity, temperature, pre-ride meal). The cards next to it show whether your plan covers your carb and fluid needs.",
     tourChartTitle: 'The chart: supply vs. requirement',
     tourChartBody:
-      "The top line is how many carbs you're actually delivering, the dashed line below is how many you need. It's empty right now because there's no bottle or food in the plan yet. We'll add a sample bottle next so you can see the line change.",
+      "The dashed line shows how many carbs you need each hour. There's no bottle or food in the plan yet, so there's no line yet for what you're actually delivering. We'll add a sample bottle next so you can watch that line appear.",
+    tourChartBodyAfter:
+      "The solid line is how many carbs you're actually delivering, the dashed line is how many you need. We added a sample bottle — watch the delivery line rise toward the requirement.",
     tourFillTitle: 'A bottle: move it, resize it, change its contents',
     tourFillBody:
       "This bar is the bottle we just added. Drag the middle to move it along the route. Drag either edge to shorten or lengthen the stretch you drink it over. Hover it and buttons appear to switch its contents (water / isotonic / gel) if the bottle allows more than one.",
+    tourAddFillTitle: 'Add another fill',
+    tourAddFillBody:
+      "This \"+\" button inserts another fill into the first free gap on the route — useful once a bottle runs dry and needs refilling with something else. The same idea applies to food: the product buttons under the chart add another item with one click.",
+    tourAddShopTitle: 'Resupply points',
+    tourAddShopBody:
+      "This \"+\" adds a resupply marker on the chart (e.g. a shop) — drag it anywhere on the route to mark where you plan to buy more food or drink.",
     tourClosingTitle: "That's the essentials",
     tourClosingBody:
       "The timeline, the mix recipe and settings (weight, absorption limit, ratios) are further down and in the header buttons. Replay this tour any time from the button in the footer.",

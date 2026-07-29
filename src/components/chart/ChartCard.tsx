@@ -137,6 +137,7 @@ export function ChartCard() {
         </div>
         <div style={{ width: 40, flex: '0 0 40px', position: 'relative', height: CHART_HEIGHT }}>
           <button
+            data-tour="add-shop"
             onClick={addShop}
             title={strings.addShopStop}
             style={{
