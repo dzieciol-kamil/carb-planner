@@ -1,6 +1,8 @@
+import { useState, type CSSProperties } from 'react';
 import { absCap } from '../domain/fuel';
 import { t } from '../i18n/strings';
-import { useAppStore } from '../store/appStore';
+import { hasPlanData, useAppStore } from '../store/appStore';
+import { TourReplayConfirm } from './tour/TourReplayConfirm';
 
 function GitHubIcon() {
   return (
@@ -10,12 +12,37 @@ function GitHubIcon() {
   );
 }
 
+const replayButtonStyle: CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: 8,
+  border: '1px solid var(--chip-border)',
+  background: '#fff',
+  borderRadius: 999,
+  padding: '7px 13px',
+  fontSize: 12,
+  fontWeight: 600,
+  color: 'var(--ink)',
+  cursor: 'pointer',
+  fontFamily: 'Archivo, sans-serif',
+};
+
 export function Footer() {
   const lang = useAppStore((s) => s.ui.lang);
   const mix = useAppStore((s) => s.mix);
+  const startTour = useAppStore((s) => s.startTour);
   const strings = t(lang);
   const cap = absCap(mix);
   const absorptionNote = strings.capNote + cap + ' g/h' + strings.capNote2;
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  const handleReplay = () => {
+    if (hasPlanData(useAppStore.getState())) {
+      setConfirmOpen(true);
+    } else {
+      startTour();
+    }
+  };
 
   return (
     <footer style={{ width: '100%', maxWidth: 1420, boxSizing: 'border-box', marginTop: 14, borderTop: '1px solid #DFE2DB', padding: '22px 18px 0', display: 'flex', flexDirection: 'column', gap: 22 }}>
@@ -54,6 +81,10 @@ export function Footer() {
               >
                 <GitHubIcon />
               </a>
+              <button onClick={handleReplay} style={replayButtonStyle}>
+                <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--water)', flex: '0 0 8px' }} />
+                <span>{strings.tourReplayButton}</span>
+              </button>
             </div>
           </div>
         </div>
@@ -67,6 +98,17 @@ export function Footer() {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap', borderTop: '1px solid #E6E8E2', paddingTop: 14 }}>
         <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '0.08em', color: 'var(--muted-3)' }}>{strings.ftCopyright}</span>
       </div>
+
+      {confirmOpen && (
+        <TourReplayConfirm
+          strings={strings}
+          onCancel={() => setConfirmOpen(false)}
+          onConfirm={() => {
+            setConfirmOpen(false);
+            startTour();
+          }}
+        />
+      )}
     </footer>
   );
 }
