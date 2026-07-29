@@ -12,6 +12,17 @@ function GitHubIcon() {
   );
 }
 
+function CoffeeIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width={18} height={18} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 8h13v5.5A5.5 5.5 0 0 1 11.5 19h-2A5.5 5.5 0 0 1 4 13.5V8Z" />
+      <path d="M17 9.5h1.2a2.3 2.3 0 0 1 0 4.6H17" />
+      <path d="M8 3.2c0 .85-.95.95-.95 1.9S8 6.05 8 6.9" />
+      <path d="M12 3.2c0 .85-.95.95-.95 1.9S12 6.05 12 6.9" />
+    </svg>
+  );
+}
+
 const replayButtonStyle: CSSProperties = {
   display: 'inline-flex',
   alignItems: 'center',
@@ -49,7 +60,7 @@ export function Footer() {
       <div style={{ display: 'grid', gridTemplateColumns: '3fr 2fr', gap: 64, alignItems: 'start' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 9, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 9 }}>
-            <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '-0.01em' }}>CARB PLANNER</span>
+            <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '-0.01em' }}>CARB FUELING</span>
             <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--muted-3)' }}>{strings.ftVersion}</span>
           </div>
           <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: 'var(--muted-2)' }}>{strings.ftAboutBody}</p>
@@ -64,7 +75,7 @@ export function Footer() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 9, alignItems: 'flex-start' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
               <a
-                href="https://github.com/dzieciol-kamil/carb-planner/issues/new"
+                href="https://github.com/dzieciol-kamil/carbfueling/issues/new"
                 target="_blank"
                 rel="noopener"
                 style={{ display: 'inline-flex', alignItems: 'center', gap: 8, border: '1px solid var(--chip-border)', background: '#fff', borderRadius: 999, padding: '7px 13px', fontSize: 12, fontWeight: 600, color: 'var(--ink)' }}
@@ -73,7 +84,7 @@ export function Footer() {
                 <span>{strings.ftIssues}</span>
               </a>
               <a
-                href="https://github.com/dzieciol-kamil/carb-planner"
+                href="https://github.com/dzieciol-kamil/carbfueling"
                 target="_blank"
                 rel="noopener"
                 title={strings.ftRepo}
@@ -86,6 +97,15 @@ export function Footer() {
                 <span>{strings.tourReplayButton}</span>
               </button>
             </div>
+            <a
+              href="https://suppi.pl/kamild"
+              target="_blank"
+              rel="noopener"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 9, border: '1px solid var(--chip-border)', background: '#fff', borderRadius: 999, padding: '9px 16px', fontSize: 13.5, fontWeight: 600, color: 'var(--gel)' }}
+            >
+              <CoffeeIcon />
+              <span>{strings.ftSupport}</span>
+            </a>
           </div>
         </div>
       </div>

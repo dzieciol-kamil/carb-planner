@@ -1,8 +1,8 @@
-# Carb Planner
+# Carb Fueling
 
 A carb and hydration planner for long bike rides. You describe your route (distance + pace, or duration), your conditions (weight, effort, temperature), configure your bottles/flasks, and lay out **fills** (what you drink and over which stretch) and **food/extras** along the route. The app computes carb supply vs. demand over time (g/h), hydration coverage, and how much of the mix to measure into each bottle.
 
-Live app: https://dzieciol-kamil.github.io/carb-planner/
+Live app: https://dzieciol-kamil.github.io/carbfueling/
 
 ## Stack
 

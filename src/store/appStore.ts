@@ -357,7 +357,7 @@ export const useAppStore = create<AppState>()(
       }),
     }),
     {
-      name: 'carb-planner',
+      name: 'carbfueling',
       version: 1,
       storage: createJSONStorage(() => createDebouncedLocalStorage(400)),
       merge: (persistedState, currentState) => {
