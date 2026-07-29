@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState, type CSSProperties, type ReactNode } from 'react';
+import { forwardRef, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { t } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
 import { tourGhostBtn, tourPrimaryBtn } from './tourStyles';
@@ -30,6 +30,7 @@ export function TourOverlay() {
   const closeTour = useAppStore((s) => s.closeTour);
   const strings = t(lang);
   const [rect, setRect] = useState<Rect | null>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
 
   const step: TourStep | null = tourStep !== null ? TOUR_STEPS[tourStep] : null;
 
@@ -39,7 +40,18 @@ export function TourOverlay() {
       return;
     }
     const target = step.target;
-    document.querySelector(`[data-tour="${target}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const el = document.querySelector(`[data-tour="${target}"]`);
+    if (el) {
+      // Center the spotlight + tooltip as one combined block, not just the
+      // spotlight alone — centering the target by itself can leave no room
+      // for the tooltip, pushing it (and the page) further than expected.
+      const targetRect = el.getBoundingClientRect();
+      const tooltipHeight = tooltipRef.current?.getBoundingClientRect().height ?? 0;
+      const combinedHeight = targetRect.height + (tooltipHeight ? tooltipHeight + 14 : 0);
+      const docTop = targetRect.top + window.scrollY;
+      const desiredScrollY = docTop - (window.innerHeight - combinedHeight) / 2;
+      window.scrollTo({ top: Math.max(0, desiredScrollY), behavior: 'smooth' });
+    }
 
     let raf = 0;
     const tick = () => {
@@ -102,7 +114,7 @@ export function TourOverlay() {
         <div style={{ position: 'fixed', inset: 0, background: BACKDROP }} />
       )}
 
-      <TourTooltip cutout={cutout}>
+      <TourTooltip ref={tooltipRef} cutout={cutout}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
           <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted)' }}>
             {strings.tourStepLabel} {tourStep + 1} / {TOUR_STEPS.length}
@@ -138,7 +150,7 @@ interface TourTooltipProps {
   children: ReactNode;
 }
 
-function TourTooltip({ cutout, children }: TourTooltipProps) {
+const TourTooltip = forwardRef<HTMLDivElement, TourTooltipProps>(function TourTooltip({ cutout, children }, ref) {
   const pos: CSSProperties = cutout
     ? (() => {
         const spaceBelow = window.innerHeight - (cutout.top + cutout.height);
@@ -152,6 +164,7 @@ function TourTooltip({ cutout, children }: TourTooltipProps) {
 
   return (
     <div
+      ref={ref}
       style={{
         ...pos,
         width: TOOLTIP_WIDTH,
@@ -171,4 +184,4 @@ function TourTooltip({ cutout, children }: TourTooltipProps) {
       {children}
     </div>
   );
-}
+});
