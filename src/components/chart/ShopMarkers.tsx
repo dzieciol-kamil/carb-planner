@@ -91,7 +91,7 @@ export function ShopMarkers({ distanceKm, height, bottomPadding }: ShopMarkersPr
                   opacity={on || dragging ? 1 : 0.75}
                 />
               </svg>
-              <button onClick={() => removeShop(shop.id)} onPointerDown={stopPointerDown} title="Remove" style={removeButtonStyle(on)}>
+              <button onClick={() => removeShop(shop.id)} onPointerDown={stopPointerDown} title="Remove" style={removeButtonStyle(on && !dragging)}>
                 ✕
               </button>
               {dragging && (
