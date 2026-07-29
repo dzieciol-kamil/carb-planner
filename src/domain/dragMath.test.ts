@@ -7,13 +7,15 @@ import {
   moveFill,
   moveFood,
   moveListItem,
+  moveShop,
+  nextShopAt,
   rescalePositions,
   resizeFillLeft,
   resizeFillRight,
   resizeFoodLeft,
   resizeFoodRight,
 } from './dragMath';
-import type { Fill, FoodItem, Vessel } from './types';
+import type { Fill, FoodItem, ShopStop, Vessel } from './types';
 
 const gear: Vessel[] = [{ gid: 'g1', name: 'Bottle', vol: 500, allowed: ['izo', 'gel'], gelParts: 3 }];
 
@@ -221,5 +223,36 @@ describe('moveListItem', () => {
     const list = ['a', 'b', 'c'];
     moveListItem(list, 0, 2);
     expect(list).toEqual(['a', 'b', 'c']);
+  });
+});
+
+describe('moveShop', () => {
+  test('moves freely within [0, distanceKm]', () => {
+    const shop: ShopStop = { id: 1, at: 50 };
+    expect(moveShop(shop, 100, 10)).toBe(60);
+  });
+
+  test('clamps at the route start', () => {
+    const shop: ShopStop = { id: 1, at: 10 };
+    expect(moveShop(shop, 100, -50)).toBe(0);
+  });
+
+  test('clamps at the route end', () => {
+    const shop: ShopStop = { id: 1, at: 90 };
+    expect(moveShop(shop, 100, 50)).toBe(100);
+  });
+});
+
+describe('nextShopAt', () => {
+  test('midpoint between the start and the end when there are no markers yet', () => {
+    expect(nextShopAt([], 100)).toBe(50);
+  });
+
+  test('midpoint between the last marker and the end', () => {
+    const shops: ShopStop[] = [
+      { id: 1, at: 20 },
+      { id: 2, at: 60 },
+    ];
+    expect(nextShopAt(shops, 100)).toBe(80); // (60 + 100) / 2
   });
 });

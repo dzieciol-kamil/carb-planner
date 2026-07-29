@@ -52,6 +52,11 @@ export interface Fill {
   pos?: number[];
 }
 
+export interface ShopStop {
+  id: number;
+  at: number;
+}
+
 export interface FoodItem {
   id: number;
   key: string;
