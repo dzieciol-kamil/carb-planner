@@ -228,6 +228,32 @@ describe('prof / eff', () => {
     expect(P.pts[80].ele).toBe(200);
     expect(P.pts[160].ele).toBe(300);
   });
+
+  test('cumTime is linear in distance when useGpx is false, regardless of a loaded gpxTrack', () => {
+    const route = makeRoute({
+      mode: 'route',
+      distance: 100,
+      useGpx: false,
+      gpxTrack: { id: 1, ele: [0, 500, 500] },
+    });
+    const P = prof(route);
+    expect(P.cumTime[0]).toBe(0);
+    expect(P.cumTime[80]).toBeCloseTo(50, 6);
+    expect(P.cumTime[160]).toBeCloseTo(100, 6);
+  });
+
+  test('cumTime gives disproportionate weight to a climb when useGpx is true', () => {
+    const route = makeRoute({
+      mode: 'route',
+      distance: 100,
+      useGpx: true,
+      gpxTrack: { id: 1, ele: [0, 500, 500] }, // climbs 500m over the first half, flat second half
+    });
+    const P = prof(route);
+    expect(P.cumTime[0]).toBe(0);
+    // First half (the climb) should account for more than half of the raw cumulative time.
+    expect(P.cumTime[80]).toBeGreaterThan(P.cumTime[160] / 2);
+  });
 });
 
 describe('carbsFill', () => {

@@ -21,6 +21,7 @@ export interface ProfilePoint {
 export interface Profile {
   pts: ProfilePoint[];
   cum: number[];
+  cumTime: number[];
   N: number;
   D: number;
 }
@@ -132,7 +133,14 @@ export function prof(route: RouteInput): Profile {
   const cum = [0];
   for (let i = 1; i <= N; i++) cum[i] = cum[i - 1] + (pts[i].effort + pts[i - 1].effort) / 2;
 
-  return { pts, cum, N, D };
+  const cumTime = [0];
+  for (let i = 1; i <= N; i++) {
+    const wA = route.useGpx ? timeWeight(pts[i - 1].grad) : 1;
+    const wB = route.useGpx ? timeWeight(pts[i].grad) : 1;
+    cumTime[i] = cumTime[i - 1] + (pts[i].x - pts[i - 1].x) * ((wA + wB) / 2);
+  }
+
+  return { pts, cum, cumTime, N, D };
 }
 
 export function eff(route: RouteInput, x: number): number {
