@@ -4,6 +4,7 @@ import {
   carbsFill,
   cph,
   dist,
+  distanceAtTime,
   eff,
   fmtHM,
   fmtX,
@@ -17,6 +18,7 @@ import {
   rateStats,
   samples,
   sweat,
+  timeAtDistance,
   timeWeight,
   totalHours,
 } from './fuel';
@@ -253,6 +255,46 @@ describe('prof / eff', () => {
     expect(P.cumTime[0]).toBe(0);
     // First half (the climb) should account for more than half of the raw cumulative time.
     expect(P.cumTime[80]).toBeGreaterThan(P.cumTime[160] / 2);
+  });
+});
+
+describe('timeAtDistance / distanceAtTime', () => {
+  test('useGpx false: reduces to constant-speed division (matches old km/kmh behavior)', () => {
+    const route = makeRoute({ mode: 'route', distance: 100, speed: 25, useGpx: false }); // 4h total
+    expect(timeAtDistance(route, 0)).toBe(0);
+    expect(timeAtDistance(route, 50)).toBeCloseTo(2, 6);
+    expect(timeAtDistance(route, 100)).toBeCloseTo(4, 6);
+  });
+
+  test('useGpx true: a climb gets more than its distance share of elapsed time', () => {
+    const route = makeRoute({
+      mode: 'route',
+      distance: 100,
+      speed: 25, // 4h total
+      useGpx: true,
+      gpxTrack: { id: 1, ele: [0, 500, 500] }, // climbs first half, flat second half
+    });
+    expect(timeAtDistance(route, 0)).toBe(0);
+    expect(timeAtDistance(route, 50)).toBeGreaterThan(2); // more than half of 4h for the climb half
+    expect(timeAtDistance(route, 100)).toBeCloseTo(4, 6); // total is always preserved
+  });
+
+  test('distanceAtTime is the inverse of timeAtDistance', () => {
+    const route = makeRoute({
+      mode: 'route',
+      distance: 100,
+      speed: 25,
+      useGpx: true,
+      gpxTrack: { id: 1, ele: [0, 500, 500] },
+    });
+    const t = timeAtDistance(route, 63);
+    expect(distanceAtTime(route, t)).toBeCloseTo(63, 3);
+  });
+
+  test('distanceAtTime at the boundaries', () => {
+    const route = makeRoute({ mode: 'route', distance: 100, speed: 25, useGpx: false });
+    expect(distanceAtTime(route, 0)).toBe(0);
+    expect(distanceAtTime(route, 4)).toBeCloseTo(100, 6);
   });
 });
 

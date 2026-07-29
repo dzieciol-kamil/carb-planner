@@ -151,6 +151,29 @@ export function eff(route: RouteInput, x: number): number {
   return P.cum[i] + (P.cum[i + 1] - P.cum[i]) * (f - i);
 }
 
+export function timeAtDistance(route: RouteInput, km: number): number {
+  const P = prof(route);
+  const total = P.cumTime[P.N] || 1;
+  const f = Math.max(0, Math.min(1, km / P.D)) * P.N;
+  const i = Math.floor(f);
+  const raw = i >= P.N ? P.cumTime[P.N] : P.cumTime[i] + (P.cumTime[i + 1] - P.cumTime[i]) * (f - i);
+  return (raw / total) * totalHours(route);
+}
+
+export function distanceAtTime(route: RouteInput, hours: number): number {
+  const P = prof(route);
+  const total = P.cumTime[P.N] || 1;
+  const totHrs = totalHours(route);
+  const targetRaw = totHrs > 0 ? (hours / totHrs) * total : 0;
+  if (targetRaw <= 0) return 0;
+  if (targetRaw >= total) return P.D;
+  let i = 0;
+  while (i < P.N && P.cumTime[i + 1] < targetRaw) i++;
+  const segSpan = P.cumTime[i + 1] - P.cumTime[i] || 1;
+  const segFrac = (targetRaw - P.cumTime[i]) / segSpan;
+  return P.pts[i].x + (P.pts[i + 1].x - P.pts[i].x) * segFrac;
+}
+
 function effTotal(route: RouteInput): number {
   const P = prof(route);
   return P.cum[P.N] || 1;
