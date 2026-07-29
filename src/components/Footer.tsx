@@ -72,7 +72,7 @@ export function Footer() {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, minWidth: 0 }}>
           <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--muted)' }}>{strings.ftLinks}</span>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 9, alignItems: 'flex-start' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14, alignItems: 'flex-start' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
               <a
                 href="https://github.com/dzieciol-kamil/carbfueling/issues/new"
@@ -92,10 +92,6 @@ export function Footer() {
               >
                 <GitHubIcon />
               </a>
-              <button onClick={handleReplay} style={replayButtonStyle}>
-                <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--water)', flex: '0 0 8px' }} />
-                <span>{strings.tourReplayButton}</span>
-              </button>
             </div>
             <a
               href="https://suppi.pl/kamild"
@@ -106,6 +102,10 @@ export function Footer() {
               <CoffeeIcon />
               <span>{strings.ftSupport}</span>
             </a>
+            <button onClick={handleReplay} style={replayButtonStyle}>
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--water)', flex: '0 0 8px' }} />
+              <span>{strings.tourReplayButton}</span>
+            </button>
           </div>
         </div>
       </div>
