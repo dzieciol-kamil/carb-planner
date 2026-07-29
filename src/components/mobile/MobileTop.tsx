@@ -8,7 +8,7 @@ export function MobileTopBar() {
   const route = useAppStore((s) => s.route);
   return (
     <div style={{ flexShrink: 0, background: '#fff', borderBottom: '1px solid var(--border-soft)', padding: '14px 18px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-      <span style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-0.01em' }}>CARB PLANNER</span>
+      <span style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-0.01em' }}>CARB FUELING</span>
       <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>{routeLabel(route)}</span>
     </div>
   );

@@ -23,7 +23,7 @@ export function Header() {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
-        <span style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.02em' }}>CARB PLANNER</span>
+        <span style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.02em' }}>CARB FUELING</span>
         <span
           style={{
             fontFamily: "'JetBrains Mono', monospace",

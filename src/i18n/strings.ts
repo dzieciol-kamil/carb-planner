@@ -161,6 +161,7 @@ export interface StringTable {
   ftLinks: string;
   ftIssues: string;
   ftRepo: string;
+  ftSupport: string;
   ftCopyright: string;
   tourWelcomeTitle: string;
   tourWelcomeBody: string;
@@ -350,7 +351,7 @@ export const STR: Record<Lang, StringTable> = {
     ],
     ftVersion: 'wersja demo · projekt hobbystyczny',
     ftAboutBody:
-      'Carb Planner liczy, ile węglowodanów i płynów zabrać na trasę — z dystansu, tempa, wagi, intensywności i temperatury — a potem rozkłada je na bidony, flaski i jedzenie w czasie. Plan, sprzęt i lista produktów zapisują się w tej przeglądarce.',
+      'Carb Fueling liczy, ile węglowodanów i płynów zabrać na trasę — z dystansu, tempa, wagi, intensywności i temperatury — a potem rozkłada je na bidony, flaski i jedzenie w czasie. Plan, sprzęt i lista produktów zapisują się w tej przeglądarce.',
     ftPrivacy: 'Bez konta, bez serwera, bez cookies i trackerów.',
     ftLegal: 'Zastrzeżenie prawne',
     ftLegalBody:
@@ -358,9 +359,10 @@ export const STR: Record<Lang, StringTable> = {
     ftLinks: 'Współtwórz',
     ftIssues: 'Pomysły i błędy → GitHub Issues',
     ftRepo: 'Kod źródłowy na GitHubie',
+    ftSupport: 'Postaw mi kawę',
     ftSources2: 'Utrata potu: przybliżenie z wagi, intensywności i temperatury.',
-    ftCopyright: '© 2026 Carb Planner · open source',
-    tourWelcomeTitle: 'Witaj w Carb Plannerze',
+    ftCopyright: '© 2026 Carb Fueling · open source',
+    tourWelcomeTitle: 'Witaj w Carb Fueling',
     tourWelcomeBody: 'W kilku krokach pokażemy, jak zaplanować węglowodany i płyny na trasę oraz jak czytać wynik. Zajmie to około minuty.',
     tourRouteTitle: 'Trasa i wynik',
     tourRouteBody:
@@ -551,7 +553,7 @@ export const STR: Record<Lang, StringTable> = {
     ],
     ftVersion: 'demo build · hobby project',
     ftAboutBody:
-      'Carb Planner works out how many carbs and how much fluid to take on a ride — from distance, pace, weight, intensity and temperature — then spreads them across bottles, flasks and food over time. Your plan, gear and product list stay in this browser.',
+      'Carb Fueling works out how many carbs and how much fluid to take on a ride — from distance, pace, weight, intensity and temperature — then spreads them across bottles, flasks and food over time. Your plan, gear and product list stay in this browser.',
     ftPrivacy: 'No account, no server, no cookies, no trackers.',
     ftLegal: 'Disclaimer',
     ftLegalBody:
@@ -559,9 +561,10 @@ export const STR: Record<Lang, StringTable> = {
     ftLinks: 'Contribute',
     ftIssues: 'Ideas & bugs → GitHub Issues',
     ftRepo: 'Source code on GitHub',
+    ftSupport: 'Buy me a coffee',
     ftSources2: 'Sweat loss: an estimate from weight, intensity and temperature.',
-    ftCopyright: '© 2026 Carb Planner · open source',
-    tourWelcomeTitle: 'Welcome to Carb Planner',
+    ftCopyright: '© 2026 Carb Fueling · open source',
+    tourWelcomeTitle: 'Welcome to Carb Fueling',
     tourWelcomeBody: "A few steps to show you how to plan carbs and fluids for your ride, and how to read the result. Takes about a minute.",
     tourRouteTitle: 'Route & result',
     tourRouteBody:
