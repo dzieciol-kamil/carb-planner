@@ -2,6 +2,14 @@ import type { Content, Fill, FoodItem, MixSettings, PlanState, RouteInput, Vesse
 
 const FLUID_ABSORPTION_CAP_ML_H = 750;
 const PROFILE_SAMPLES = 160;
+const PACE_UP_K = 0.1;
+const PACE_DOWN_K = 0.07;
+const PACE_DOWN_FLOOR = 0.55;
+
+export function timeWeight(gradPercent: number): number {
+  if (gradPercent >= 0) return 1 + gradPercent * PACE_UP_K;
+  return Math.max(PACE_DOWN_FLOOR, 1 + gradPercent * PACE_DOWN_K);
+}
 
 export interface ProfilePoint {
   x: number;
@@ -13,6 +21,8 @@ export interface ProfilePoint {
 export interface Profile {
   pts: ProfilePoint[];
   cum: number[];
+  /** Raw, unnormalized cumulative pace-weighted distance — divide by cumTime[N] for a 0-1 ratio. */
+  cumTime: number[];
   N: number;
   D: number;
 }
@@ -124,7 +134,14 @@ export function prof(route: RouteInput): Profile {
   const cum = [0];
   for (let i = 1; i <= N; i++) cum[i] = cum[i - 1] + (pts[i].effort + pts[i - 1].effort) / 2;
 
-  return { pts, cum, N, D };
+  const cumTime = [0];
+  for (let i = 1; i <= N; i++) {
+    const wA = route.useGpx ? timeWeight(pts[i - 1].grad) : 1;
+    const wB = route.useGpx ? timeWeight(pts[i].grad) : 1;
+    cumTime[i] = cumTime[i - 1] + (pts[i].x - pts[i - 1].x) * ((wA + wB) / 2);
+  }
+
+  return { pts, cum, cumTime, N, D };
 }
 
 export function eff(route: RouteInput, x: number): number {
@@ -133,6 +150,29 @@ export function eff(route: RouteInput, x: number): number {
   const i = Math.floor(f);
   if (i >= P.N) return P.cum[P.N];
   return P.cum[i] + (P.cum[i + 1] - P.cum[i]) * (f - i);
+}
+
+export function timeAtDistance(route: RouteInput, km: number): number {
+  const P = prof(route);
+  const total = P.cumTime[P.N] || 1;
+  const f = Math.max(0, Math.min(1, km / P.D)) * P.N;
+  const i = Math.floor(f);
+  const raw = i >= P.N ? P.cumTime[P.N] : P.cumTime[i] + (P.cumTime[i + 1] - P.cumTime[i]) * (f - i);
+  return (raw / total) * totalHours(route);
+}
+
+export function distanceAtTime(route: RouteInput, hours: number): number {
+  const P = prof(route);
+  const total = P.cumTime[P.N] || 1;
+  const totHrs = totalHours(route);
+  const targetRaw = totHrs > 0 ? (hours / totHrs) * total : 0;
+  if (targetRaw <= 0) return 0;
+  if (targetRaw >= total) return P.D;
+  let i = 0;
+  while (i < P.N && P.cumTime[i + 1] < targetRaw) i++;
+  const segSpan = P.cumTime[i + 1] - P.cumTime[i] || 1;
+  const segFrac = (targetRaw - P.cumTime[i]) / segSpan;
+  return P.pts[i].x + (P.pts[i + 1].x - P.pts[i].x) * segFrac;
 }
 
 function effTotal(route: RouteInput): number {
@@ -205,6 +245,9 @@ export function samples(state: PlanState): Sample[] {
   const N = PROFILE_SAMPLES;
   const tot = effTotal(route);
   const cap = absCap(mix);
+  // Assumes equal time per equal-distance sample (flat-pace approximation); the chart's
+  // time axis is now terrain-aware (see timeAtDistance) but this absorption model is not — a
+  // known, deliberate scope boundary, not an oversight.
   const dt = hrs / N;
   const sweatRate = sweat(route);
 
@@ -343,8 +386,7 @@ function xu(route: RouteInput, xUnit: XUnit): XUnit | 'time' {
 
 export function fmtX(km: number, withUnit: boolean, route: RouteInput, xUnit: XUnit): string {
   if (xu(route, xUnit) === 'km') return Math.round(km) + (withUnit ? ' km' : '');
-  const kmh = dist(route) / Math.max(0.01, totalHours(route));
-  return fmtHM(km / kmh) + (withUnit ? ' h' : '');
+  return fmtHM(timeAtDistance(route, km)) + (withUnit ? ' h' : '');
 }
 
 export function rangeLabel(a: number, b: number, point: boolean, route: RouteInput, xUnit: XUnit): string {

@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import { absCap, dist, fmtX, prof, samples, totalHours, type Sample } from '../../domain/fuel';
+import { absCap, dist, distanceAtTime, fmtX, prof, samples, totalHours, type Sample } from '../../domain/fuel';
 import { useAppStore } from '../../store/appStore';
 import { ElevationLayer } from './ElevationLayer';
 import { CHART_COLORS, sourceColor } from './theme';
@@ -74,9 +74,8 @@ export function Chart({ height, showAxis }: ChartProps) {
     for (let k = 0; k <= D + 0.01; k += step) ticks.push(k);
   } else {
     const hrs = totalHours(route);
-    const kmh = D / Math.max(0.01, hrs);
     const step = hrs > 6 ? 1 : hrs > 3 ? 0.5 : 0.25;
-    for (let hh = 0; hh <= hrs + 0.001; hh += step) ticks.push(hh * kmh);
+    for (let hh = 0; hh <= hrs + 0.001; hh += step) ticks.push(distanceAtTime(route, hh));
   }
 
   const runs: { color: string; pts: Sample[] }[] = [];

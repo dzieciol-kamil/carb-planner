@@ -4,6 +4,7 @@ import {
   carbsFill,
   cph,
   dist,
+  distanceAtTime,
   eff,
   fmtHM,
   fmtX,
@@ -17,6 +18,8 @@ import {
   rateStats,
   samples,
   sweat,
+  timeAtDistance,
+  timeWeight,
   totalHours,
 } from './fuel';
 import type { Fill, FoodItem, MixSettings, PlanState, RouteInput, Vessel } from './types';
@@ -65,6 +68,28 @@ function makePlan(overrides: Partial<PlanState> = {}): PlanState {
     ...overrides,
   };
 }
+
+describe('timeWeight', () => {
+  test('flat ground: weight 1', () => {
+    expect(timeWeight(0)).toBe(1);
+  });
+
+  test('moderate uphill (5%): 50% longer per km', () => {
+    expect(timeWeight(5)).toBeCloseTo(1.5, 6);
+  });
+
+  test('steep uphill (15%): scales linearly, no cap', () => {
+    expect(timeWeight(15)).toBeCloseTo(2.5, 6);
+  });
+
+  test('moderate downhill (-5%): faster than flat', () => {
+    expect(timeWeight(-5)).toBeCloseTo(0.65, 6);
+  });
+
+  test('steep downhill (-20%): clamped at the 0.55 floor', () => {
+    expect(timeWeight(-20)).toBe(0.55);
+  });
+});
 
 describe('totalHours', () => {
   test('route mode: distance / speed', () => {
@@ -204,6 +229,85 @@ describe('prof / eff', () => {
     expect(P.pts[0].ele).toBe(100);
     expect(P.pts[80].ele).toBe(200);
     expect(P.pts[160].ele).toBe(300);
+  });
+
+  test('cumTime is linear in distance when useGpx is false, regardless of a loaded gpxTrack', () => {
+    const route = makeRoute({
+      mode: 'route',
+      distance: 100,
+      useGpx: false,
+      gpxTrack: { id: 1, ele: [0, 500, 500] },
+    });
+    const P = prof(route);
+    expect(P.cumTime[0]).toBe(0);
+    expect(P.cumTime[80]).toBeCloseTo(50, 6);
+    expect(P.cumTime[160]).toBeCloseTo(100, 6);
+  });
+
+  test('cumTime gives disproportionate weight to a climb when useGpx is true', () => {
+    const route = makeRoute({
+      mode: 'route',
+      distance: 100,
+      useGpx: true,
+      gpxTrack: { id: 1, ele: [0, 500, 500] }, // climbs 500m over the first half, flat second half
+    });
+    const P = prof(route);
+    expect(P.cumTime[0]).toBe(0);
+    // First half (the climb) should account for more than half of the raw cumulative time.
+    expect(P.cumTime[80]).toBeGreaterThan(P.cumTime[160] / 2);
+  });
+});
+
+describe('timeAtDistance / distanceAtTime', () => {
+  test('useGpx false: reduces to constant-speed division (matches old km/kmh behavior)', () => {
+    const route = makeRoute({ mode: 'route', distance: 100, speed: 25, useGpx: false }); // 4h total
+    expect(timeAtDistance(route, 0)).toBe(0);
+    expect(timeAtDistance(route, 50)).toBeCloseTo(2, 6);
+    expect(timeAtDistance(route, 100)).toBeCloseTo(4, 6);
+  });
+
+  test('useGpx true: a climb gets more than its distance share of elapsed time', () => {
+    const route = makeRoute({
+      mode: 'route',
+      distance: 100,
+      speed: 25, // 4h total
+      useGpx: true,
+      gpxTrack: { id: 1, ele: [0, 500, 500] }, // climbs first half, flat second half
+    });
+    expect(timeAtDistance(route, 0)).toBe(0);
+    expect(timeAtDistance(route, 50)).toBeGreaterThan(2); // more than half of 4h for the climb half
+    expect(timeAtDistance(route, 100)).toBeCloseTo(4, 6); // total is always preserved
+  });
+
+  test('distanceAtTime is the inverse of timeAtDistance', () => {
+    const route = makeRoute({
+      mode: 'route',
+      distance: 100,
+      speed: 25,
+      useGpx: true,
+      gpxTrack: { id: 1, ele: [0, 500, 500] },
+    });
+    const t = timeAtDistance(route, 63);
+    expect(distanceAtTime(route, t)).toBeCloseTo(63, 3);
+  });
+
+  test('distanceAtTime at the boundaries', () => {
+    const route = makeRoute({ mode: 'route', distance: 100, speed: 25, useGpx: false });
+    expect(distanceAtTime(route, 0)).toBe(0);
+    expect(distanceAtTime(route, 4)).toBeCloseTo(100, 6);
+  });
+
+  test('chart ticks and their labels agree (distanceAtTime -> fmtX round-trip)', () => {
+    const route = makeRoute({
+      mode: 'route',
+      distance: 100,
+      speed: 25,
+      useGpx: true,
+      gpxTrack: { id: 1, ele: [0, 500, 500] },
+    });
+    for (const hh of [0, 0.5, 1, 2, 3, 4]) {
+      expect(fmtX(distanceAtTime(route, hh), false, route, 'h')).toBe(fmtHM(hh));
+    }
   });
 });
 
@@ -361,6 +465,18 @@ describe('fmtX', () => {
   test('time mode always uses the time axis regardless of xUnit', () => {
     const route = makeRoute({ mode: 'time', hours: 2, minutes: 0 }); // dist=20, 10 km/h
     expect(fmtX(10, true, route, 'km')).toBe('1:00 h');
+  });
+
+  test('time axis reflects gradient when useGpx is true (climb gets a later label than flat division would)', () => {
+    const route = makeRoute({
+      mode: 'route',
+      distance: 100,
+      speed: 25, // flat-division would put 50km at exactly "2:00"
+      useGpx: true,
+      gpxTrack: { id: 1, ele: [0, 500, 500] },
+    });
+    const label = fmtX(50, true, route, 'h');
+    expect(label).not.toBe('2:00 h');
   });
 });
 
