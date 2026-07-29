@@ -4,10 +4,6 @@ A carb and hydration planner for long bike rides. You describe your route (dista
 
 Live app: https://dzieciol-kamil.github.io/carb-planner/
 
-## Status
-
-The app is being rebuilt from an older single-file `calculator.html` (a 2:1 isotonic-mix calculator) into a full React app, screen by screen. Design spec and a high-fidelity HTML prototype live in [`docs/design_handoff_fuelplan/`](docs/design_handoff_fuelplan/README.md).
-
 ## Stack
 
 - Vite + React + TypeScript
@@ -30,10 +26,7 @@ npm run build     # production build into dist/
 ```
 src/
   domain/     pure calculation functions (no React), e.g. fuel.ts + tests
-  ...         UI components (WIP)
-docs/design_handoff_fuelplan/
-  README.md         design spec: state shape, formulas, screens, tokens
-  FuelPlan.dc.html   visual/behavioral reference prototype (not production code)
+  ...         UI components
 ```
 
 ## License
