@@ -7,7 +7,7 @@ import { NumberInput } from '../ui/NumberInput';
 import { createVesselReorderHandler } from './gearDragHandler';
 import { PanelShell } from './PanelShell';
 
-const RATIO_PRESETS = [2, 1.5, 1];
+const RATIO_PRESETS = [2, 1.5, 1, 0.8];
 const CONTENT_OPTIONS: Content[] = ['water', 'izo', 'gel'];
 
 const sectionCardStyle: CSSProperties = { border: '1px solid #E9EBE5', borderRadius: 12, padding: '12px 14px 14px', background: '#FBFCFA', marginBottom: 10 };
@@ -70,7 +70,28 @@ export function MixPanel() {
       <p style={{ margin: '0 0 12px', fontSize: 12, lineHeight: 1.5, color: 'var(--muted-2)' }}>{strings.mixHint}</p>
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 10, flexWrap: 'wrap' }}>
-        <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{strings.ratio}</span>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+          <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{strings.ratio}</span>
+          <span
+            title={strings.ratioPresetInfo}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 14,
+              height: 14,
+              borderRadius: '50%',
+              border: '1px solid var(--chip-border)',
+              color: 'var(--muted-2)',
+              fontSize: 10,
+              fontWeight: 700,
+              cursor: 'default',
+              flex: '0 0 auto',
+            }}
+          >
+            i
+          </span>
+        </span>
         <span style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
           {RATIO_PRESETS.map((r) => (
             <button key={r} onClick={() => setRatio(r)} style={cOpt(mix.ratio === r, 'var(--ink)')}>
