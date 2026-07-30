@@ -65,14 +65,18 @@ export function MobilePlanCard({ item }: { item: PlanCardItem }) {
     noRoomTimerRef.current = setTimeout(() => setShowNoRoom(false), 1200);
   }
   const noRoomHintStyle: CSSProperties = {
-    alignSelf: 'flex-start',
+    position: 'absolute',
+    top: 8,
+    right: 12,
+    zIndex: 10,
     background: 'var(--ink)',
     color: '#fff',
     fontSize: 11,
     fontWeight: 600,
     borderRadius: 7,
     padding: '5px 9px',
-    marginTop: -4,
+    boxShadow: '0 2px 6px rgba(0,0,0,0.18)',
+    pointerEvents: 'none',
   };
 
   if (item.kind === 'fill') {
@@ -108,7 +112,8 @@ export function MobilePlanCard({ item }: { item: PlanCardItem }) {
         </button>
 
         {expanded && (
-          <div style={{ borderTop: '1px solid var(--border-soft)', background: '#FBFCFA', padding: '11px 12px 12px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div style={{ position: 'relative', borderTop: '1px solid var(--border-soft)', background: '#FBFCFA', padding: '11px 12px 12px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {showNoRoom && <span style={noRoomHintStyle}>{strings.noRoomHint}</span>}
             <div style={{ display: 'flex', gap: 6 }}>
               {(vessel?.allowed ?? CONTENT_OPTIONS).map((c) => (
                 <button key={c} type="button" style={chipStyle(fill.content === c, sourceColor(c))} onClick={() => setFillContent(fill.fid, c)}>
@@ -133,35 +138,32 @@ export function MobilePlanCard({ item }: { item: PlanCardItem }) {
                     else updateFill(fill.fid, { from: resolved, to: resolved + width });
                   }}
                 />
-                {showNoRoom && <span style={noRoomHintStyle}>{strings.noRoomHint}</span>}
                 <MobileStepper label="do" value={fill.to} min={fill.from + 1} max={distanceKm} smallStep={1} bigStep={bigStep} onChange={(to) => updateFill(fill.fid, { to })} />
               </>
             ) : (
               parts.map((posVal, k) => {
                 if (k === 0) {
                   return (
-                    <span key={k} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                      <MobileStepper
-                        label={'od (porcja 1)'}
-                        value={fill.from}
-                        min={0}
-                        max={distanceKm - (fill.to - fill.from)}
-                        smallStep={0.5}
-                        bigStep={bigStep}
-                        onChange={(from) => {
-                          const width = fill.to - fill.from;
-                          const resolved = resolveFillMove(from, width, fill.from, siblingFills, distanceKm);
-                          if (resolved === fill.from) {
-                            flashNoRoomHint();
-                            return;
-                          }
-                          const delta = resolved - fill.from;
-                          const pos = fill.pos ? fill.pos.map((p) => p + delta) : undefined;
-                          updateFill(fill.fid, { from: resolved, to: fill.to + delta, pos });
-                        }}
-                      />
-                      {showNoRoom && <span style={noRoomHintStyle}>{strings.noRoomHint}</span>}
-                    </span>
+                    <MobileStepper
+                      key={k}
+                      label={'od (porcja 1)'}
+                      value={fill.from}
+                      min={0}
+                      max={distanceKm - (fill.to - fill.from)}
+                      smallStep={0.5}
+                      bigStep={bigStep}
+                      onChange={(from) => {
+                        const width = fill.to - fill.from;
+                        const resolved = resolveFillMove(from, width, fill.from, siblingFills, distanceKm);
+                        if (resolved === fill.from) {
+                          flashNoRoomHint();
+                          return;
+                        }
+                        const delta = resolved - fill.from;
+                        const pos = fill.pos ? fill.pos.map((p) => p + delta) : undefined;
+                        updateFill(fill.fid, { from: resolved, to: fill.to + delta, pos });
+                      }}
+                    />
                   );
                 }
                 if (k === n - 1) {
