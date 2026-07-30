@@ -7,8 +7,9 @@ import { CHART_COLORS, sourceColor } from '../chart/theme';
 
 const WIDTH = 800;
 const HEIGHT = 168;
+const GUT_LIMIT = 60;
 
-type RateKey = 'rate' | 'needRate' | 'fluidRate' | 'sweatRate' | 'absorbed' | 'need';
+type RateKey = 'rate' | 'needRate' | 'fluidRate' | 'sweatRate' | 'absorbed' | 'need' | 'gut';
 
 function valueAt(S: Sample[], D: number, x: number, key: RateKey): number {
   const N = S.length - 1;
@@ -62,8 +63,13 @@ export function MobileChart() {
   // never puts a non-finite number into an SVG attribute.
   const maxY = Number.isFinite(rawMaxY) && rawMaxY > 0 ? rawMaxY : 10;
 
+  const GT = 30;
+  const gutPeak = Math.max(GUT_LIMIT * 1.25, ...S.map((p) => p.gut)) * 1.05;
+
   const px = (x: number) => (x / D) * WIDTH;
-  const py = (y: number) => HEIGHT - ((Number.isFinite(y) ? y : 0) / maxY) * (HEIGHT - 4);
+  const py = (y: number) => HEIGHT - ((Number.isFinite(y) ? y : 0) / maxY) * (HEIGHT - GT - 4);
+  const gBase = GT - 8;
+  const gy = (g: number) => gBase - (g / gutPeak) * (gBase - 4);
 
   const runs: { color: string; pts: Sample[] }[] = [];
   S.forEach((p, i) => {
@@ -96,6 +102,7 @@ export function MobileChart() {
   const scrubFrac = scrubX != null ? Math.max(0, Math.min(1, scrubX / D)) : null;
   const badgeFlip = scrubFrac != null && scrubFrac > 0.62;
 
+  const gutOver = S.some((p) => p.gut > GUT_LIMIT);
   const capY = fluidMode ? 750 : cap;
   const unit = fluidMode ? ' ml/h' : rateMode ? ' g/h' : ' g';
 
@@ -130,6 +137,19 @@ export function MobileChart() {
           <ElevationLayer pts={P.pts} distanceKm={D} width={WIDTH} height={HEIGHT} bottomPadding={0} share={1} visible />
         ) : (
           <>
+            {!fluidMode && (
+              <>
+                <path
+                  d={polyline(S, 'gut', px, gy) + ' L' + WIDTH + ' ' + gBase + ' L0 ' + gBase + ' Z'}
+                  fill={gutOver ? CHART_COLORS.climb : '#C9A227'}
+                  opacity={0.16}
+                />
+                <path d={polyline(S, 'gut', px, gy)} fill="none" stroke={gutOver ? '#C0562C' : '#B08E1E'} strokeWidth={1.6} vectorEffect="non-scaling-stroke" />
+                <line x1={0} x2={WIDTH} y1={gy(GUT_LIMIT)} y2={gy(GUT_LIMIT)} stroke={CHART_COLORS.climb} strokeWidth={1} strokeDasharray="4 4" opacity={0.7} vectorEffect="non-scaling-stroke" />
+                <line x1={0} x2={WIDTH} y1={gBase} y2={gBase} stroke="#E3E5E0" strokeWidth={1} vectorEffect="non-scaling-stroke" />
+              </>
+            )}
+
             {fills.map((f) => (
               <rect
                 key={'fb' + f.fid}
