@@ -8,7 +8,7 @@ import { sourceColor } from '../chart/theme';
 import { clampGelPortion, resolveFillMove, stepperStep } from './mobileMath';
 import { MobileStepper } from './MobileStepper';
 
-export type PlanCardItem = { kind: 'fill'; fid: number } | { kind: 'food'; id: number };
+export type PlanCardItem = { kind: 'fill'; fid: number } | { kind: 'food'; id: number } | { kind: 'shop'; id: number };
 
 const CONTENT_OPTIONS: Content[] = ['water', 'izo', 'gel'];
 
@@ -44,6 +44,9 @@ export function MobilePlanCard({ item }: { item: PlanCardItem }) {
   const gear = useAppStore((s) => s.gear);
   const fills = useAppStore((s) => s.fills);
   const foods = useAppStore((s) => s.foods);
+  const shops = useAppStore((s) => s.shops);
+  const updateShop = useAppStore((s) => s.updateShop);
+  const removeShop = useAppStore((s) => s.removeShop);
   const selKey = useAppStore((s) => s.ui.selKey);
   const setSelKey = useAppStore((s) => s.setSelKey);
   const tourDemoFid = useAppStore((s) => s.ui.tourDemoFid);
@@ -232,6 +235,42 @@ export function MobilePlanCard({ item }: { item: PlanCardItem }) {
               <button
                 type="button"
                 onClick={() => removeFill(fill.fid)}
+                style={{ border: '1px solid #E3D3CD', borderRadius: 8, padding: '6px 10px', background: '#fff', color: 'var(--food)', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}
+              >
+                {strings.removeItem}
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  if (item.kind === 'shop') {
+    const shop = shops.find((s) => s.id === item.id);
+    if (!shop) return null;
+    const key = 's' + shop.id;
+    const expanded = selKey === key;
+    return (
+      <div style={cardStyle}>
+        <button type="button" style={rowBtnStyle} onClick={() => setSelKey(expanded ? null : key)}>
+          <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#9AA09B', flex: '0 0 auto' }} />
+          <span style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 13, fontWeight: 600 }}>{shop.name}</div>
+          </span>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, fontWeight: 600, flex: '0 0 auto' }}>
+            {rangeLabel(shop.at, shop.at, true, route, 'km')}
+          </span>
+        </button>
+
+        {expanded && (
+          <div style={{ borderTop: '1px solid var(--border-soft)', background: '#FBFCFA', padding: '11px 12px 12px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <MobileStepper label="na" value={shop.at} min={0} max={distanceKm} smallStep={1} bigStep={bigStep} onChange={(at) => updateShop(shop.id, { at })} />
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <button
+                type="button"
+                onClick={() => removeShop(shop.id)}
                 style={{ border: '1px solid #E3D3CD', borderRadius: 8, padding: '6px 10px', background: '#fff', color: 'var(--food)', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}
               >
                 {strings.removeItem}

@@ -22,25 +22,22 @@ export function MobileShopSheet() {
   const shopSheet = useAppStore((s) => s.ui.shopSheet);
   const closeShopSheet = useAppStore((s) => s.closeShopSheet);
   const route = useAppStore((s) => s.route);
-  const shops = useAppStore((s) => s.shops);
   const addShop = useAppStore((s) => s.addShop);
   const updateShop = useAppStore((s) => s.updateShop);
   const lang = useAppStore((s) => s.ui.lang);
   const strings = t(lang);
 
   const distanceKm = dist(route);
-  const editId = shopSheet?.editId ?? null;
-  const editing = editId != null ? shops.find((s) => s.id === editId) : null;
 
   const [km, setKm] = useState('');
   const [name, setName] = useState('');
 
   useEffect(() => {
     if (!shopSheet) return;
-    setKm(editing ? String(editing.at) : '');
-    setName(editing ? editing.name : strings.shopDefaultName);
+    setKm('');
+    setName(strings.shopDefaultName);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shopSheet, editId]);
+  }, [shopSheet]);
 
   if (!shopSheet) return null;
 
@@ -49,13 +46,9 @@ export function MobileShopSheet() {
 
   function submit() {
     if (!valid) return;
-    if (editId != null) {
-      updateShop(editId, { at: kmValue, name });
-    } else {
-      const newId = useAppStore.getState().nextShopId;
-      addShop();
-      updateShop(newId, { at: kmValue, name });
-    }
+    const newId = useAppStore.getState().nextShopId;
+    addShop();
+    updateShop(newId, { at: kmValue, name });
     closeShopSheet();
   }
 
@@ -85,7 +78,7 @@ export function MobileShopSheet() {
           </label>
           <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.shopSheetName}</span>
-            <input type="text" value={name} onChange={(e) => setName(e.target.value)} style={inputStyle} />
+            <input type="text" value={name} maxLength={10} onChange={(e) => setName(e.target.value)} style={inputStyle} />
           </label>
 
           <button

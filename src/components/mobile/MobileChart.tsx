@@ -7,8 +7,9 @@ import { CHART_COLORS, sourceColor } from '../chart/theme';
 
 const WIDTH = 800;
 const HEIGHT = 168;
+const GUT_LIMIT = 60;
 
-type RateKey = 'rate' | 'needRate' | 'fluidRate' | 'sweatRate' | 'absorbed' | 'need';
+type RateKey = 'rate' | 'needRate' | 'fluidRate' | 'sweatRate' | 'absorbed' | 'need' | 'gut';
 
 function valueAt(S: Sample[], D: number, x: number, key: RateKey): number {
   const N = S.length - 1;
@@ -62,8 +63,17 @@ export function MobileChart() {
   // never puts a non-finite number into an SVG attribute.
   const maxY = Number.isFinite(rawMaxY) && rawMaxY > 0 ? rawMaxY : 10;
 
+  // Shop-stop name chips (foreignObject below) sit at y=2..20 — only reserve
+  // room for them above the gut lane when a route actually has a stop.
+  const hasShops = shops.length > 0;
+  const GT = hasShops ? 48 : 30;
+  const GUT_TOP = hasShops ? 22 : 4;
+  const gutPeak = Math.max(GUT_LIMIT * 1.25, ...S.map((p) => p.gut)) * 1.05;
+
   const px = (x: number) => (x / D) * WIDTH;
-  const py = (y: number) => HEIGHT - ((Number.isFinite(y) ? y : 0) / maxY) * (HEIGHT - 4);
+  const py = (y: number) => HEIGHT - ((Number.isFinite(y) ? y : 0) / maxY) * (HEIGHT - GT - 4);
+  const gBase = GT - 8;
+  const gy = (g: number) => gBase - (g / gutPeak) * (gBase - GUT_TOP);
 
   const runs: { color: string; pts: Sample[] }[] = [];
   S.forEach((p, i) => {
@@ -96,6 +106,7 @@ export function MobileChart() {
   const scrubFrac = scrubX != null ? Math.max(0, Math.min(1, scrubX / D)) : null;
   const badgeFlip = scrubFrac != null && scrubFrac > 0.62;
 
+  const gutOver = S.some((p) => p.gut > GUT_LIMIT);
   const capY = fluidMode ? 750 : cap;
   const unit = fluidMode ? ' ml/h' : rateMode ? ' g/h' : ' g';
 
@@ -130,13 +141,26 @@ export function MobileChart() {
           <ElevationLayer pts={P.pts} distanceKm={D} width={WIDTH} height={HEIGHT} bottomPadding={0} share={1} visible />
         ) : (
           <>
+            {!fluidMode && (
+              <>
+                <path
+                  d={polyline(S, 'gut', px, gy) + ' L' + WIDTH + ' ' + gBase + ' L0 ' + gBase + ' Z'}
+                  fill={gutOver ? CHART_COLORS.climb : '#C9A227'}
+                  opacity={0.16}
+                />
+                <path d={polyline(S, 'gut', px, gy)} fill="none" stroke={gutOver ? '#C0562C' : '#B08E1E'} strokeWidth={1.6} vectorEffect="non-scaling-stroke" />
+                <line x1={0} x2={WIDTH} y1={gy(GUT_LIMIT)} y2={gy(GUT_LIMIT)} stroke={CHART_COLORS.climb} strokeWidth={1} strokeDasharray="4 4" opacity={0.7} vectorEffect="non-scaling-stroke" />
+                <line x1={0} x2={WIDTH} y1={gBase} y2={gBase} stroke="#E3E5E0" strokeWidth={1} vectorEffect="non-scaling-stroke" />
+              </>
+            )}
+
             {fills.map((f) => (
               <rect
                 key={'fb' + f.fid}
                 x={px(f.from)}
-                y={0}
+                y={GT}
                 width={Math.max(1, px(f.to) - px(f.from))}
-                height={HEIGHT}
+                height={HEIGHT - GT}
                 fill={sourceColor(f.content)}
                 opacity={0.07}
               />
@@ -180,8 +204,9 @@ export function MobileChart() {
                     border: '1px solid var(--chip-border)',
                     borderRadius: 5,
                     padding: '2px 5px',
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: 9,
+                    fontFamily: "'Archivo', sans-serif",
+                    fontSize: 10,
+                    fontWeight: 600,
                     color: 'var(--ink)',
                     whiteSpace: 'nowrap',
                   }}
