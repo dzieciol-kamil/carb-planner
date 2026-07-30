@@ -78,3 +78,12 @@ input[type='number'] {
   -moz-appearance: textfield;
   appearance: textfield;
 }
+
+/* 100vh on a phone includes the space behind the browser's collapsible address/tab
+   bar, so a 100vh column can end up taller than what's actually visible — pushing
+   the bottom tab bar off-screen. 100dvh tracks the real visible viewport; the plain
+   vh line stays first as a fallback for browsers that don't support dvh. */
+.mobile-app-height {
+  height: 100vh;
+  height: 100dvh;
+}

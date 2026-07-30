@@ -69,6 +69,14 @@ export function MobilePlanList() {
   // scrollTop), not its raw viewport position — the raw viewport top also changes every
   // time the user scrolls normally, which isn't a reorder and must never be "compensated"
   // away (that bug made an ordinary scroll get silently undone on the next stepper tap).
+  //
+  // Scoped to [fills, foods, selKey]: without a dependency array this ran on *every*
+  // render of this component, including ones triggered by completely unrelated store
+  // changes (typing in the route sheet, toggling the mix sheet, anything else that touches
+  // the store this component reads). Each of those re-runs still wrote to scrollTop (even
+  // when the delta was ~0), and repeatedly touching scrollTop during/around an active touch
+  // scroll is enough to freeze a mobile browser's native scroll physics — reported as "can't
+  // scroll the Plan screen at all after opening and closing a sheet."
   useLayoutEffect(() => {
     const el = selectedElRef.current;
     if (!selKey || !el) {
@@ -87,7 +95,8 @@ export function MobilePlanList() {
     }
     prevContentTopRef.current = contentTop;
     prevSelKeyRef.current = selKey;
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fills, foods, selKey]);
 
   return (
     <div style={{ padding: '12px 14px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
