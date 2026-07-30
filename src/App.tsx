@@ -9,9 +9,7 @@ import { RecipesSection } from './components/recipes/RecipesSection';
 import { RoutePanel } from './components/RoutePanel';
 import { SummaryCards } from './components/SummaryCards';
 import { TourOverlay } from './components/tour/TourOverlay';
-import { hasPlanData, isDesktopView, useAppStore } from './store/appStore';
-
-const DESKTOP_BREAKPOINT = 760;
+import { DESKTOP_BREAKPOINT, hasPlanData, isDesktopView, useAppStore } from './store/appStore';
 
 function App() {
   const panel = useAppStore((s) => s.ui.panel);

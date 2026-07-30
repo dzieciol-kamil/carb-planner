@@ -12,6 +12,16 @@ function defaultLang(): Lang {
   return browserLang.toLowerCase().startsWith('pl') ? 'pl' : 'en';
 }
 
+export const DESKTOP_BREAKPOINT = 760;
+
+// Read synchronously at store-creation time rather than defaulting to 'desktop' and
+// correcting via a useEffect: an effect only runs after the first paint, so on a narrow
+// viewport that would commit and briefly paint the desktop tree (and its degenerate-route
+// math) before self-correcting to mobile.
+function defaultAutoView(): 'desktop' | 'mobile' {
+  return typeof window !== 'undefined' && window.innerWidth < DESKTOP_BREAKPOINT ? 'mobile' : 'desktop';
+}
+
 // A route edit (shorter distance, fewer hours, switching mode, a shorter GPX
 // track...) can pull the plan's distance domain in under fills/foods/shops
 // placed further out — clamp them back onto the route instead of letting
@@ -200,7 +210,7 @@ export const useAppStore = create<AppState>()(
     ui: {
       lang: defaultLang(),
       viewMode: 'auto',
-      autoView: 'desktop',
+      autoView: defaultAutoView(),
       panel: null,
       xUnit: 'km',
       yMode: 'rate',
