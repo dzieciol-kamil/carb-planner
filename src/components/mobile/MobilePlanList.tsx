@@ -1,4 +1,4 @@
-import { useRef, type CSSProperties } from 'react';
+import { useLayoutEffect, useRef, type CSSProperties } from 'react';
 import { gaps } from '../../domain/dragMath';
 import { dist, planSummary } from '../../domain/fuel';
 import { t } from '../../i18n/strings';
@@ -8,8 +8,8 @@ import { MobilePlanCard, type PlanCardItem } from './MobilePlanCard';
 
 const MIN_GAP_KM = 6;
 
-function itemKey(item: PlanCardItem): string {
-  return item.kind + (item.kind === 'fill' ? item.fid : item.id);
+function selKeyFor(item: PlanCardItem): string {
+  return item.kind === 'fill' ? 'f' + item.fid : 'x' + item.id;
 }
 
 function coverageCardStyle(inNorm: boolean): CSSProperties {
@@ -31,7 +31,9 @@ export function MobilePlanList() {
   const foodLib = useAppStore((s) => s.foodLib);
   const shops = useAppStore((s) => s.shops);
   const selKey = useAppStore((s) => s.ui.selKey);
-  const orderRef = useRef<string[]>([]);
+  const selectedElRef = useRef<HTMLDivElement | null>(null);
+  const prevContentTopRef = useRef<number | null>(null);
+  const prevSelKeyRef = useRef<string | null>(null);
   const addFillInGap = useAppStore((s) => s.addFillInGap);
   const addFoodFromLibrary = useAppStore((s) => s.addFoodFromLibrary);
   const removeShop = useAppStore((s) => s.removeShop);
@@ -47,30 +49,45 @@ export function MobilePlanList() {
   const hydPct = summary.hydrationPct;
   const hydInNorm = hydPct >= 70;
 
-  const liveItems: PlanCardItem[] = [
+  const items: PlanCardItem[] = [
     ...fills.map((f): PlanCardItem => ({ kind: 'fill', fid: f.fid })),
     ...foods.map((f): PlanCardItem => ({ kind: 'food', id: f.id })),
-  ];
-  const fromOf = (item: PlanCardItem) =>
-    item.kind === 'fill' ? (fills.find((f) => f.fid === item.fid)?.from ?? 0) : (foods.find((f) => f.id === item.id)?.from ?? 0);
+  ].sort((a, b) => {
+    const fromOf = (item: PlanCardItem) =>
+      item.kind === 'fill' ? (fills.find((f) => f.fid === item.fid)?.from ?? 0) : (foods.find((f) => f.id === item.id)?.from ?? 0);
+    return fromOf(a) - fromOf(b);
+  });
 
-  let items: PlanCardItem[];
-  // While a card is expanded, its stepper buttons must stay put on screen — resorting
-  // live as "from" changes would otherwise yank the row (and the finger tapping it) to
-  // a new slot mid-interaction. Freeze the on-screen order for the whole duration a
-  // card is selected; only resort once nothing is selected (i.e. after collapsing).
-  if (selKey == null) {
-    items = liveItems.slice().sort((a, b) => fromOf(a) - fromOf(b));
-    orderRef.current = items.map(itemKey);
-  } else {
-    const byKey = new Map(liveItems.map((item) => [itemKey(item), item]));
-    const frozenKeys = orderRef.current;
-    const frozen = frozenKeys.map((k) => byKey.get(k)).filter((x): x is PlanCardItem => x != null);
-    const seen = new Set(frozenKeys);
-    const extra = liveItems.filter((item) => !seen.has(itemKey(item)));
-    items = [...frozen, ...extra];
-    orderRef.current = items.map(itemKey);
-  }
+  // The list re-sorts live as "from" changes, so the card being edited can move up or
+  // down among its siblings mid-interaction. Rather than freeze that (which would make
+  // the reorder happen all at once on collapse instead), keep the *edited* card's screen
+  // position fixed by shifting the scroll container underneath it by the same delta —
+  // everything else visibly reorders around it, but the buttons under the user's finger
+  // never move.
+  //
+  // Track the element's position *within the scrollable content* (viewport top + current
+  // scrollTop), not its raw viewport position — the raw viewport top also changes every
+  // time the user scrolls normally, which isn't a reorder and must never be "compensated"
+  // away (that bug made an ordinary scroll get silently undone on the next stepper tap).
+  useLayoutEffect(() => {
+    const el = selectedElRef.current;
+    if (!selKey || !el) {
+      prevContentTopRef.current = null;
+      prevSelKeyRef.current = selKey;
+      return;
+    }
+    const scrollEl = el.closest('[data-mobile-scroll]') as HTMLElement | null;
+    if (!scrollEl) return;
+    const contentTop = el.getBoundingClientRect().top - scrollEl.getBoundingClientRect().top + scrollEl.scrollTop;
+    if (prevSelKeyRef.current === selKey && prevContentTopRef.current != null) {
+      const delta = contentTop - prevContentTopRef.current;
+      if (Math.abs(delta) > 0.5) {
+        scrollEl.scrollTop += delta;
+      }
+    }
+    prevContentTopRef.current = contentTop;
+    prevSelKeyRef.current = selKey;
+  });
 
   return (
     <div style={{ padding: '12px 14px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -105,9 +122,14 @@ export function MobilePlanList() {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-        {items.map((item) => (
-          <MobilePlanCard key={item.kind + (item.kind === 'fill' ? item.fid : item.id)} item={item} />
-        ))}
+        {items.map((item) => {
+          const key = selKeyFor(item);
+          return (
+            <div key={key} ref={key === selKey ? selectedElRef : undefined}>
+              <MobilePlanCard item={item} />
+            </div>
+          );
+        })}
       </div>
 
       {gear.map((vessel) => {
