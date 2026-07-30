@@ -28,7 +28,7 @@ function reconcileToRoute(route: RouteInput, fills: Fill[], foods: FoodItem[], s
 export type ViewMode = 'auto' | 'desktop' | 'mobile';
 export type YMode = 'rate' | 'fluid' | 'sum';
 export type PanelId = 'settings' | 'mix' | null;
-export type MobileTab = 'plan' | 'gear' | 'food' | 'me';
+export type MobileTab = 'plan' | 'gear' | 'mix' | 'food' | 'me';
 
 interface UiState {
   lang: Lang;
@@ -45,6 +45,11 @@ interface UiState {
   tourStep: number | null;
   tourSeen: boolean;
   tourDemoFid: number | null;
+  scrubX: number | null;
+  gpxPeek: boolean;
+  mixSheet: boolean;
+  routeSheet: boolean;
+  shopSheet: { editId: number | null } | null;
 }
 
 interface AppState {
@@ -85,6 +90,14 @@ interface AppState {
   setYMode: (m: YMode) => void;
   toggleTimelineOpen: () => void;
   setTab: (tab: MobileTab) => void;
+  setScrubX: (x: number | null) => void;
+  toggleGpxPeek: () => void;
+  openMixSheet: () => void;
+  closeMixSheet: () => void;
+  openRouteSheet: () => void;
+  closeRouteSheet: () => void;
+  openShopSheet: (editId: number | null) => void;
+  closeShopSheet: () => void;
   startTour: () => void;
   closeTour: () => void;
   setTourStep: (n: number) => void;
@@ -199,6 +212,11 @@ export const useAppStore = create<AppState>()(
       tourStep: null,
       tourSeen: false,
       tourDemoFid: null,
+      scrubX: null,
+      gpxPeek: false,
+      mixSheet: false,
+      routeSheet: false,
+      shopSheet: null,
     },
     nextGid: 3,
     nextFid: 1,
@@ -249,7 +267,15 @@ export const useAppStore = create<AppState>()(
     setXUnit: (xUnit) => set((s) => ({ ui: { ...s.ui, xUnit } })),
     setYMode: (yMode) => set((s) => ({ ui: { ...s.ui, yMode } })),
     toggleTimelineOpen: () => set((s) => ({ ui: { ...s.ui, timelineOpen: !s.ui.timelineOpen } })),
-    setTab: (tab) => set((s) => ({ ui: { ...s.ui, tab } })),
+    setTab: (tab) => set((s) => ({ ui: { ...s.ui, tab, selKey: null } })),
+    setScrubX: (scrubX) => set((s) => ({ ui: { ...s.ui, scrubX } })),
+    toggleGpxPeek: () => set((s) => ({ ui: { ...s.ui, gpxPeek: !s.ui.gpxPeek } })),
+    openMixSheet: () => set((s) => ({ ui: { ...s.ui, mixSheet: true } })),
+    closeMixSheet: () => set((s) => ({ ui: { ...s.ui, mixSheet: false } })),
+    openRouteSheet: () => set((s) => ({ ui: { ...s.ui, routeSheet: true } })),
+    closeRouteSheet: () => set((s) => ({ ui: { ...s.ui, routeSheet: false } })),
+    openShopSheet: (editId) => set((s) => ({ ui: { ...s.ui, shopSheet: { editId } } })),
+    closeShopSheet: () => set((s) => ({ ui: { ...s.ui, shopSheet: null } })),
     startTour: () => set((s) => ({ ui: { ...s.ui, tourStep: 0, tourSeen: true, tourDemoFid: null } })),
     closeTour: () => set((s) => ({ ui: { ...s.ui, tourStep: null } })),
     setTourStep: (n) => set((s) => ({ ui: { ...s.ui, tourStep: Math.max(0, n) } })),

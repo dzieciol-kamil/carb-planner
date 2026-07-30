@@ -165,3 +165,46 @@ describe('loadTourDemoData', () => {
     expect(s.foods).toHaveLength(0);
   });
 });
+
+describe('mobile ui state', () => {
+  test('setTab switches tab and clears selKey', () => {
+    useAppStore.getState().setSelKey('f1');
+    useAppStore.getState().setTab('mix');
+    expect(useAppStore.getState().ui.tab).toBe('mix');
+    expect(useAppStore.getState().ui.selKey).toBeNull();
+  });
+
+  test('setScrubX stores and clears the scrub position', () => {
+    useAppStore.getState().setScrubX(42);
+    expect(useAppStore.getState().ui.scrubX).toBe(42);
+    useAppStore.getState().setScrubX(null);
+    expect(useAppStore.getState().ui.scrubX).toBeNull();
+  });
+
+  test('toggleGpxPeek flips the flag', () => {
+    const before = useAppStore.getState().ui.gpxPeek;
+    useAppStore.getState().toggleGpxPeek();
+    expect(useAppStore.getState().ui.gpxPeek).toBe(!before);
+  });
+
+  test('mix/route sheets open and close', () => {
+    useAppStore.getState().openMixSheet();
+    expect(useAppStore.getState().ui.mixSheet).toBe(true);
+    useAppStore.getState().closeMixSheet();
+    expect(useAppStore.getState().ui.mixSheet).toBe(false);
+
+    useAppStore.getState().openRouteSheet();
+    expect(useAppStore.getState().ui.routeSheet).toBe(true);
+    useAppStore.getState().closeRouteSheet();
+    expect(useAppStore.getState().ui.routeSheet).toBe(false);
+  });
+
+  test('shop sheet opens with an edit target and closes to null', () => {
+    useAppStore.getState().openShopSheet(7);
+    expect(useAppStore.getState().ui.shopSheet).toEqual({ editId: 7 });
+    useAppStore.getState().openShopSheet(null);
+    expect(useAppStore.getState().ui.shopSheet).toEqual({ editId: null });
+    useAppStore.getState().closeShopSheet();
+    expect(useAppStore.getState().ui.shopSheet).toBeNull();
+  });
+});
