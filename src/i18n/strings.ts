@@ -166,16 +166,22 @@ export interface StringTable {
   tourWelcomeBody: string;
   tourRouteTitle: string;
   tourRouteBody: string;
+  tourRouteBodyMobile: string;
   tourChartTitle: string;
   tourChartBody: string;
+  tourChartBodyMobile: string;
   tourFillTitle: string;
   tourFillBody: string;
+  tourFillBodyMobile: string;
   tourAddFillTitle: string;
   tourAddFillBody: string;
+  tourAddFillBodyMobile: string;
   tourAddShopTitle: string;
   tourAddShopBody: string;
+  tourAddShopBodyMobile: string;
   tourClosingTitle: string;
   tourClosingBody: string;
+  tourClosingBodyMobile: string;
   tourNext: string;
   tourBack: string;
   tourSkip: string;
@@ -415,21 +421,33 @@ export const STR: Record<Lang, StringTable> = {
     tourRouteTitle: 'Trasa i wynik',
     tourRouteBody:
       'Tu opisujesz przejazd — dystansem i tempem albo czasem trwania — oraz warunki (intensywność, temperatura, posiłek przed startem). Karty obok pokazują, czy Twój plan pokrywa zapotrzebowanie na węglowodany i płyny. Możesz też wczytać własny plik GPX — wtedy tempo i zapotrzebowanie dopasują się do prawdziwego profilu Twojej trasy (podjazdów i zjazdów), a nie uśrednionego.',
+    tourRouteBodyMobile:
+      'Trasę edytujesz przyciskiem u góry ekranu — dystansem i tempem albo czasem trwania, plus warunkami (intensywność, temperatura, posiłek przed startem) oraz wczytaniem pliku GPX. Te karty pokazują, czy Twój plan pokrywa zapotrzebowanie na węglowodany i płyny.',
     tourChartTitle: 'Wykres: podaż kontra zapotrzebowanie',
     tourChartBody:
-      'Liczby po lewej to skala: gramy węglowodanów na godzinę (g/h). Ciągła linia to ile realnie dostarczasz, przerywana — ile potrzebujesz. Kropkowana pozioma linia to limit wchłaniania: tyle maksymalnie na godzinę wchłonie Twoje jelito, niezależnie od tego, ile zjesz — nadwyżka czeka w żołądku. Pasek nad wykresem to właśnie ten żołądek: pokazuje, co w nim aktualnie zalega. Dodaliśmy przykładowy bidon, żebyś zobaczył, jak to wygląda w praktyce.',
+      'Liczby po lewej to skala: gramy węglowodanów na godzinę (g/h). Ciągła linia to ile realnie dostarczasz, przerywana — ile potrzebujesz. Kropkowana pozioma linia to limit wchłaniania: tyle maksymalnie na godzinę wchłonie Twoje jelito, niezależnie od tego, ile zjesz — nadwyżka czeka w żołądku. Pasek nad wykresem to właśnie ten żołądek: pokazuje, co aktualnie trawi. Dodaliśmy przykładowy bidon, żebyś zobaczył, jak to wygląda w praktyce.',
+    tourChartBodyMobile:
+      'Ciągła linia to ile węglowodanów na godzinę realnie dostarczasz, przerywana — ile potrzebujesz. Kropkowana pozioma linia to limit wchłaniania: tyle maksymalnie na godzinę wchłonie Twoje jelito, niezależnie od tego, ile zjesz — nadwyżka czeka w żołądku. Górna część wykresu to właśnie ten żołądek: pokazuje, co aktualnie trawi. Przesuń palcem po wykresie, żeby odczytać dokładne wartości w danym miejscu trasy. Dodaliśmy przykładowy bidon, żebyś zobaczył, jak to wygląda w praktyce.',
     tourFillTitle: 'Bidon: przesuwanie, zwężanie, zmiana zawartości',
     tourFillBody:
       'Ten pasek to właśnie dodany bidon. Środek można chwycić i przesunąć po trasie, a lewą lub prawą krawędź — żeby skrócić lub wydłużyć odcinek, na którym z niego pijesz. Po najechaniu kursorem pojawiają się przyciski zmiany zawartości (woda / izotonik / żel), jeśli bidon obsługuje więcej niż jeden rodzaj. Spróbuj tego po zamknięciu touru.',
+    tourFillBodyMobile:
+      'To dodany bidon. Stuknij w niego, żeby rozwinąć edycję — przyciskami „od” i „do” przesuniesz go po trasie albo zmienisz długość odcinka, a przyciski obok pozwolą zmienić zawartość (woda / izotonik / żel), jeśli bidon obsługuje więcej niż jeden rodzaj.',
     tourAddFillTitle: 'Dodaj kolejną dolewkę',
     tourAddFillBody:
       'Ten przycisk „+” wstawia kolejną dolewkę w pierwszej wolnej luce na trasie — przydaje się, gdy bidon się skończy i trzeba go napełnić czymś innym. To samo dotyczy jedzenia: przyciski z listą produktów pod wykresem dodają kolejne pozycje jednym kliknięciem.',
+    tourAddFillBodyMobile:
+      'Ten przycisk dodaje kolejną dolewkę w pierwszej wolnej luce na trasie — przydaje się, gdy bidon się skończy i trzeba go napełnić czymś innym. To samo dotyczy jedzenia: przyciski z listą produktów niżej dodają kolejne pozycje jednym stuknięciem.',
     tourAddShopTitle: 'Punkty zaopatrzenia',
     tourAddShopBody:
       'Ten „+” dodaje na wykresie znacznik punktu zaopatrzenia (np. sklepu) — możesz przeciągnąć go w dowolne miejsce trasy, żeby zaznaczyć, na którym kilometrze planujesz dokupić jedzenie lub napój.',
+    tourAddShopBodyMobile:
+      'Ten przycisk otwiera formularz punktu zaopatrzenia — wpisujesz kilometr i nazwę (np. sklep), żeby zaznaczyć, gdzie planujesz dokupić jedzenie lub napój.',
     tourClosingTitle: 'To wszystko na start',
     tourClosingBody:
       'Przepisy na uzupełnianie dodanych bidonów i dolewek znajdziesz pod wykresem. Ustawienia (waga, ustawienia dostępnych produktów) oraz Mieszanka i bidony (pozwala ustalić proporcje i dostępne bidony) znajdziesz w nagłówku. Ten tour możesz odpalić ponownie w każdej chwili przyciskiem w stopce.',
+    tourClosingBodyMobile:
+      'Przepisy na uzupełnianie bidonów znajdziesz pod przyciskiem „Skład bidonów” na liście planu. Ustawienia i język zmienisz w zakładce „Ja”, a proporcje mieszanki i dostępne bidony — w zakładkach „Mix” i „Sprzęt”. Ten tour możesz odpalić ponownie w każdej chwili przyciskiem w zakładce „Ja”.',
     tourNext: 'Dalej',
     tourBack: 'Wstecz',
     tourSkip: 'Pomiń',
@@ -666,21 +684,33 @@ export const STR: Record<Lang, StringTable> = {
     tourRouteTitle: 'Route & result',
     tourRouteBody:
       "Describe your ride here — distance and pace, or a duration — plus conditions (intensity, temperature, pre-ride meal). The cards next to it show whether your plan covers your carb and fluid needs. You can also load your own GPX file — pace and requirement will then match your route's real profile (climbs and descents) instead of an averaged one.",
+    tourRouteBodyMobile:
+      "Edit your route with the button at the top of the screen — distance and pace, or a duration, plus conditions (intensity, temperature, pre-ride meal) and loading a GPX file. These cards show whether your plan covers your carb and fluid needs.",
     tourChartTitle: 'The chart: supply vs. requirement',
     tourChartBody:
-      "The numbers on the left are the scale: grams of carbs per hour (g/h). The solid line is how many carbs you're actually delivering, the dashed line is how many you need. The dotted horizontal line is the absorption limit: the most your gut can absorb per hour no matter how much you eat — anything above it waits in the stomach. The bar above the chart is that stomach: it shows what's currently sitting in it. We added a sample bottle so you can see how this looks in practice.",
+      "The numbers on the left are the scale: grams of carbs per hour (g/h). The solid line is how many carbs you're actually delivering, the dashed line is how many you need. The dotted horizontal line is the absorption limit: the most your gut can absorb per hour no matter how much you eat — anything above it waits in the stomach. The bar above the chart is that stomach: it shows what it's currently digesting. We added a sample bottle so you can see how this looks in practice.",
+    tourChartBodyMobile:
+      "The solid line is how many carbs per hour you're actually delivering, the dashed line is how many you need. The dotted horizontal line is the absorption limit: the most your gut can absorb per hour no matter how much you eat — anything above it waits in the stomach. The top of the chart is that stomach: it shows what it's currently digesting. Drag your finger across the chart to read exact values at any point on the route. We added a sample bottle so you can see how this looks in practice.",
     tourFillTitle: 'A bottle: move it, resize it, change its contents',
     tourFillBody:
       "This bar is the bottle we just added. You can drag the middle to move it along the route, or either edge to shorten or lengthen the stretch you drink it over. Hovering it reveals buttons to switch its contents (water / isotonic / gel) if the bottle allows more than one. Try it once you close the tour.",
+    tourFillBodyMobile:
+      "This is the bottle we just added. Tap it to expand its editor — the \"from\" and \"to\" buttons move it along the route or change how long the segment is, and the buttons next to them switch its contents (water / isotonic / gel) if the bottle allows more than one.",
     tourAddFillTitle: 'Add another fill',
     tourAddFillBody:
       "This \"+\" button inserts another fill into the first free gap on the route — useful once a bottle runs dry and needs refilling with something else. The same idea applies to food: the product buttons under the chart add another item with one click.",
+    tourAddFillBodyMobile:
+      "This button inserts another fill into the first free gap on the route — useful once a bottle runs dry and needs refilling with something else. The same applies to food: the product buttons further down add another item with one tap.",
     tourAddShopTitle: 'Resupply points',
     tourAddShopBody:
       "This \"+\" adds a resupply marker on the chart (e.g. a shop) — drag it anywhere on the route to mark which kilometer you plan to buy more food or drink at.",
+    tourAddShopBodyMobile:
+      "This button opens a small form for a resupply point — enter the kilometer and a name (e.g. a shop) to mark where you plan to buy more food or drink.",
     tourClosingTitle: "That's the essentials",
     tourClosingBody:
       "Recipes for topping up the bottles and fills you've added are under the chart. Settings (weight, available-product settings) and Mix & bottles (set ratios and available bottles) are in the header. Replay this tour any time from the button in the footer.",
+    tourClosingBodyMobile:
+      "Recipes for topping up bottles are behind the \"Bottle recipes\" button on the plan list. Change settings and language in the \"Me\" tab, and mix ratios and available bottles in the \"Mix\" and \"Gear\" tabs. Replay this tour any time from the button in the \"Me\" tab.",
     tourNext: 'Next',
     tourBack: 'Back',
     tourSkip: 'Skip',

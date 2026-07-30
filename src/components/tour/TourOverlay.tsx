@@ -18,6 +18,15 @@ function measure(target: string): Rect | null {
   return { top: r.top, left: r.left, width: r.width, height: r.height };
 }
 
+// On mobile the page itself doesn't scroll — MobileApp is a fixed-position shell and
+// this inner element (flex:1, between the sticky header and the bottom tab bar) is the
+// actual scroll container. Centering/placement math must scroll and bound itself against
+// this element instead of `window` there, since `window.scrollTo` is a no-op on that shell
+// and `window.innerHeight` would ignore the tab bar sitting below it.
+function mobileScrollEl(): HTMLElement | null {
+  return document.querySelector('[data-mobile-scroll]');
+}
+
 const PAD = 8;
 const TOOLTIP_WIDTH = 320;
 const MARGIN = 14;
@@ -48,9 +57,27 @@ export function TourOverlay() {
       const targetRect = el.getBoundingClientRect();
       const tooltipHeight = tooltipRef.current?.getBoundingClientRect().height ?? 0;
       const combinedHeight = targetRect.height + (tooltipHeight ? tooltipHeight + 14 : 0);
-      const docTop = targetRect.top + window.scrollY;
-      const desiredScrollY = docTop - (window.innerHeight - combinedHeight) / 2;
-      window.scrollTo({ top: Math.max(0, desiredScrollY), behavior: 'smooth' });
+      const scrollEl = mobileScrollEl();
+      if (scrollEl) {
+        const scrollRect = scrollEl.getBoundingClientRect();
+        const contentTop = targetRect.top - scrollRect.top + scrollEl.scrollTop;
+        let desiredScrollTop = contentTop - (scrollRect.height - combinedHeight) / 2;
+        // The chart+lane-strip block above the plan list is `position: sticky` and paints
+        // above later siblings once stuck (it has a higher z-index so it doesn't get
+        // visually pushed away like a normal sibling would). A target below it — the
+        // coverage cards, a fill row, an add button — still reports its true (unoccluded)
+        // layout position via getBoundingClientRect, so "centering" naively can scroll far
+        // enough to tuck the target's top edge behind that sticky panel while still
+        // reporting/highlighting it as if fully visible. Cap the scroll so the target's
+        // top never ends up above the sticky panel's bottom edge.
+        const stickyHeight = document.querySelector('[data-mobile-sticky]')?.getBoundingClientRect().height ?? 0;
+        desiredScrollTop = Math.min(desiredScrollTop, contentTop - stickyHeight);
+        scrollEl.scrollTo({ top: Math.max(0, desiredScrollTop), behavior: 'auto' });
+      } else {
+        const docTop = targetRect.top + window.scrollY;
+        const desiredScrollY = docTop - (window.innerHeight - combinedHeight) / 2;
+        window.scrollTo({ top: Math.max(0, desiredScrollY), behavior: 'smooth' });
+      }
     }
 
     let raf = 0;
@@ -87,6 +114,7 @@ export function TourOverlay() {
   const isFirst = tourStep === 0;
   const isLast = tourStep === TOUR_STEPS.length - 1;
   const cutout = rect ? { top: rect.top - PAD, left: rect.left - PAD, width: rect.width + PAD * 2, height: rect.height + PAD * 2 } : null;
+  const bodyKey = mobileScrollEl() && step.mobileBodyKey ? step.mobileBodyKey : step.bodyKey;
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 200 }}>
@@ -124,7 +152,7 @@ export function TourOverlay() {
           </button>
         </div>
         <span style={{ fontSize: 15, fontWeight: 700 }}>{strings[step.titleKey]}</span>
-        <span style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--ink-soft)' }}>{strings[step.bodyKey]}</span>
+        <span style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--ink-soft)' }}>{strings[bodyKey]}</span>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginTop: 4 }}>
           <button onClick={closeTour} style={tourGhostBtn}>
             {strings.tourSkip}
@@ -151,11 +179,18 @@ interface TourTooltipProps {
 }
 
 const TourTooltip = forwardRef<HTMLDivElement, TourTooltipProps>(function TourTooltip({ cutout, children }, ref) {
+  // Narrow phones can't fit the desktop-sized tooltip between the margins.
+  const width = Math.min(TOOLTIP_WIDTH, window.innerWidth - MARGIN * 2);
+  // The mobile scroll container's own rect already excludes the bottom tab bar (a flex
+  // sibling below it), so bound placement against it there instead of window.innerHeight,
+  // which would let the tooltip land underneath the tab bar.
+  const viewportBottom = mobileScrollEl()?.getBoundingClientRect().bottom ?? window.innerHeight;
+
   const pos: CSSProperties = cutout
     ? (() => {
-        const spaceBelow = window.innerHeight - (cutout.top + cutout.height);
+        const spaceBelow = viewportBottom - (cutout.top + cutout.height);
         const placeBelow = spaceBelow > 280 || spaceBelow > cutout.top;
-        const left = Math.min(Math.max(MARGIN, cutout.left), window.innerWidth - TOOLTIP_WIDTH - MARGIN);
+        const left = Math.min(Math.max(MARGIN, cutout.left), window.innerWidth - width - MARGIN);
         return placeBelow
           ? { position: 'fixed', top: cutout.top + cutout.height + 14, left }
           : { position: 'fixed', bottom: window.innerHeight - cutout.top + 14, left };
@@ -167,7 +202,7 @@ const TourTooltip = forwardRef<HTMLDivElement, TourTooltipProps>(function TourTo
       ref={ref}
       style={{
         ...pos,
-        width: TOOLTIP_WIDTH,
+        width,
         background: '#fff',
         border: '1px solid var(--border)',
         borderRadius: 14,

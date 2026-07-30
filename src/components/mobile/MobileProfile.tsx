@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { absCap } from '../../domain/fuel';
 import { LANGS, t } from '../../i18n/strings';
-import { useAppStore } from '../../store/appStore';
+import { hasPlanData, useAppStore } from '../../store/appStore';
 import { CoffeeIcon, GitHubIcon } from '../Footer';
+import { TourReplayConfirm } from '../tour/TourReplayConfirm';
 import { MobileStepper } from './MobileStepper';
 
 export function MobileProfile() {
@@ -13,9 +15,19 @@ export function MobileProfile() {
   const autoView = useAppStore((s) => s.ui.autoView);
   const setViewMode = useAppStore((s) => s.setViewMode);
   const mix = useAppStore((s) => s.mix);
+  const startTour = useAppStore((s) => s.startTour);
   const strings = t(lang);
   const cap = absCap(mix);
   const absorptionNote = strings.capNote + cap + ' g/h' + strings.capNote2;
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  const handleReplay = () => {
+    if (hasPlanData(useAppStore.getState())) {
+      setConfirmOpen(true);
+    } else {
+      startTour();
+    }
+  };
 
   return (
     <div style={{ padding: '12px 14px 16px', display: 'flex', flexDirection: 'column', gap: 18 }}>
@@ -135,12 +147,31 @@ export function MobileProfile() {
             <CoffeeIcon />
             <span>{strings.ftSupport}</span>
           </a>
+          <button
+            type="button"
+            onClick={handleReplay}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, border: '1px solid var(--chip-border)', background: '#fff', borderRadius: 999, padding: '7px 13px', fontSize: 12, fontWeight: 600, color: 'var(--ink)', cursor: 'pointer', fontFamily: 'Archivo, sans-serif' }}
+          >
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--water)', flex: '0 0 8px' }} />
+            <span>{strings.tourReplayButton}</span>
+          </button>
         </div>
 
         <p style={{ margin: 0, fontSize: 10.5, lineHeight: 1.55, color: 'var(--muted)' }}>{strings.ftLegalBody}</p>
 
         <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '0.06em', color: 'var(--muted-3)' }}>{strings.ftCopyright}</span>
       </div>
+
+      {confirmOpen && (
+        <TourReplayConfirm
+          strings={strings}
+          onCancel={() => setConfirmOpen(false)}
+          onConfirm={() => {
+            setConfirmOpen(false);
+            startTour();
+          }}
+        />
+      )}
     </div>
   );
 }

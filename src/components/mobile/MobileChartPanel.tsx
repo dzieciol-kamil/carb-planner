@@ -114,8 +114,10 @@ export function MobileChartPanel() {
         <p style={{ margin: 0, fontSize: 11, lineHeight: 1.45, color: 'var(--muted)' }}>{narration}</p>
       </div>
 
-      <div style={{ position: 'sticky', top: 0, zIndex: 5, background: '#fff', borderBottom: '1px solid var(--border-soft)', padding: '0 14px 9px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-        <MobileChart />
+      <div data-mobile-sticky style={{ position: 'sticky', top: 0, zIndex: 5, background: '#fff', borderBottom: '1px solid var(--border-soft)', padding: '0 14px 9px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div data-tour="chart">
+          <MobileChart />
+        </div>
 
         <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: 'var(--muted)' }}>
           {axisPoints.map((km, i) => (

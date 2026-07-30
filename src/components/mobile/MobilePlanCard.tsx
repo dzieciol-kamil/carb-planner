@@ -46,6 +46,7 @@ export function MobilePlanCard({ item }: { item: PlanCardItem }) {
   const foods = useAppStore((s) => s.foods);
   const selKey = useAppStore((s) => s.ui.selKey);
   const setSelKey = useAppStore((s) => s.setSelKey);
+  const tourDemoFid = useAppStore((s) => s.ui.tourDemoFid);
   const updateFill = useAppStore((s) => s.updateFill);
   const removeFill = useAppStore((s) => s.removeFill);
   const setFillContent = useAppStore((s) => s.setFillContent);
@@ -101,7 +102,12 @@ export function MobilePlanCard({ item }: { item: PlanCardItem }) {
 
     return (
       <div style={cardStyle}>
-        <button type="button" style={rowBtnStyle} onClick={() => setSelKey(expanded ? null : key)}>
+        <button
+          type="button"
+          data-tour={fill.fid === tourDemoFid ? 'demo-fill' : undefined}
+          style={rowBtnStyle}
+          onClick={() => setSelKey(expanded ? null : key)}
+        >
           <span style={{ width: 9, height: 9, borderRadius: '50%', background: sourceColor(fill.content), flex: '0 0 auto' }} />
           <span style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 13, fontWeight: 600 }}>
