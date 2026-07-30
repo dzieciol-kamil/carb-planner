@@ -147,7 +147,9 @@ export function MobilePlanList() {
             key={shop.id}
             style={{ display: 'inline-flex', alignItems: 'center', gap: 6, borderRadius: 999, padding: '7px 10px', border: '1px solid var(--chip-border)', fontSize: 12 }}
           >
-            {shop.at} km
+            <button type="button" onClick={() => openShopSheet(shop.id)} style={{ border: 'none', background: 'transparent', padding: 0, font: 'inherit', cursor: 'pointer' }}>
+              {shop.name} · {shop.at} km
+            </button>
             <button type="button" onClick={() => removeShop(shop.id)} style={{ border: 'none', background: 'transparent', color: '#B0B5B0', cursor: 'pointer', padding: 0 }}>
               ✕
             </button>

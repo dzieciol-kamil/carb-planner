@@ -361,7 +361,7 @@ export const useAppStore = create<AppState>()(
       set((s) => {
         const distanceKm = dist(s.route);
         const at = nextShopAt(s.shops, distanceKm);
-        return { shops: [...s.shops, { id: s.nextShopId, at }], nextShopId: s.nextShopId + 1 };
+        return { shops: [...s.shops, { id: s.nextShopId, at, name: t(s.ui.lang).shopDefaultName }], nextShopId: s.nextShopId + 1 };
       }),
     updateShop: (id, patch) => set((s) => ({ shops: s.shops.map((x) => (x.id === id ? { ...x, ...patch } : x)) })),
     removeShop: (id) =>

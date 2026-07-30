@@ -182,7 +182,7 @@ export function MobileChart() {
                     whiteSpace: 'nowrap',
                   }}
                 >
-                  {shop.at}km
+                  {shop.name}
                 </div>
               </foreignObject>
             </g>

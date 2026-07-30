@@ -38,7 +38,7 @@ describe('hasPlanData', () => {
   });
 
   test('true once a shop stop exists', () => {
-    expect(hasPlanData({ route: route(), fills: [], foods: [], shops: [{ id: 1, at: 40 }] })).toBe(true);
+    expect(hasPlanData({ route: route(), fills: [], foods: [], shops: [{ id: 1, at: 40, name: 'Shop' }] })).toBe(true);
   });
 });
 
@@ -84,7 +84,7 @@ describe('setDistance (live typing) vs reconcilePlan (commit)', () => {
     useAppStore.setState({
       route: route({ distance: 100 }),
       foods: [{ id: 1, key: 'gel', name: 'Gel', carbs: 25, from: 80, to: 80 }],
-      shops: [{ id: 1, at: 95 }],
+      shops: [{ id: 1, at: 95, name: 'Shop' }],
     });
     useAppStore.getState().setDistance(50);
     useAppStore.getState().reconcilePlan();
