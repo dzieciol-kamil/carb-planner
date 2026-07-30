@@ -52,14 +52,18 @@ export function MobileChart() {
   const nk: RateKey = fluidMode ? 'sweatRate' : rateMode ? 'needRate' : 'need';
   const cap = absCap(mix);
 
-  const maxY = fluidMode
+  const rawMaxY = fluidMode
     ? Math.max(750 * 1.1, ...S.map((p) => Math.max(p.fluidRate, p.sweatRate))) * 1.1
     : rateMode
       ? Math.max(10, cap * 1.05, ...S.map((p) => Math.max(p.rate, p.needRate))) * 1.15
       : Math.max(1, ...S.map((p) => Math.max(p.absorbed, p.need))) * 1.08;
+  // A route with zero total hours (distance set but speed still 0) makes samples()'s
+  // rate EMA divide by a zero dt, producing NaN — guard here so a degenerate route
+  // never puts a non-finite number into an SVG attribute.
+  const maxY = Number.isFinite(rawMaxY) && rawMaxY > 0 ? rawMaxY : 10;
 
   const px = (x: number) => (x / D) * WIDTH;
-  const py = (y: number) => HEIGHT - (y / maxY) * (HEIGHT - 4);
+  const py = (y: number) => HEIGHT - ((Number.isFinite(y) ? y : 0) / maxY) * (HEIGHT - 4);
 
   const runs: { color: string; pts: Sample[] }[] = [];
   S.forEach((p, i) => {

@@ -8,6 +8,7 @@ export function MobileProfile() {
   const setWeight = useAppStore((s) => s.setWeight);
   const setLang = useAppStore((s) => s.setLang);
   const viewMode = useAppStore((s) => s.ui.viewMode);
+  const autoView = useAppStore((s) => s.ui.autoView);
   const setViewMode = useAppStore((s) => s.setViewMode);
   const strings = t(lang);
 
@@ -60,7 +61,7 @@ export function MobileProfile() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{strings.meView}</span>
           <div style={{ display: 'flex', gap: 6 }}>
-            {(['mobile', 'desktop'] as const).map((v) => (
+            {(['auto', 'desktop', 'mobile'] as const).map((v) => (
               <button
                 key={v}
                 type="button"
@@ -77,10 +78,16 @@ export function MobileProfile() {
                   cursor: 'pointer',
                 }}
               >
-                {v === 'mobile' ? strings.mobile : strings.desktop}
+                {v === 'auto' ? strings.viewAuto : v === 'desktop' ? strings.desktop : strings.mobile}
               </button>
             ))}
           </div>
+          {viewMode === 'auto' && (
+            <span style={{ fontSize: 11, color: 'var(--muted-3)' }}>
+              {strings.autoDetected}
+              {autoView === 'desktop' ? strings.desktop : strings.mobile}
+            </span>
+          )}
         </div>
       </div>
 
