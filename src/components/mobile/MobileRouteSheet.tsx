@@ -90,12 +90,12 @@ export function MobileRouteSheet() {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          <MobileStepper label={strings.distance + ' (km)'} value={route.distance} min={0} max={600} smallStep={5} bigStep={25} onChange={setDistance} />
+          <MobileStepper label={strings.distance + ' (km)'} value={route.distance} min={0} max={600} smallStep={1} bigStep={5} onChange={setDistance} />
           <MobileStepper label={strings.speed + ' (km/h)'} value={route.speed} min={8} max={50} smallStep={1} bigStep={5} onChange={setSpeed} />
 
           <div style={sectionTitleStyle}>{strings.routeSheetPreStart}</div>
-          <MobileStepper label={strings.preMealCarbs + ' (g)'} value={route.preMealCarbs} min={0} max={200} smallStep={10} bigStep={50} onChange={setPreMealCarbs} />
-          <MobileStepper label={strings.preMealMinutes + ' (min)'} value={route.preMealMinutes} min={0} max={240} smallStep={15} bigStep={60} onChange={setPreMealMinutes} />
+          <MobileStepper label={strings.preMealCarbs + ' (g)'} value={route.preMealCarbs} min={0} max={200} smallStep={1} bigStep={5} onChange={setPreMealCarbs} />
+          <MobileStepper label={strings.preMealMinutes + ' (min)'} value={route.preMealMinutes} min={0} max={240} smallStep={1} bigStep={5} onChange={setPreMealMinutes} />
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{strings.routeSheetIntensity}</span>

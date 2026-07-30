@@ -979,9 +979,9 @@ Both use the same shape from README's sheet sections (§7/§8): `border-radius:2
 - [ ] **Step 2: Implement `MobileRouteSheet.tsx`**
 
 Per README §7, but with one deviation from the README's own visual spec, **per explicit user request**: the README shows this sheet's steppers as plain `[−][value][+]` (2-button), but the user asked for the same `[−−][−][value][+][++]` 5-button `MobileStepper` used everywhere else (gear volume, plan-card ranges) for visual consistency across the app. Use `MobileStepper` for all four fields here:
-- Dystans (km): `smallStep=5`, `bigStep=25`.
+- Dystans (km): `smallStep=1`, `bigStep=5` (per user correction — matches the 1km/5km rule used elsewhere for range editing).
 - Średnia prędkość (km/h): `smallStep=1`, `bigStep=5`.
-- "PRZED STARTEM" section — Węgle przed startem (g): `smallStep=10`, `bigStep=50`, range 0–200. Czas przed startem (min): `smallStep=15`, `bigStep=60`, range 0–240.
+- "PRZED STARTEM" section — Węgle przed startem (g): `smallStep=1`, `bigStep=5`, range 0–200. Czas przed startem (min): `smallStep=1`, `bigStep=5`, range 0–240 (per user correction, matching the 1km/5km rule applied to every stepper on this sheet).
 
 Then: intensity chips (Niska/Średnia/Wysoka → `setIntensity('low'|'mid'|'high')`), temperature label + `input[type=range]` 0–40 (reuse the global range-input styling already in `tokens.css`), "PROFIL GPX" section (file name/climb-sum display, hidden `<input type="file" accept=".gpx">` behind a "Wczytaj plik" label calling `loadGpxFromFile`, Wł./Wył. toggle calling `toggleGpx`), "Gotowe" button calling `closeRouteSheet()` then `reconcilePlan()` (matches existing desktop commit-on-close pattern noted in `appStore.ts`'s comment above `setDistance`).
 
