@@ -20,12 +20,18 @@ export function clampGelPortion(candidateKm: number, k: number, n: number, from:
 export function resolveFillMove(candidateFrom: number, width: number, prevFrom: number, siblings: { from: number; to: number }[], distanceKm: number): number {
   let from = Math.max(0, Math.min(distanceKm - width, candidateFrom));
   const forward = from >= prevFrom;
-  const blocker = siblings.find((s) => from < s.to && from + width > s.from);
-  if (!blocker) return from;
 
-  from = forward ? blocker.to : blocker.from - width;
-  if (from < 0 || from > distanceKm - width) return prevFrom;
-  return from;
+  // Siblings never overlap each other, so each jump clears exactly one of them — but
+  // landing just past it can land inside the next one if they're adjacent. Keep
+  // resolving until nothing overlaps; bounded by sibling count since each step clears
+  // one and they can't reappear.
+  for (let guard = siblings.length; guard >= 0; guard--) {
+    const blocker = siblings.find((s) => from < s.to && from + width > s.from);
+    if (!blocker) return from;
+    from = forward ? blocker.to : blocker.from - width;
+    if (from < 0 || from > distanceKm - width) return prevFrom;
+  }
+  return prevFrom;
 }
 
 export function foodTouchHitbox(centerPx: number, neighborDistancesPx: number[]): { left: number; width: number } {

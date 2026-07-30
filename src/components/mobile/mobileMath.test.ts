@@ -65,6 +65,24 @@ describe('resolveFillMove', () => {
     // Route ends at 45; jumping after [30,40] would need [40,50], which doesn't fit.
     expect(resolveFillMove(35, 10, 10, sibling, 45)).toBe(10);
   });
+
+  it('keeps jumping past a second sibling immediately adjacent to the first', () => {
+    // Two touching siblings [30,40] and [40,50]. Moving forward into the first must not
+    // stop at a position that lands inside the second.
+    const adjacent = [
+      { from: 30, to: 40 },
+      { from: 40, to: 50 },
+    ];
+    expect(resolveFillMove(35, 10, 10, adjacent, 100)).toBe(50);
+  });
+
+  it('keeps jumping backward past a second sibling immediately adjacent to the first', () => {
+    const adjacent = [
+      { from: 30, to: 40 },
+      { from: 40, to: 50 },
+    ];
+    expect(resolveFillMove(45, 10, 70, adjacent, 100)).toBe(20);
+  });
 });
 
 describe('foodTouchHitbox', () => {
