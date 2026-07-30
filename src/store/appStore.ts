@@ -12,6 +12,16 @@ function defaultLang(): Lang {
   return browserLang.toLowerCase().startsWith('pl') ? 'pl' : 'en';
 }
 
+export const DESKTOP_BREAKPOINT = 760;
+
+// Read synchronously at store-creation time rather than defaulting to 'desktop' and
+// correcting via a useEffect: an effect only runs after the first paint, so on a narrow
+// viewport that would commit and briefly paint the desktop tree (and its degenerate-route
+// math) before self-correcting to mobile.
+function defaultAutoView(): 'desktop' | 'mobile' {
+  return typeof window !== 'undefined' && window.innerWidth < DESKTOP_BREAKPOINT ? 'mobile' : 'desktop';
+}
+
 // A route edit (shorter distance, fewer hours, switching mode, a shorter GPX
 // track...) can pull the plan's distance domain in under fills/foods/shops
 // placed further out — clamp them back onto the route instead of letting
@@ -28,7 +38,7 @@ function reconcileToRoute(route: RouteInput, fills: Fill[], foods: FoodItem[], s
 export type ViewMode = 'auto' | 'desktop' | 'mobile';
 export type YMode = 'rate' | 'fluid' | 'sum';
 export type PanelId = 'settings' | 'mix' | null;
-export type MobileTab = 'plan' | 'gear' | 'food' | 'me';
+export type MobileTab = 'plan' | 'gear' | 'mix' | 'food' | 'me';
 
 interface UiState {
   lang: Lang;
@@ -45,6 +55,11 @@ interface UiState {
   tourStep: number | null;
   tourSeen: boolean;
   tourDemoFid: number | null;
+  scrubX: number | null;
+  gpxPeek: boolean;
+  mixSheet: boolean;
+  routeSheet: boolean;
+  shopSheet: { editId: number | null } | null;
 }
 
 interface AppState {
@@ -85,6 +100,14 @@ interface AppState {
   setYMode: (m: YMode) => void;
   toggleTimelineOpen: () => void;
   setTab: (tab: MobileTab) => void;
+  setScrubX: (x: number | null) => void;
+  toggleGpxPeek: () => void;
+  openMixSheet: () => void;
+  closeMixSheet: () => void;
+  openRouteSheet: () => void;
+  closeRouteSheet: () => void;
+  openShopSheet: (editId: number | null) => void;
+  closeShopSheet: () => void;
   startTour: () => void;
   closeTour: () => void;
   setTourStep: (n: number) => void;
@@ -187,7 +210,7 @@ export const useAppStore = create<AppState>()(
     ui: {
       lang: defaultLang(),
       viewMode: 'auto',
-      autoView: 'desktop',
+      autoView: defaultAutoView(),
       panel: null,
       xUnit: 'km',
       yMode: 'rate',
@@ -199,6 +222,11 @@ export const useAppStore = create<AppState>()(
       tourStep: null,
       tourSeen: false,
       tourDemoFid: null,
+      scrubX: null,
+      gpxPeek: false,
+      mixSheet: false,
+      routeSheet: false,
+      shopSheet: null,
     },
     nextGid: 3,
     nextFid: 1,
@@ -249,7 +277,15 @@ export const useAppStore = create<AppState>()(
     setXUnit: (xUnit) => set((s) => ({ ui: { ...s.ui, xUnit } })),
     setYMode: (yMode) => set((s) => ({ ui: { ...s.ui, yMode } })),
     toggleTimelineOpen: () => set((s) => ({ ui: { ...s.ui, timelineOpen: !s.ui.timelineOpen } })),
-    setTab: (tab) => set((s) => ({ ui: { ...s.ui, tab } })),
+    setTab: (tab) => set((s) => ({ ui: { ...s.ui, tab, selKey: null } })),
+    setScrubX: (scrubX) => set((s) => ({ ui: { ...s.ui, scrubX } })),
+    toggleGpxPeek: () => set((s) => ({ ui: { ...s.ui, gpxPeek: !s.ui.gpxPeek } })),
+    openMixSheet: () => set((s) => ({ ui: { ...s.ui, mixSheet: true } })),
+    closeMixSheet: () => set((s) => ({ ui: { ...s.ui, mixSheet: false } })),
+    openRouteSheet: () => set((s) => ({ ui: { ...s.ui, routeSheet: true } })),
+    closeRouteSheet: () => set((s) => ({ ui: { ...s.ui, routeSheet: false } })),
+    openShopSheet: (editId) => set((s) => ({ ui: { ...s.ui, shopSheet: { editId } } })),
+    closeShopSheet: () => set((s) => ({ ui: { ...s.ui, shopSheet: null } })),
     startTour: () => set((s) => ({ ui: { ...s.ui, tourStep: 0, tourSeen: true, tourDemoFid: null } })),
     closeTour: () => set((s) => ({ ui: { ...s.ui, tourStep: null } })),
     setTourStep: (n) => set((s) => ({ ui: { ...s.ui, tourStep: Math.max(0, n) } })),
@@ -335,7 +371,7 @@ export const useAppStore = create<AppState>()(
       set((s) => {
         const distanceKm = dist(s.route);
         const at = nextShopAt(s.shops, distanceKm);
-        return { shops: [...s.shops, { id: s.nextShopId, at }], nextShopId: s.nextShopId + 1 };
+        return { shops: [...s.shops, { id: s.nextShopId, at, name: t(s.ui.lang).shopDefaultName }], nextShopId: s.nextShopId + 1 };
       }),
     updateShop: (id, patch) => set((s) => ({ shops: s.shops.map((x) => (x.id === id ? { ...x, ...patch } : x)) })),
     removeShop: (id) =>

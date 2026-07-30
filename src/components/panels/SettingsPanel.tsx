@@ -1,8 +1,10 @@
 import type { CSSProperties } from 'react';
 import { t } from '../../i18n/strings';
-import { useAppStore } from '../../store/appStore';
+import { useAppStore, type ViewMode } from '../../store/appStore';
 import { NumberInput } from '../ui/NumberInput';
 import { PanelShell } from './PanelShell';
+
+const VIEW_MODES: ViewMode[] = ['auto', 'desktop', 'mobile'];
 
 function contStyle(active: boolean): CSSProperties {
   return {
@@ -43,6 +45,9 @@ export function SettingsPanel() {
   const weight = useAppStore((s) => s.route.weight);
   const foodLib = useAppStore((s) => s.foodLib);
   const setWeight = useAppStore((s) => s.setWeight);
+  const viewMode = useAppStore((s) => s.ui.viewMode);
+  const autoView = useAppStore((s) => s.ui.autoView);
+  const setViewMode = useAppStore((s) => s.setViewMode);
   const closePanel = useAppStore((s) => s.closePanel);
   const updateFoodLibEntry = useAppStore((s) => s.updateFoodLibEntry);
   const removeFoodLibEntry = useAppStore((s) => s.removeFoodLibEntry);
@@ -52,6 +57,23 @@ export function SettingsPanel() {
   return (
     <PanelShell title={strings.settings} onClose={closePanel}>
       <div style={sectionTitleStyle}>{strings.profile}</div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 7, marginBottom: 20 }}>
+        <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{strings.viewLabel}</span>
+        <div style={{ display: 'flex', gap: 6 }}>
+          {VIEW_MODES.map((v) => (
+            <button key={v} onClick={() => setViewMode(v)} style={{ ...contStyle(viewMode === v), width: 'auto', flex: 1 }}>
+              {v === 'auto' ? strings.viewAuto : v === 'desktop' ? strings.desktop : strings.mobile}
+            </button>
+          ))}
+        </div>
+        {viewMode === 'auto' && (
+          <span style={{ fontSize: 11, color: 'var(--muted-3)' }}>
+            {strings.autoDetected}
+            {autoView === 'desktop' ? strings.desktop : strings.mobile}
+          </span>
+        )}
+      </div>
+
       <label style={{ display: 'flex', flexDirection: 'column', gap: 7, marginBottom: 24 }}>
         <span style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--muted-2)' }}>
           <span>{strings.weight}</span>

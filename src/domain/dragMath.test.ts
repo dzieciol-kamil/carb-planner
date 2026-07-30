@@ -231,17 +231,17 @@ describe('moveListItem', () => {
 
 describe('moveShop', () => {
   test('moves freely within [0, distanceKm]', () => {
-    const shop: ShopStop = { id: 1, at: 50 };
+    const shop: ShopStop = { id: 1, at: 50, name: 'Shop' };
     expect(moveShop(shop, 100, 10)).toBe(60);
   });
 
   test('clamps at the route start', () => {
-    const shop: ShopStop = { id: 1, at: 10 };
+    const shop: ShopStop = { id: 1, at: 10, name: 'Shop' };
     expect(moveShop(shop, 100, -50)).toBe(0);
   });
 
   test('clamps at the route end', () => {
-    const shop: ShopStop = { id: 1, at: 90 };
+    const shop: ShopStop = { id: 1, at: 90, name: 'Shop' };
     expect(moveShop(shop, 100, 50)).toBe(100);
   });
 });
@@ -285,12 +285,12 @@ describe('clampFoodToDistance', () => {
 
 describe('clampShopToDistance', () => {
   test('leaves a shop stop alone when it already fits', () => {
-    const shop: ShopStop = { id: 1, at: 40 };
+    const shop: ShopStop = { id: 1, at: 40, name: 'Shop' };
     expect(clampShopToDistance(shop, 100)).toBe(shop);
   });
 
   test('pulls it back to the new end of the route', () => {
-    const shop: ShopStop = { id: 1, at: 90 };
+    const shop: ShopStop = { id: 1, at: 90, name: 'Shop' };
     expect(clampShopToDistance(shop, 50)).toEqual({ ...shop, at: 50 });
   });
 });
@@ -302,8 +302,8 @@ describe('nextShopAt', () => {
 
   test('midpoint between the last marker and the end', () => {
     const shops: ShopStop[] = [
-      { id: 1, at: 20 },
-      { id: 2, at: 60 },
+      { id: 1, at: 20, name: 'Shop' },
+      { id: 2, at: 60, name: 'Shop' },
     ];
     expect(nextShopAt(shops, 100)).toBe(80); // (60 + 100) / 2
   });
