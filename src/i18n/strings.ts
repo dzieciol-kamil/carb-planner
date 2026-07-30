@@ -152,7 +152,6 @@ export interface StringTable {
   foodSectionHint: string;
   mixHint: string;
   notes: { title: string; body: string }[];
-  ftVersion: string;
   ftAboutBody: string;
   ftSources2: string;
   ftPrivacy: string;
@@ -206,7 +205,6 @@ export interface StringTable {
   meApp: string;
   meLanguage: string;
   meView: string;
-  meFooterNote: string;
   mixSheetTitle: string;
   mixSheetSubtitle: string;
   mixSheetEmpty: string;
@@ -400,7 +398,6 @@ export const STR: Record<Lang, StringTable> = {
       { title: 'Jedzenie osobno', body: 'Banan i żelki mogą się nakładać, piwo zero bierzesz jednorazowo na stacji — dlatego mają własną linię.' },
       { title: 'Skład na bidon', body: 'Karta „Skład bidonów” liczy gramy maltodekstryny, fruktozy, soli i kwasku dla każdego napełnienia osobno.' },
     ],
-    ftVersion: 'wersja demo · projekt hobbystyczny',
     ftAboutBody:
       'Carb Fueling liczy, ile węglowodanów i płynów zabrać na trasę — z dystansu, tempa, wagi, intensywności i temperatury — a potem rozkłada je na bidony, flaski i jedzenie w czasie. Plan, sprzęt i lista produktów zapisują się w tej przeglądarce.',
     ftPrivacy: 'Bez konta, bez serwera, bez cookies. Anonimowe liczniki odwiedzin (GoatCounter) — bez śledzenia Cię między stronami.',
@@ -462,7 +459,6 @@ export const STR: Record<Lang, StringTable> = {
     meApp: 'Aplikacja',
     meLanguage: 'Język',
     meView: 'Widok',
-    meFooterNote: 'Plan i ustawienia zapisują się w tej przeglądarce. Bez konta, bez serwera.',
     mixSheetTitle: 'Skład bidonów',
     mixSheetSubtitle: 'Gramy do odmierzenia na każde napełnienie',
     mixSheetEmpty: 'Brak napełnień · —',
@@ -653,7 +649,6 @@ export const STR: Record<Lang, StringTable> = {
       { title: 'Food apart', body: 'Banana and chews may overlap, a zero beer is one stop — hence their own lane.' },
       { title: 'Per-bottle recipe', body: 'The recipe card computes maltodextrin, fructose, salt and citric grams for every single fill.' },
     ],
-    ftVersion: 'demo build · hobby project',
     ftAboutBody:
       'Carb Fueling works out how many carbs and how much fluid to take on a ride — from distance, pace, weight, intensity and temperature — then spreads them across bottles, flasks and food over time. Your plan, gear and product list stay in this browser.',
     ftPrivacy: 'No account, no server, no cookies. Anonymous, cookieless visit counts (GoatCounter) — no cross-site tracking.',
@@ -715,7 +710,6 @@ export const STR: Record<Lang, StringTable> = {
     meApp: 'App',
     meLanguage: 'Language',
     meView: 'View',
-    meFooterNote: 'Your plan and settings are saved in this browser. No account, no server.',
     mixSheetTitle: 'Bottle recipes',
     mixSheetSubtitle: 'Grams to measure out for each fill',
     mixSheetEmpty: 'No fills · —',

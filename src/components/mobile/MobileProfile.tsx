@@ -1,5 +1,7 @@
+import { absCap } from '../../domain/fuel';
 import { LANGS, t } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
+import { CoffeeIcon, GitHubIcon } from '../Footer';
 import { MobileStepper } from './MobileStepper';
 
 export function MobileProfile() {
@@ -10,7 +12,10 @@ export function MobileProfile() {
   const viewMode = useAppStore((s) => s.ui.viewMode);
   const autoView = useAppStore((s) => s.ui.autoView);
   const setViewMode = useAppStore((s) => s.setViewMode);
+  const mix = useAppStore((s) => s.mix);
   const strings = t(lang);
+  const cap = absCap(mix);
+  const absorptionNote = strings.capNote + cap + ' g/h' + strings.capNote2;
 
   return (
     <div style={{ padding: '12px 14px 16px', display: 'flex', flexDirection: 'column', gap: 18 }}>
@@ -91,7 +96,51 @@ export function MobileProfile() {
         </div>
       </div>
 
-      <p style={{ margin: 0, fontSize: 11, color: 'var(--muted-3)' }}>{strings.meFooterNote}</p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, paddingTop: 16, borderTop: '1px solid var(--chip-border)' }}>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+          <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '-0.01em' }}>CARB FUELING</span>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '0.1em', color: 'var(--muted-3)' }}>v{__APP_VERSION__}</span>
+        </div>
+        <p style={{ margin: 0, fontSize: 11.5, lineHeight: 1.55, color: 'var(--muted-2)' }}>{strings.ftAboutBody}</p>
+        <p style={{ margin: 0, fontSize: 11, lineHeight: 1.55, color: 'var(--muted-3)' }}>
+          {absorptionNote} {strings.ftSources2}
+        </p>
+        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: 'var(--muted-3)' }}>{strings.ftPrivacy}</span>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <a
+            href="https://github.com/dzieciol-kamil/carbfueling/issues/new"
+            target="_blank"
+            rel="noopener"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, border: '1px solid var(--chip-border)', background: '#fff', borderRadius: 999, padding: '7px 13px', fontSize: 12, fontWeight: 600, color: 'var(--ink)' }}
+          >
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--carb)', flex: '0 0 8px' }} />
+            <span>{strings.ftIssues}</span>
+          </a>
+          <a
+            href="https://github.com/dzieciol-kamil/carbfueling"
+            target="_blank"
+            rel="noopener"
+            title={strings.ftRepo}
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 32, height: 32, boxSizing: 'border-box', border: '1px solid var(--chip-border)', background: '#fff', borderRadius: 999, color: 'var(--ink-soft)' }}
+          >
+            <GitHubIcon />
+          </a>
+          <a
+            href="https://suppi.pl/kamild"
+            target="_blank"
+            rel="noopener"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 9, border: '1px solid var(--chip-border)', background: '#fff', borderRadius: 999, padding: '7px 13px', fontSize: 12, fontWeight: 600, color: 'var(--gel)' }}
+          >
+            <CoffeeIcon />
+            <span>{strings.ftSupport}</span>
+          </a>
+        </div>
+
+        <p style={{ margin: 0, fontSize: 10.5, lineHeight: 1.55, color: 'var(--muted)' }}>{strings.ftLegalBody}</p>
+
+        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '0.06em', color: 'var(--muted-3)' }}>{strings.ftCopyright}</span>
+      </div>
     </div>
   );
 }
