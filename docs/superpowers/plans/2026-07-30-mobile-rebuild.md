@@ -295,7 +295,7 @@ export function clampGelPortion(candidateKm: number, k: number, n: number, from:
 
 export function foodTouchHitbox(centerPx: number, neighborDistancesPx: number[]): { left: number; width: number } {
   const nearest = neighborDistancesPx.length ? Math.min(...neighborDistancesPx) : Infinity;
-  const width = Math.max(18, Math.min(40, nearest / 2));
+  const width = Math.max(18, Math.min(40, nearest));
   return { left: centerPx - width / 2, width };
 }
 ```
