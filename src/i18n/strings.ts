@@ -240,6 +240,7 @@ export interface StringTable {
   rateInSegmentSuffix: string;
   eatenOnceLabel: string;
   carbCardTitle: string;
+  inPlanSuffix: string;
 }
 
 export const STR: Record<Lang, StringTable> = {
@@ -498,6 +499,7 @@ export const STR: Record<Lang, StringTable> = {
     rateInSegmentSuffix: ' g/h w tym odcinku',
     eatenOnceLabel: 'zjedzone jednorazowo',
     carbCardTitle: 'Węglowodany',
+    inPlanSuffix: '× w planie',
   },
   en: {
     tagline: 'carbohydrate & hydration planner',
@@ -753,6 +755,7 @@ export const STR: Record<Lang, StringTable> = {
     rateInSegmentSuffix: ' g/h in this stretch',
     eatenOnceLabel: 'eaten once',
     carbCardTitle: 'Carbs',
+    inPlanSuffix: '× in plan',
   },
 };
 
