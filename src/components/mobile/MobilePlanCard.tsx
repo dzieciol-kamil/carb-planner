@@ -8,7 +8,7 @@ import { sourceColor } from '../chart/theme';
 import { clampGelPortion, resolveFillMove, stepperStep } from './mobileMath';
 import { MobileStepper } from './MobileStepper';
 
-export type PlanCardItem = { kind: 'fill'; fid: number } | { kind: 'food'; id: number };
+export type PlanCardItem = { kind: 'fill'; fid: number } | { kind: 'food'; id: number } | { kind: 'shop'; id: number };
 
 const CONTENT_OPTIONS: Content[] = ['water', 'izo', 'gel'];
 
@@ -44,6 +44,8 @@ export function MobilePlanCard({ item }: { item: PlanCardItem }) {
   const gear = useAppStore((s) => s.gear);
   const fills = useAppStore((s) => s.fills);
   const foods = useAppStore((s) => s.foods);
+  const shops = useAppStore((s) => s.shops);
+  const openShopSheet = useAppStore((s) => s.openShopSheet);
   const selKey = useAppStore((s) => s.ui.selKey);
   const setSelKey = useAppStore((s) => s.setSelKey);
   const tourDemoFid = useAppStore((s) => s.ui.tourDemoFid);
@@ -239,6 +241,24 @@ export function MobilePlanCard({ item }: { item: PlanCardItem }) {
             </div>
           </div>
         )}
+      </div>
+    );
+  }
+
+  if (item.kind === 'shop') {
+    const shop = shops.find((s) => s.id === item.id);
+    if (!shop) return null;
+    return (
+      <div style={cardStyle}>
+        <button type="button" style={rowBtnStyle} onClick={() => openShopSheet(shop.id)}>
+          <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#9AA09B', flex: '0 0 auto' }} />
+          <span style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 13, fontWeight: 600 }}>{shop.name}</div>
+          </span>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, fontWeight: 600, flex: '0 0 auto' }}>
+            {rangeLabel(shop.at, shop.at, true, route, 'km')}
+          </span>
+        </button>
       </div>
     );
   }

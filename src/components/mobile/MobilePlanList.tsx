@@ -9,7 +9,7 @@ import { MobilePlanCard, type PlanCardItem } from './MobilePlanCard';
 const MIN_GAP_KM = 6;
 
 function selKeyFor(item: PlanCardItem): string {
-  return item.kind === 'fill' ? 'f' + item.fid : 'x' + item.id;
+  return item.kind === 'fill' ? 'f' + item.fid : item.kind === 'shop' ? 's' + item.id : 'x' + item.id;
 }
 
 function coverageCardStyle(inNorm: boolean): CSSProperties {
@@ -37,7 +37,6 @@ export function MobilePlanList() {
   const prevSelKeyRef = useRef<string | null>(null);
   const addFillInGap = useAppStore((s) => s.addFillInGap);
   const addFoodFromLibrary = useAppStore((s) => s.addFoodFromLibrary);
-  const removeShop = useAppStore((s) => s.removeShop);
   const openShopSheet = useAppStore((s) => s.openShopSheet);
   const openMixSheet = useAppStore((s) => s.openMixSheet);
   const strings = t(lang);
@@ -54,9 +53,14 @@ export function MobilePlanList() {
   const items: PlanCardItem[] = [
     ...fills.map((f): PlanCardItem => ({ kind: 'fill', fid: f.fid })),
     ...foods.map((f): PlanCardItem => ({ kind: 'food', id: f.id })),
+    ...shops.map((s): PlanCardItem => ({ kind: 'shop', id: s.id })),
   ].sort((a, b) => {
     const fromOf = (item: PlanCardItem) =>
-      item.kind === 'fill' ? (fills.find((f) => f.fid === item.fid)?.from ?? 0) : (foods.find((f) => f.id === item.id)?.from ?? 0);
+      item.kind === 'fill'
+        ? (fills.find((f) => f.fid === item.fid)?.from ?? 0)
+        : item.kind === 'shop'
+          ? (shops.find((s) => s.id === item.id)?.at ?? 0)
+          : (foods.find((f) => f.id === item.id)?.from ?? 0);
     return fromOf(a) - fromOf(b);
   });
 
@@ -197,29 +201,25 @@ export function MobilePlanList() {
         ))}
       </div>
 
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-        {shops.map((shop) => (
-          <span
-            key={shop.id}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, borderRadius: 999, padding: '7px 10px', border: '1px solid var(--chip-border)', fontSize: 12 }}
-          >
-            <button type="button" onClick={() => openShopSheet(shop.id)} style={{ border: 'none', background: 'transparent', padding: 0, font: 'inherit', cursor: 'pointer' }}>
-              {shop.name} · {shop.at} km
-            </button>
-            <button type="button" onClick={() => removeShop(shop.id)} style={{ border: 'none', background: 'transparent', color: '#B0B5B0', cursor: 'pointer', padding: 0 }}>
-              ✕
-            </button>
-          </span>
-        ))}
-        <button
-          type="button"
-          data-tour="add-shop"
-          onClick={() => openShopSheet(null)}
-          style={{ border: '1px dashed #C9CEC7', borderRadius: 999, padding: '7px 12px', background: '#F7F8F5', fontSize: 12, fontWeight: 600, color: 'var(--ink-soft)', cursor: 'pointer' }}
-        >
-          + {strings.addLandmark}
-        </button>
-      </div>
+      <button
+        type="button"
+        data-tour="add-shop"
+        onClick={() => openShopSheet(null)}
+        style={{
+          border: '1px dashed #C9CEC7',
+          borderRadius: 11,
+          padding: 12,
+          background: '#F7F8F5',
+          fontFamily: 'Archivo, sans-serif',
+          fontSize: 13,
+          fontWeight: 600,
+          color: 'var(--ink-soft)',
+          cursor: 'pointer',
+          width: '100%',
+        }}
+      >
+        + {strings.addLandmark}
+      </button>
 
       <button
         type="button"

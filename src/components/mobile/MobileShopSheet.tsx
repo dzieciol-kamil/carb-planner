@@ -25,6 +25,7 @@ export function MobileShopSheet() {
   const shops = useAppStore((s) => s.shops);
   const addShop = useAppStore((s) => s.addShop);
   const updateShop = useAppStore((s) => s.updateShop);
+  const removeShop = useAppStore((s) => s.removeShop);
   const lang = useAppStore((s) => s.ui.lang);
   const strings = t(lang);
 
@@ -106,6 +107,19 @@ export function MobileShopSheet() {
           >
             {strings.shopSheetAdd}
           </button>
+
+          {editId != null && (
+            <button
+              type="button"
+              onClick={() => {
+                removeShop(editId);
+                closeShopSheet();
+              }}
+              style={{ border: '1px solid #E3D3CD', borderRadius: 12, padding: 13, background: '#fff', color: 'var(--food)', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
+            >
+              {strings.removeItem}
+            </button>
+          )}
         </div>
       </div>
     </>
