@@ -5,7 +5,7 @@ import type { Content } from '../../domain/types';
 import { t } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
 import { sourceColor } from '../chart/theme';
-import { clampGelPortion, stepperStep } from './mobileMath';
+import { clampGelPortion, resolveFillMove, stepperStep } from './mobileMath';
 import { MobileStepper } from './MobileStepper';
 
 export type PlanCardItem = { kind: 'fill'; fid: number } | { kind: 'food'; id: number };
@@ -61,6 +61,7 @@ export function MobilePlanCard({ item }: { item: PlanCardItem }) {
     const fill = fills.find((f) => f.fid === item.fid);
     if (!fill) return null;
     const vessel = gear.find((g) => g.gid === fill.gid);
+    const siblingFills = fills.filter((f) => f.gid === fill.gid && f.fid !== fill.fid).map((f) => ({ from: f.from, to: f.to }));
     const key = 'f' + fill.fid;
     const expanded = selKey === key;
     const contentLabel = fill.content === 'water' ? strings.water : fill.content === 'gel' ? strings.gel : strings.izo;
@@ -107,7 +108,11 @@ export function MobilePlanCard({ item }: { item: PlanCardItem }) {
                   max={distanceKm - (fill.to - fill.from)}
                   smallStep={1}
                   bigStep={bigStep}
-                  onChange={(from) => updateFill(fill.fid, { from, to: from + (fill.to - fill.from) })}
+                  onChange={(from) => {
+                    const width = fill.to - fill.from;
+                    const resolved = resolveFillMove(from, width, fill.from, siblingFills, distanceKm);
+                    updateFill(fill.fid, { from: resolved, to: resolved + width });
+                  }}
                 />
                 <MobileStepper label="do" value={fill.to} min={fill.from + 1} max={distanceKm} smallStep={1} bigStep={bigStep} onChange={(to) => updateFill(fill.fid, { to })} />
               </>
@@ -124,9 +129,11 @@ export function MobilePlanCard({ item }: { item: PlanCardItem }) {
                       smallStep={0.5}
                       bigStep={bigStep}
                       onChange={(from) => {
-                        const delta = from - fill.from;
+                        const width = fill.to - fill.from;
+                        const resolved = resolveFillMove(from, width, fill.from, siblingFills, distanceKm);
+                        const delta = resolved - fill.from;
                         const pos = fill.pos ? fill.pos.map((p) => p + delta) : undefined;
-                        updateFill(fill.fid, { from, to: fill.to + delta, pos });
+                        updateFill(fill.fid, { from: resolved, to: fill.to + delta, pos });
                       }}
                     />
                   );

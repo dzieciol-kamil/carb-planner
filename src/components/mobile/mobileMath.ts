@@ -17,6 +17,17 @@ export function clampGelPortion(candidateKm: number, k: number, n: number, from:
   return Math.max(lo, Math.min(hi, candidateKm));
 }
 
+export function resolveFillMove(candidateFrom: number, width: number, prevFrom: number, siblings: { from: number; to: number }[], distanceKm: number): number {
+  let from = Math.max(0, Math.min(distanceKm - width, candidateFrom));
+  const forward = from >= prevFrom;
+  const blocker = siblings.find((s) => from < s.to && from + width > s.from);
+  if (!blocker) return from;
+
+  from = forward ? blocker.to : blocker.from - width;
+  if (from < 0 || from > distanceKm - width) return prevFrom;
+  return from;
+}
+
 export function foodTouchHitbox(centerPx: number, neighborDistancesPx: number[]): { left: number; width: number } {
   const nearest = neighborDistancesPx.length ? Math.min(...neighborDistancesPx) : Infinity;
   const width = Math.max(18, Math.min(40, nearest));

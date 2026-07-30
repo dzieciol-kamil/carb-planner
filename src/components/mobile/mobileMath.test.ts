@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { clampGelPortion, clampStepValue, foodTouchHitbox, stepperStep } from './mobileMath';
+import { clampGelPortion, clampStepValue, foodTouchHitbox, resolveFillMove, stepperStep } from './mobileMath';
 
 describe('stepperStep', () => {
   it('is 5 for distances up to 120km', () => {
@@ -35,6 +35,35 @@ describe('clampGelPortion', () => {
   });
   it('passes through a valid candidate unchanged', () => {
     expect(clampGelPortion(18, 1, 3, 0, 30, [0, 15, 30])).toBe(18);
+  });
+});
+
+describe('resolveFillMove', () => {
+  // A 10km-wide fill moving over a route with one sibling occupying [30, 40].
+  const sibling = [{ from: 30, to: 40 }];
+
+  it('passes through when the candidate does not overlap anything', () => {
+    expect(resolveFillMove(5, 10, 0, sibling, 100)).toBe(5);
+  });
+
+  it('jumps to just after the sibling when moving forward into it', () => {
+    // prevFrom=10 -> candidate=25 would give [25,35], overlapping [30,40].
+    expect(resolveFillMove(25, 10, 10, sibling, 100)).toBe(40);
+  });
+
+  it('jumps to just before the sibling when moving backward into it', () => {
+    // prevFrom=50 -> candidate=35 would give [35,45], overlapping [30,40].
+    expect(resolveFillMove(35, 10, 50, sibling, 100)).toBe(20);
+  });
+
+  it('touching edges exactly is not treated as an overlap', () => {
+    expect(resolveFillMove(40, 10, 10, sibling, 100)).toBe(40);
+    expect(resolveFillMove(20, 10, 50, sibling, 100)).toBe(20);
+  });
+
+  it('refuses the move (stays put) when there is no room on the jump side', () => {
+    // Route ends at 45; jumping after [30,40] would need [40,50], which doesn't fit.
+    expect(resolveFillMove(35, 10, 10, sibling, 45)).toBe(10);
   });
 });
 
