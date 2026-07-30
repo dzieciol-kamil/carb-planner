@@ -55,6 +55,7 @@ export interface Fill {
 export interface ShopStop {
   id: number;
   at: number;
+  name: string;
 }
 
 export interface FoodItem {

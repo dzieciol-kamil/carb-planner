@@ -156,7 +156,7 @@ export function createShopDragHandler(id: number) {
 
     const move = (e2: PointerEvent) => {
       const d = (e2.clientX - x0) * kpp;
-      const at = moveShop({ id, at: at0 }, distanceKm, d);
+      const at = moveShop({ ...shop, at: at0 }, distanceKm, d);
       useAppStore.getState().updateShop(id, { at });
     };
     const up = () => {
