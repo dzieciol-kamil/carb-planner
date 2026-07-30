@@ -63,10 +63,11 @@ export function MobileChart() {
   // never puts a non-finite number into an SVG attribute.
   const maxY = Number.isFinite(rawMaxY) && rawMaxY > 0 ? rawMaxY : 10;
 
-  const GT = 48;
-  // Shop-stop name chips (foreignObject below) sit at y=2..20 — start the gut
-  // lane after that, with a small gap, so the strip never renders under them.
-  const GUT_TOP = 22;
+  // Shop-stop name chips (foreignObject below) sit at y=2..20 — only reserve
+  // room for them above the gut lane when a route actually has a stop.
+  const hasShops = shops.length > 0;
+  const GT = hasShops ? 48 : 30;
+  const GUT_TOP = hasShops ? 22 : 4;
   const gutPeak = Math.max(GUT_LIMIT * 1.25, ...S.map((p) => p.gut)) * 1.05;
 
   const px = (x: number) => (x / D) * WIDTH;
@@ -194,7 +195,7 @@ export function MobileChart() {
           const flip = D > 0 && shop.at / D > 0.78;
           return (
             <g key={'sh' + shop.id}>
-              <line x1={px(shop.at)} x2={px(shop.at)} y1={0} y2={HEIGHT} stroke="#9AA09B" strokeWidth={1} vectorEffect="non-scaling-stroke" />
+              <line x1={px(shop.at)} x2={px(shop.at)} y1={GT} y2={HEIGHT} stroke="#9AA09B" strokeWidth={1} vectorEffect="non-scaling-stroke" />
               <foreignObject x={flip ? px(shop.at) - 90 : px(shop.at) + 4} y={2} width={90} height={18}>
                 <div
                   style={{

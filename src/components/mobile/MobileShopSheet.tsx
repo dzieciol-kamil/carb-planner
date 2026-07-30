@@ -85,7 +85,7 @@ export function MobileShopSheet() {
           </label>
           <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.shopSheetName}</span>
-            <input type="text" value={name} onChange={(e) => setName(e.target.value)} style={inputStyle} />
+            <input type="text" value={name} maxLength={10} onChange={(e) => setName(e.target.value)} style={inputStyle} />
           </label>
 
           <button
