@@ -65,62 +65,68 @@ export function MobileChartPanel() {
   const axisPoints = [0, distanceKm / 3, (distanceKm * 2) / 3, distanceKm];
 
   return (
-    <div style={{ position: 'sticky', top: 0, zIndex: 5, background: '#fff', borderBottom: '1px solid var(--border-soft)', padding: '11px 14px 9px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-        <div style={{ display: 'flex', gap: 2, background: 'var(--track)', borderRadius: 9, padding: 3 }}>
-          {Y_MODES.map(({ mode, label }) => (
-            <button key={mode} type="button" style={segBtnStyle(yMode === mode)} onClick={() => setYMode(mode)}>
-              {label}
-            </button>
-          ))}
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          {showEye && (
-            <button
-              type="button"
-              onClick={toggleGpxPeek}
-              aria-label="gpx"
-              style={{
-                width: 34,
-                height: 30,
-                borderRadius: 8,
-                border: '1px solid var(--chip-border)',
-                background: gpxPeek ? 'var(--ink)' : '#fff',
-                color: gpxPeek ? '#fff' : 'var(--ink)',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <svg width="16" height="16" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round">
-                <path d="M2 11 C2 11 6 5 11 5 C16 5 20 11 20 11 C20 11 16 17 11 17 C6 17 2 11 2 11 Z" />
-                <circle cx="11" cy="11" r="3" />
-              </svg>
-            </button>
-          )}
-          <div style={{ display: 'flex', gap: 4 }}>
-            <button type="button" style={xBtnStyle(xUnit === 'km')} onClick={() => setXUnit('km')}>
-              km
-            </button>
-            <button type="button" style={xBtnStyle(xUnit === 'h')} onClick={() => setXUnit('h')}>
-              godz
-            </button>
+    <>
+      <div style={{ background: '#fff', padding: '11px 14px 9px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+          <div style={{ display: 'flex', gap: 2, background: 'var(--track)', borderRadius: 9, padding: 3 }}>
+            {Y_MODES.map(({ mode, label }) => (
+              <button key={mode} type="button" style={segBtnStyle(yMode === mode)} onClick={() => setYMode(mode)}>
+                {label}
+              </button>
+            ))}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            {showEye && (
+              <button
+                type="button"
+                onClick={toggleGpxPeek}
+                aria-label="gpx"
+                style={{
+                  width: 34,
+                  height: 30,
+                  borderRadius: 8,
+                  border: '1px solid var(--chip-border)',
+                  background: gpxPeek ? 'var(--ink)' : '#fff',
+                  color: gpxPeek ? '#fff' : 'var(--ink)',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M2 11 C2 11 6 5 11 5 C16 5 20 11 20 11 C20 11 16 17 11 17 C6 17 2 11 2 11 Z" />
+                  <circle cx="11" cy="11" r="3" />
+                </svg>
+              </button>
+            )}
+            <div style={{ display: 'flex', gap: 4 }}>
+              <button type="button" style={xBtnStyle(xUnit === 'km')} onClick={() => setXUnit('km')}>
+                km
+              </button>
+              <button type="button" style={xBtnStyle(xUnit === 'h')} onClick={() => setXUnit('h')}>
+                godz
+              </button>
+            </div>
           </div>
         </div>
+
+        <p style={{ margin: 0, fontSize: 11, lineHeight: 1.45, color: 'var(--muted)' }}>{narration}</p>
       </div>
 
-      <p style={{ margin: 0, fontSize: 11, lineHeight: 1.45, color: 'var(--muted)' }}>{narration}</p>
-
-      <MobileChart />
-
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: 'var(--muted)' }}>
-        {axisPoints.map((km, i) => (
-          <span key={i}>{fmtX(km, i === axisPoints.length - 1, route, xUnit)}</span>
-        ))}
+      <div style={{ position: 'sticky', top: 0, zIndex: 5, background: '#fff', borderBottom: '1px solid var(--border-soft)', padding: '0 14px 9px' }}>
+        <MobileChart />
       </div>
 
-      <MobileLaneStrip />
-    </div>
+      <div style={{ padding: '9px 14px 12px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: 'var(--muted)' }}>
+          {axisPoints.map((km, i) => (
+            <span key={i}>{fmtX(km, i === axisPoints.length - 1, route, xUnit)}</span>
+          ))}
+        </div>
+
+        <MobileLaneStrip />
+      </div>
+    </>
   );
 }
