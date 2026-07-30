@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import { useRef, type CSSProperties } from 'react';
 import { gaps } from '../../domain/dragMath';
 import { dist, planSummary } from '../../domain/fuel';
 import { t } from '../../i18n/strings';
@@ -7,6 +7,10 @@ import { sourceColor } from '../chart/theme';
 import { MobilePlanCard, type PlanCardItem } from './MobilePlanCard';
 
 const MIN_GAP_KM = 6;
+
+function itemKey(item: PlanCardItem): string {
+  return item.kind + (item.kind === 'fill' ? item.fid : item.id);
+}
 
 function coverageCardStyle(inNorm: boolean): CSSProperties {
   return {
@@ -26,6 +30,8 @@ export function MobilePlanList() {
   const foods = useAppStore((s) => s.foods);
   const foodLib = useAppStore((s) => s.foodLib);
   const shops = useAppStore((s) => s.shops);
+  const selKey = useAppStore((s) => s.ui.selKey);
+  const orderRef = useRef<string[]>([]);
   const addFillInGap = useAppStore((s) => s.addFillInGap);
   const addFoodFromLibrary = useAppStore((s) => s.addFoodFromLibrary);
   const removeShop = useAppStore((s) => s.removeShop);
@@ -41,14 +47,30 @@ export function MobilePlanList() {
   const hydPct = summary.hydrationPct;
   const hydInNorm = hydPct >= 70;
 
-  const items: PlanCardItem[] = [
+  const liveItems: PlanCardItem[] = [
     ...fills.map((f): PlanCardItem => ({ kind: 'fill', fid: f.fid })),
     ...foods.map((f): PlanCardItem => ({ kind: 'food', id: f.id })),
-  ].sort((a, b) => {
-    const fromOf = (item: PlanCardItem) =>
-      item.kind === 'fill' ? (fills.find((f) => f.fid === item.fid)?.from ?? 0) : (foods.find((f) => f.id === item.id)?.from ?? 0);
-    return fromOf(a) - fromOf(b);
-  });
+  ];
+  const fromOf = (item: PlanCardItem) =>
+    item.kind === 'fill' ? (fills.find((f) => f.fid === item.fid)?.from ?? 0) : (foods.find((f) => f.id === item.id)?.from ?? 0);
+
+  let items: PlanCardItem[];
+  // While a card is expanded, its stepper buttons must stay put on screen — resorting
+  // live as "from" changes would otherwise yank the row (and the finger tapping it) to
+  // a new slot mid-interaction. Freeze the on-screen order for the whole duration a
+  // card is selected; only resort once nothing is selected (i.e. after collapsing).
+  if (selKey == null) {
+    items = liveItems.slice().sort((a, b) => fromOf(a) - fromOf(b));
+    orderRef.current = items.map(itemKey);
+  } else {
+    const byKey = new Map(liveItems.map((item) => [itemKey(item), item]));
+    const frozenKeys = orderRef.current;
+    const frozen = frozenKeys.map((k) => byKey.get(k)).filter((x): x is PlanCardItem => x != null);
+    const seen = new Set(frozenKeys);
+    const extra = liveItems.filter((item) => !seen.has(itemKey(item)));
+    items = [...frozen, ...extra];
+    orderRef.current = items.map(itemKey);
+  }
 
   return (
     <div style={{ padding: '12px 14px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
