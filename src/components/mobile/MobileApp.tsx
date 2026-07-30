@@ -39,7 +39,7 @@ export function MobileApp() {
 
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', position: 'relative', background: 'var(--surface)' }}>
-      <div style={{ flex: 1, overflowY: 'auto', overscrollBehavior: 'contain' }}>
+      <div data-mobile-scroll style={{ flex: 1, overflowY: 'auto', overscrollBehavior: 'contain' }}>
         <div style={{ padding: '13px 18px 10px', borderBottom: '1px solid var(--border-soft)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
           <span style={{ fontSize: 16, fontWeight: 700, letterSpacing: '-0.01em' }}>CARB FUELING</span>
           <button
