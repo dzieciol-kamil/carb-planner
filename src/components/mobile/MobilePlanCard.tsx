@@ -100,7 +100,15 @@ export function MobilePlanCard({ item }: { item: PlanCardItem }) {
 
             {n <= 1 ? (
               <>
-                <MobileStepper label="od" value={fill.from} min={0} max={fill.to - 1} smallStep={1} bigStep={bigStep} onChange={(from) => updateFill(fill.fid, { from })} />
+                <MobileStepper
+                  label="od"
+                  value={fill.from}
+                  min={0}
+                  max={distanceKm - (fill.to - fill.from)}
+                  smallStep={1}
+                  bigStep={bigStep}
+                  onChange={(from) => updateFill(fill.fid, { from, to: from + (fill.to - fill.from) })}
+                />
                 <MobileStepper label="do" value={fill.to} min={fill.from + 1} max={distanceKm} smallStep={1} bigStep={bigStep} onChange={(to) => updateFill(fill.fid, { to })} />
               </>
             ) : (
@@ -112,10 +120,14 @@ export function MobilePlanCard({ item }: { item: PlanCardItem }) {
                       label={'od (porcja 1)'}
                       value={fill.from}
                       min={0}
-                      max={fill.to - 0.5}
+                      max={distanceKm - (fill.to - fill.from)}
                       smallStep={0.5}
                       bigStep={bigStep}
-                      onChange={(from) => updateFill(fill.fid, { from, pos: rescalePositions(fill.pos, fill.from, fill.to, from, fill.to) })}
+                      onChange={(from) => {
+                        const delta = from - fill.from;
+                        const pos = fill.pos ? fill.pos.map((p) => p + delta) : undefined;
+                        updateFill(fill.fid, { from, to: fill.to + delta, pos });
+                      }}
                     />
                   );
                 }
@@ -203,7 +215,15 @@ export function MobilePlanCard({ item }: { item: PlanCardItem }) {
 
           {food.cont ? (
             <>
-              <MobileStepper label="na" value={food.from} min={0} max={food.to - 1} smallStep={1} bigStep={bigStep} onChange={(from) => updateFood(food.id, { from })} />
+              <MobileStepper
+                label="na"
+                value={food.from}
+                min={0}
+                max={distanceKm - (food.to - food.from)}
+                smallStep={1}
+                bigStep={bigStep}
+                onChange={(from) => updateFood(food.id, { from, to: from + (food.to - food.from) })}
+              />
               <MobileStepper label="do" value={food.to} min={food.from + 1} max={distanceKm} smallStep={1} bigStep={bigStep} onChange={(to) => updateFood(food.id, { to })} />
             </>
           ) : (
