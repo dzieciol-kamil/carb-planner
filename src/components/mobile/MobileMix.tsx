@@ -66,7 +66,7 @@ export function MobileMix() {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', color: 'var(--muted)' }}>{strings.mixGel}</div>
-        <MobileStepper label={strings.gelConcLabel + ' (' + strings.per100 + ')'} value={mix.gelConc} min={20} max={90} smallStep={5} bigStep={5} onChange={setGelConc} />
+        <MobileStepper label={strings.gelConcLabel + ' (' + strings.per100 + ')'} value={mix.gelConc} min={20} max={90} smallStep={1} bigStep={5} onChange={setGelConc} />
         <MobileStepper label={strings.saltLabel + ' (g/l)'} value={mix.gelSalt} min={0} max={6} smallStep={0.2} bigStep={0.2} format={(v) => v.toFixed(1)} onChange={setGelSalt} />
         <MobileStepper label={strings.citricLabel + ' (g/l)'} value={mix.gelCitric} min={0} max={8} smallStep={0.2} bigStep={0.2} format={(v) => v.toFixed(1)} onChange={setGelCitric} />
       </div>

@@ -195,15 +195,11 @@ export interface StringTable {
   narrationProfile: string;
   scrubHint: string;
   legendGpx: string;
-  bidonSection: string;
-  flaskSection: string;
   foodSection2: string;
   gearHintMobile: string;
   mixHintMobile: string;
   absCapNoteMobile: string;
   gelPartsStepper: string;
-  addBidonBtn: string;
-  addFlaskBtn: string;
   foodStepwise: string;
   foodAddProduct: string;
   meWeight: string;
@@ -454,15 +450,11 @@ export const STR: Record<Lang, StringTable> = {
     narrationProfile: 'Profil trasy — wysokość nad poziomem morza. Podjazdy podnoszą zapotrzebowanie.',
     scrubHint: 'przesuń palcem, by odczytać',
     legendGpx: 'cel',
-    bidonSection: 'Bidon',
-    flaskSection: 'Flask',
     foodSection2: 'Jedzenie',
     gearHintMobile: 'Co masz na rowerze. Objętość i dozwolona zawartość decydują o tym, ile węgli wchodzi w jedno napełnienie.',
     mixHintMobile: 'Skład izo i żelu. Zmiana przelicza gramaturę dla każdego napełnienia i limit wchłaniania.',
     absCapNoteMobile: 'Przy tej proporcji limit to {cap} g/h — kropkowana linia na wykresie.',
     gelPartsStepper: 'Porcje żelu z jednego napełnienia',
-    addBidonBtn: 'Dodaj bidon',
-    addFlaskBtn: 'Dodaj flask',
     foodStepwise: 'stopniowo',
     foodAddProduct: '+ Dodaj produkt',
     meWeight: 'Waga',
@@ -710,15 +702,11 @@ export const STR: Record<Lang, StringTable> = {
     narrationProfile: 'Route profile — elevation above sea level. Climbs raise the requirement.',
     scrubHint: 'drag to read',
     legendGpx: 'target',
-    bidonSection: 'Bottle',
-    flaskSection: 'Flask',
     foodSection2: 'Food',
     gearHintMobile: "What's on your bike. Volume and allowed contents decide how many carbs fit in one fill.",
     mixHintMobile: 'Isotonic and gel composition. Changing it recalculates grams per fill and the absorption limit.',
     absCapNoteMobile: 'At this ratio the limit is {cap} g/h — the dotted line on the chart.',
     gelPartsStepper: 'Gel portions per fill',
-    addBidonBtn: 'Add bottle',
-    addFlaskBtn: 'Add flask',
     foodStepwise: 'over time',
     foodAddProduct: '+ Add product',
     meWeight: 'Weight',

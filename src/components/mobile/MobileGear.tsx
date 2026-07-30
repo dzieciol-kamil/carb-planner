@@ -17,12 +17,6 @@ export function MobileGear() {
   const setVesselGelParts = useAppStore((s) => s.setVesselGelParts);
   const strings = t(lang);
 
-  function addPreset(name: string, vol: number, allowed: Content[]) {
-    const gid = 'g' + useAppStore.getState().nextGid;
-    addVessel();
-    updateVessel(gid, { name, vol, allowed });
-  }
-
   return (
     <div style={{ padding: '12px 14px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
       <div style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{strings.gear}</div>
@@ -33,9 +27,14 @@ export function MobileGear() {
         const gelAllowed = vessel.allowed.includes('gel');
         return (
           <div key={vessel.gid} style={{ border: '1px solid var(--chip-border)', borderRadius: 13, padding: 12, display: 'flex', flexDirection: 'column', gap: 11 }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span style={{ fontSize: 13, fontWeight: 700 }}>{vessel.name}</span>
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+              <input
+                type="text"
+                value={vessel.name}
+                onChange={(e) => updateVessel(vessel.gid, { name: e.target.value })}
+                style={{ flex: 1, minWidth: 0, border: '1px solid var(--chip-border)', borderRadius: 10, padding: '9px 11px', fontFamily: 'Archivo, sans-serif', fontSize: 13, fontWeight: 700, background: '#fff' }}
+              />
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--muted)', flex: '0 0 auto', whiteSpace: 'nowrap' }}>
                 {count}
                 {strings.inPlanSuffix}
               </span>
@@ -95,22 +94,13 @@ export function MobileGear() {
         );
       })}
 
-      <div style={{ display: 'flex', gap: 8 }}>
-        <button
-          type="button"
-          onClick={() => addPreset(strings.bidonSection, 750, ['water', 'izo'])}
-          style={{ flex: 1, border: '1px dashed #C9CEC7', borderRadius: 11, padding: 12, background: '#F7F8F5', fontSize: 13, fontWeight: 600, color: 'var(--ink-soft)', cursor: 'pointer' }}
-        >
-          + {strings.addBidonBtn}
-        </button>
-        <button
-          type="button"
-          onClick={() => addPreset(strings.flaskSection, 250, ['izo', 'gel'])}
-          style={{ flex: 1, border: '1px dashed #C9CEC7', borderRadius: 11, padding: 12, background: '#F7F8F5', fontSize: 13, fontWeight: 600, color: 'var(--ink-soft)', cursor: 'pointer' }}
-        >
-          + {strings.addFlaskBtn}
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={addVessel}
+        style={{ border: '1px dashed #C9CEC7', borderRadius: 11, padding: 12, background: '#F7F8F5', fontSize: 13, fontWeight: 600, color: 'var(--ink-soft)', cursor: 'pointer' }}
+      >
+        + {strings.addGear}
+      </button>
     </div>
   );
 }
