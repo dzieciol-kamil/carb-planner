@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import { useRef, useState, type CSSProperties } from 'react';
 import { carbsFill, dist, partArray, rangeLabel } from '../../domain/fuel';
 import { rescalePositions } from '../../domain/dragMath';
 import type { Content } from '../../domain/types';
@@ -57,6 +57,24 @@ export function MobilePlanCard({ item }: { item: PlanCardItem }) {
   const distanceKm = dist(route);
   const bigStep = stepperStep(distanceKm);
 
+  const [showNoRoom, setShowNoRoom] = useState(false);
+  const noRoomTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  function flashNoRoomHint() {
+    if (noRoomTimerRef.current) clearTimeout(noRoomTimerRef.current);
+    setShowNoRoom(true);
+    noRoomTimerRef.current = setTimeout(() => setShowNoRoom(false), 1200);
+  }
+  const noRoomHintStyle: CSSProperties = {
+    alignSelf: 'flex-start',
+    background: 'var(--ink)',
+    color: '#fff',
+    fontSize: 11,
+    fontWeight: 600,
+    borderRadius: 7,
+    padding: '5px 9px',
+    marginTop: -4,
+  };
+
   if (item.kind === 'fill') {
     const fill = fills.find((f) => f.fid === item.fid);
     if (!fill) return null;
@@ -111,31 +129,39 @@ export function MobilePlanCard({ item }: { item: PlanCardItem }) {
                   onChange={(from) => {
                     const width = fill.to - fill.from;
                     const resolved = resolveFillMove(from, width, fill.from, siblingFills, distanceKm);
-                    updateFill(fill.fid, { from: resolved, to: resolved + width });
+                    if (resolved === fill.from) flashNoRoomHint();
+                    else updateFill(fill.fid, { from: resolved, to: resolved + width });
                   }}
                 />
+                {showNoRoom && <span style={noRoomHintStyle}>{strings.noRoomHint}</span>}
                 <MobileStepper label="do" value={fill.to} min={fill.from + 1} max={distanceKm} smallStep={1} bigStep={bigStep} onChange={(to) => updateFill(fill.fid, { to })} />
               </>
             ) : (
               parts.map((posVal, k) => {
                 if (k === 0) {
                   return (
-                    <MobileStepper
-                      key={k}
-                      label={'od (porcja 1)'}
-                      value={fill.from}
-                      min={0}
-                      max={distanceKm - (fill.to - fill.from)}
-                      smallStep={0.5}
-                      bigStep={bigStep}
-                      onChange={(from) => {
-                        const width = fill.to - fill.from;
-                        const resolved = resolveFillMove(from, width, fill.from, siblingFills, distanceKm);
-                        const delta = resolved - fill.from;
-                        const pos = fill.pos ? fill.pos.map((p) => p + delta) : undefined;
-                        updateFill(fill.fid, { from: resolved, to: fill.to + delta, pos });
-                      }}
-                    />
+                    <span key={k} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                      <MobileStepper
+                        label={'od (porcja 1)'}
+                        value={fill.from}
+                        min={0}
+                        max={distanceKm - (fill.to - fill.from)}
+                        smallStep={0.5}
+                        bigStep={bigStep}
+                        onChange={(from) => {
+                          const width = fill.to - fill.from;
+                          const resolved = resolveFillMove(from, width, fill.from, siblingFills, distanceKm);
+                          if (resolved === fill.from) {
+                            flashNoRoomHint();
+                            return;
+                          }
+                          const delta = resolved - fill.from;
+                          const pos = fill.pos ? fill.pos.map((p) => p + delta) : undefined;
+                          updateFill(fill.fid, { from: resolved, to: fill.to + delta, pos });
+                        }}
+                      />
+                      {showNoRoom && <span style={noRoomHintStyle}>{strings.noRoomHint}</span>}
+                    </span>
                   );
                 }
                 if (k === n - 1) {

@@ -233,6 +233,7 @@ export interface StringTable {
   perFillGrams: string;
   addLandmark: string;
   noGap: string;
+  noRoomHint: string;
   rateInSegmentSuffix: string;
   eatenOnceLabel: string;
   carbCardTitle: string;
@@ -488,6 +489,7 @@ export const STR: Record<Lang, StringTable> = {
     perFillGrams: 'gramatura na napełnienie ›',
     addLandmark: 'Dodaj punkt orientacyjny',
     noGap: 'brak wolnego odcinka',
+    noRoomHint: 'Brak miejsca',
     rateInSegmentSuffix: ' g/h w tym odcinku',
     eatenOnceLabel: 'zjedzone jednorazowo',
     carbCardTitle: 'Węglowodany',
@@ -740,6 +742,7 @@ export const STR: Record<Lang, StringTable> = {
     perFillGrams: 'grams per fill ›',
     addLandmark: 'Add landmark',
     noGap: 'no free gap',
+    noRoomHint: 'No room',
     rateInSegmentSuffix: ' g/h in this stretch',
     eatenOnceLabel: 'eaten once',
     carbCardTitle: 'Carbs',
