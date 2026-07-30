@@ -187,6 +187,56 @@ export interface StringTable {
   tourConfirmBody: string;
   tourConfirmCancel: string;
   tourConfirmStart: string;
+  tabMix: string;
+  editRoutePrefix: string;
+  narrationRate: string;
+  narrationFluid: string;
+  narrationSum: string;
+  narrationProfile: string;
+  scrubHint: string;
+  legendGpx: string;
+  bidonSection: string;
+  flaskSection: string;
+  foodSection2: string;
+  gearHintMobile: string;
+  mixHintMobile: string;
+  absCapNoteMobile: string;
+  gelPartsStepper: string;
+  addBidonBtn: string;
+  addFlaskBtn: string;
+  foodStepwise: string;
+  foodAddProduct: string;
+  meWeight: string;
+  meApp: string;
+  meLanguage: string;
+  meView: string;
+  meFooterNote: string;
+  mixSheetTitle: string;
+  mixSheetSubtitle: string;
+  mixSheetEmpty: string;
+  mixRowSugar: string;
+  mixRowMalto: string;
+  mixRowFructose: string;
+  mixRowSalt: string;
+  mixRowCitric: string;
+  mixRowWater: string;
+  routeSheetTitle: string;
+  routeSheetPreStart: string;
+  routeSheetIntensity: string;
+  routeSheetTemp: string;
+  routeSheetGpxSection: string;
+  routeSheetGpxNote: string;
+  routeSheetLoadFile: string;
+  routeSheetDone: string;
+  shopSheetTitle: string;
+  shopSheetKm: string;
+  shopSheetName: string;
+  shopSheetAdd: string;
+  shopDefaultName: string;
+  bidonComposition: string;
+  perFillGrams: string;
+  addLandmark: string;
+  noGap: string;
 }
 
 export const STR: Record<Lang, StringTable> = {
@@ -392,6 +442,56 @@ export const STR: Record<Lang, StringTable> = {
     tourConfirmBody: 'Tour wczyta przykładowe dane (trasa i jeden bidon) w miejsce Twojego aktualnego planu. Tej zmiany nie da się cofnąć.',
     tourConfirmCancel: 'Anuluj',
     tourConfirmStart: 'Uruchom tour',
+    tabMix: 'Mieszanka',
+    editRoutePrefix: 'Edytuj trasę:',
+    narrationRate: 'Ile węgli na godzinę realnie wchłaniasz (linia) wobec zapotrzebowania (przerywana). Kropkowana to limit wchłaniania.',
+    narrationFluid: 'Ile płynu pijesz na godzinę (linia) wobec tego, ile tracisz z potem (przerywana).',
+    narrationSum: 'Węgle zsumowane od startu: co wchłoniesz (linia) wobec zapotrzebowania (przerywana).',
+    narrationProfile: 'Profil trasy — wysokość nad poziomem morza. Podjazdy podnoszą zapotrzebowanie.',
+    scrubHint: 'przesuń palcem, by odczytać',
+    legendGpx: 'cel',
+    bidonSection: 'Bidon',
+    flaskSection: 'Flask',
+    foodSection2: 'Jedzenie',
+    gearHintMobile: 'Co masz na rowerze. Objętość i dozwolona zawartość decydują o tym, ile węgli wchodzi w jedno napełnienie.',
+    mixHintMobile: 'Skład izo i żelu. Zmiana przelicza gramaturę dla każdego napełnienia i limit wchłaniania.',
+    absCapNoteMobile: 'Przy tej proporcji limit to {cap} g/h — kropkowana linia na wykresie.',
+    gelPartsStepper: 'Porcje żelu z jednego napełnienia',
+    addBidonBtn: 'Dodaj bidon',
+    addFlaskBtn: 'Dodaj flask',
+    foodStepwise: 'stopniowo',
+    foodAddProduct: '+ Dodaj produkt',
+    meWeight: 'Waga',
+    meApp: 'Aplikacja',
+    meLanguage: 'Język',
+    meView: 'Widok',
+    meFooterNote: 'Plan i ustawienia zapisują się w tej przeglądarce. Bez konta, bez serwera.',
+    mixSheetTitle: 'Skład bidonów',
+    mixSheetSubtitle: 'Gramy do odmierzenia na każde napełnienie',
+    mixSheetEmpty: 'Brak napełnień · —',
+    mixRowSugar: 'Cukry',
+    mixRowMalto: 'Maltodekstryna',
+    mixRowFructose: 'Fruktoza',
+    mixRowSalt: 'Sól',
+    mixRowCitric: 'Kwasek cytrynowy',
+    mixRowWater: 'Woda',
+    routeSheetTitle: 'TRASA I WARUNKI',
+    routeSheetPreStart: 'PRZED STARTEM',
+    routeSheetIntensity: 'Intensywność',
+    routeSheetTemp: 'Temperatura',
+    routeSheetGpxSection: 'PROFIL GPX',
+    routeSheetGpxNote: 'Włączony profil zmienia zapotrzebowanie na podjazdach. Ikona oka nad wykresem pokazuje sam profil.',
+    routeSheetLoadFile: 'Wczytaj plik',
+    routeSheetDone: 'Gotowe',
+    shopSheetTitle: 'PUNKT ORIENTACYJNY',
+    shopSheetKm: 'Kilometr',
+    shopSheetName: 'Nazwa',
+    shopSheetAdd: 'Dodaj',
+    shopDefaultName: 'Sklep',
+    bidonComposition: 'SKŁAD BIDONÓW',
+    perFillGrams: 'gramatura na napełnienie ›',
+    addLandmark: 'Dodaj punkt orientacyjny',
+    noGap: 'brak wolnego odcinka',
   },
   en: {
     tagline: 'carbohydrate & hydration planner',
@@ -594,6 +694,56 @@ export const STR: Record<Lang, StringTable> = {
     tourConfirmBody: "The tour will load sample data (a route and one bottle) over your current plan. This can't be undone.",
     tourConfirmCancel: 'Cancel',
     tourConfirmStart: 'Start tour',
+    tabMix: 'Mix',
+    editRoutePrefix: 'Edit route:',
+    narrationRate: "How many carbs per hour you're actually absorbing (line) vs. requirement (dashed). Dotted is the absorption limit.",
+    narrationFluid: "How much fluid you're drinking per hour (line) vs. how much you lose to sweat (dashed).",
+    narrationSum: "Carbs summed from the start: what you'll absorb (line) vs. requirement (dashed).",
+    narrationProfile: 'Route profile — elevation above sea level. Climbs raise the requirement.',
+    scrubHint: 'drag to read',
+    legendGpx: 'target',
+    bidonSection: 'Bottle',
+    flaskSection: 'Flask',
+    foodSection2: 'Food',
+    gearHintMobile: "What's on your bike. Volume and allowed contents decide how many carbs fit in one fill.",
+    mixHintMobile: 'Isotonic and gel composition. Changing it recalculates grams per fill and the absorption limit.',
+    absCapNoteMobile: 'At this ratio the limit is {cap} g/h — the dotted line on the chart.',
+    gelPartsStepper: 'Gel portions per fill',
+    addBidonBtn: 'Add bottle',
+    addFlaskBtn: 'Add flask',
+    foodStepwise: 'over time',
+    foodAddProduct: '+ Add product',
+    meWeight: 'Weight',
+    meApp: 'App',
+    meLanguage: 'Language',
+    meView: 'View',
+    meFooterNote: 'Your plan and settings are saved in this browser. No account, no server.',
+    mixSheetTitle: 'Bottle recipes',
+    mixSheetSubtitle: 'Grams to measure out for each fill',
+    mixSheetEmpty: 'No fills · —',
+    mixRowSugar: 'Carbs',
+    mixRowMalto: 'Maltodextrin',
+    mixRowFructose: 'Fructose',
+    mixRowSalt: 'Salt',
+    mixRowCitric: 'Citric acid',
+    mixRowWater: 'Water',
+    routeSheetTitle: 'ROUTE & CONDITIONS',
+    routeSheetPreStart: 'BEFORE THE START',
+    routeSheetIntensity: 'Intensity',
+    routeSheetTemp: 'Temperature',
+    routeSheetGpxSection: 'GPX PROFILE',
+    routeSheetGpxNote: 'An enabled profile changes the requirement on climbs. The eye icon above the chart shows the profile itself.',
+    routeSheetLoadFile: 'Load file',
+    routeSheetDone: 'Done',
+    shopSheetTitle: 'LANDMARK',
+    shopSheetKm: 'Kilometer',
+    shopSheetName: 'Name',
+    shopSheetAdd: 'Add',
+    shopDefaultName: 'Shop',
+    bidonComposition: 'BOTTLE RECIPES',
+    perFillGrams: 'grams per fill ›',
+    addLandmark: 'Add landmark',
+    noGap: 'no free gap',
   },
 };
 
