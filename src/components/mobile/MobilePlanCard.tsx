@@ -84,6 +84,9 @@ export function MobilePlanCard({ item }: { item: PlanCardItem }) {
     if (!fill) return null;
     const vessel = gear.find((g) => g.gid === fill.gid);
     const siblingFills = fills.filter((f) => f.gid === fill.gid && f.fid !== fill.fid).map((f) => ({ from: f.from, to: f.to }));
+    // Growing "do" (resize) must stop at the nearest sibling ahead of this fill, not
+    // sail through it — resize clamps at the boundary, it doesn't jump past like a move.
+    const rightBound = siblingFills.filter((s) => s.from >= fill.from).reduce((min, s) => Math.min(min, s.from), distanceKm);
     const key = 'f' + fill.fid;
     const expanded = selKey === key;
     const contentLabel = fill.content === 'water' ? strings.water : fill.content === 'gel' ? strings.gel : strings.izo;
@@ -138,7 +141,18 @@ export function MobilePlanCard({ item }: { item: PlanCardItem }) {
                     else updateFill(fill.fid, { from: resolved, to: resolved + width });
                   }}
                 />
-                <MobileStepper label="do" value={fill.to} min={fill.from + 1} max={distanceKm} smallStep={1} bigStep={bigStep} onChange={(to) => updateFill(fill.fid, { to })} />
+                <MobileStepper
+                  label="do"
+                  value={fill.to}
+                  min={fill.from + 1}
+                  max={rightBound}
+                  smallStep={1}
+                  bigStep={bigStep}
+                  onChange={(to) => {
+                    if (to === fill.to) flashNoRoomHint();
+                    else updateFill(fill.fid, { to });
+                  }}
+                />
               </>
             ) : (
               parts.map((posVal, k) => {
@@ -173,10 +187,16 @@ export function MobilePlanCard({ item }: { item: PlanCardItem }) {
                       label={'do (porcja ' + n + ')'}
                       value={fill.to}
                       min={fill.from + 0.5}
-                      max={distanceKm}
+                      max={rightBound}
                       smallStep={0.5}
                       bigStep={bigStep}
-                      onChange={(to) => updateFill(fill.fid, { to, pos: rescalePositions(fill.pos, fill.from, fill.to, fill.from, to) })}
+                      onChange={(to) => {
+                        if (to === fill.to) {
+                          flashNoRoomHint();
+                          return;
+                        }
+                        updateFill(fill.fid, { to, pos: rescalePositions(fill.pos, fill.from, fill.to, fill.from, to) });
+                      }}
                     />
                   );
                 }
