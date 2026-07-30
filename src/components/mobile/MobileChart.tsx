@@ -63,13 +63,16 @@ export function MobileChart() {
   // never puts a non-finite number into an SVG attribute.
   const maxY = Number.isFinite(rawMaxY) && rawMaxY > 0 ? rawMaxY : 10;
 
-  const GT = 30;
+  const GT = 48;
+  // Shop-stop name chips (foreignObject below) sit at y=2..20 — start the gut
+  // lane after that, with a small gap, so the strip never renders under them.
+  const GUT_TOP = 22;
   const gutPeak = Math.max(GUT_LIMIT * 1.25, ...S.map((p) => p.gut)) * 1.05;
 
   const px = (x: number) => (x / D) * WIDTH;
   const py = (y: number) => HEIGHT - ((Number.isFinite(y) ? y : 0) / maxY) * (HEIGHT - GT - 4);
   const gBase = GT - 8;
-  const gy = (g: number) => gBase - (g / gutPeak) * (gBase - 4);
+  const gy = (g: number) => gBase - (g / gutPeak) * (gBase - GUT_TOP);
 
   const runs: { color: string; pts: Sample[] }[] = [];
   S.forEach((p, i) => {
