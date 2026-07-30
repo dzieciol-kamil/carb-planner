@@ -11,6 +11,7 @@ const numberInputStyle: CSSProperties = { width: '100%', border: 'none', backgro
 export function MobileFoodLibrary() {
   const lang = useAppStore((s) => s.ui.lang);
   const foodLib = useAppStore((s) => s.foodLib);
+  const foods = useAppStore((s) => s.foods);
   const updateFoodLibEntry = useAppStore((s) => s.updateFoodLibEntry);
   const removeFoodLibEntry = useAppStore((s) => s.removeFoodLibEntry);
   const addFoodLibEntry = useAppStore((s) => s.addFoodLibEntry);
@@ -22,14 +23,22 @@ export function MobileFoodLibrary() {
       <p style={{ margin: 0, fontSize: 12, lineHeight: 1.5, color: 'var(--muted-2)' }}>{strings.foodSectionHint}</p>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        {foodLib.map((entry) => (
+        {foodLib.map((entry) => {
+          const count = foods.filter((f) => f.key === entry.key).length;
+          return (
           <div key={entry.key} style={{ border: '1px solid var(--chip-border)', borderRadius: 13, background: '#F9FAF7', padding: 10, display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <input
-              type="text"
-              value={entry[lang] || entry.en}
-              onChange={(e) => updateFoodLibEntry(entry.key, { pl: e.target.value, en: e.target.value })}
-              style={{ width: '100%', border: 'none', borderRadius: 10, padding: 12, fontFamily: 'Archivo, sans-serif', fontSize: 14, fontWeight: 600, background: '#fff', boxSizing: 'border-box' }}
-            />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <input
+                type="text"
+                value={entry[lang] || entry.en}
+                onChange={(e) => updateFoodLibEntry(entry.key, { pl: e.target.value, en: e.target.value })}
+                style={{ flex: 1, minWidth: 0, border: 'none', borderRadius: 10, padding: 12, fontFamily: 'Archivo, sans-serif', fontSize: 14, fontWeight: 600, background: '#fff', boxSizing: 'border-box' }}
+              />
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--muted)', flex: '0 0 auto', whiteSpace: 'nowrap' }}>
+                {count}
+                {strings.inPlanSuffix}
+              </span>
+            </div>
             <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6 }}>
               <label style={fieldWrapStyle}>
                 <span style={fieldLabelStyle}>{strings.fCarbs}</span>
@@ -72,7 +81,8 @@ export function MobileFoodLibrary() {
               </button>
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       <button
