@@ -158,9 +158,9 @@ export function MobileChart() {
               <rect
                 key={'fb' + f.fid}
                 x={px(f.from)}
-                y={0}
+                y={GT}
                 width={Math.max(1, px(f.to) - px(f.from))}
-                height={HEIGHT}
+                height={HEIGHT - GT}
                 fill={sourceColor(f.content)}
                 opacity={0.07}
               />
@@ -195,7 +195,7 @@ export function MobileChart() {
           const flip = D > 0 && shop.at / D > 0.78;
           return (
             <g key={'sh' + shop.id}>
-              <line x1={px(shop.at)} x2={px(shop.at)} y1={GT} y2={HEIGHT} stroke="#9AA09B" strokeWidth={1} vectorEffect="non-scaling-stroke" />
+              <line x1={px(shop.at)} x2={px(shop.at)} y1={0} y2={HEIGHT} stroke="#9AA09B" strokeWidth={1} vectorEffect="non-scaling-stroke" />
               <foreignObject x={flip ? px(shop.at) - 90 : px(shop.at) + 4} y={2} width={90} height={18}>
                 <div
                   style={{
@@ -204,8 +204,9 @@ export function MobileChart() {
                     border: '1px solid var(--chip-border)',
                     borderRadius: 5,
                     padding: '2px 5px',
-                    fontFamily: "'JetBrains Mono', monospace",
-                    fontSize: 9,
+                    fontFamily: "'Archivo', sans-serif",
+                    fontSize: 10,
+                    fontWeight: 600,
                     color: 'var(--ink)',
                     whiteSpace: 'nowrap',
                   }}
