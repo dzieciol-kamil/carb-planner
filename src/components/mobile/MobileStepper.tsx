@@ -46,18 +46,18 @@ export function MobileStepper({ label, value, onChange, smallStep, bigStep, min,
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
       {label && <span style={{ fontSize: 12, color: 'var(--muted-2)', flex: '1 1 auto' }}>{label}</span>}
-      <button type="button" style={bigBtnStyle} onClick={() => bump(-bigStep)} aria-label="-- ">
-        −−
+      <button type="button" style={bigBtnStyle} onClick={() => bump(-bigStep)} aria-label={'-' + bigStep}>
+        {'<<'}
       </button>
-      <button type="button" style={smallBtnStyle} onClick={() => bump(-smallStep)} aria-label="-">
-        −
+      <button type="button" style={smallBtnStyle} onClick={() => bump(-smallStep)} aria-label={'-' + smallStep}>
+        {'<'}
       </button>
       <span style={valueStyle}>{fmt(value)}</span>
-      <button type="button" style={smallBtnStyle} onClick={() => bump(smallStep)} aria-label="+">
-        +
+      <button type="button" style={smallBtnStyle} onClick={() => bump(smallStep)} aria-label={'+' + smallStep}>
+        {'>'}
       </button>
-      <button type="button" style={bigBtnStyle} onClick={() => bump(bigStep)} aria-label="++">
-        ++
+      <button type="button" style={bigBtnStyle} onClick={() => bump(bigStep)} aria-label={'+' + bigStep}>
+        {'>>'}
       </button>
     </div>
   );
