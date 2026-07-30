@@ -63,8 +63,14 @@ export function parseGpxXml(xml: string): GpxParseResult {
   return { ele, distanceKm: total };
 }
 
+const MAX_GPX_FILE_BYTES = 20 * 1024 * 1024;
+
 export function loadGpxFile(file: File): Promise<{ track: GpxTrack; distanceKm: number; fileName: string }> {
   return new Promise((resolve, reject) => {
+    if (file.size > MAX_GPX_FILE_BYTES) {
+      reject(new Error('gpx file too large'));
+      return;
+    }
     const reader = new FileReader();
     reader.onload = () => {
       try {
