@@ -22,26 +22,22 @@ export function MobileShopSheet() {
   const shopSheet = useAppStore((s) => s.ui.shopSheet);
   const closeShopSheet = useAppStore((s) => s.closeShopSheet);
   const route = useAppStore((s) => s.route);
-  const shops = useAppStore((s) => s.shops);
   const addShop = useAppStore((s) => s.addShop);
   const updateShop = useAppStore((s) => s.updateShop);
-  const removeShop = useAppStore((s) => s.removeShop);
   const lang = useAppStore((s) => s.ui.lang);
   const strings = t(lang);
 
   const distanceKm = dist(route);
-  const editId = shopSheet?.editId ?? null;
-  const editing = editId != null ? shops.find((s) => s.id === editId) : null;
 
   const [km, setKm] = useState('');
   const [name, setName] = useState('');
 
   useEffect(() => {
     if (!shopSheet) return;
-    setKm(editing ? String(editing.at) : '');
-    setName(editing ? editing.name : strings.shopDefaultName);
+    setKm('');
+    setName(strings.shopDefaultName);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shopSheet, editId]);
+  }, [shopSheet]);
 
   if (!shopSheet) return null;
 
@@ -50,13 +46,9 @@ export function MobileShopSheet() {
 
   function submit() {
     if (!valid) return;
-    if (editId != null) {
-      updateShop(editId, { at: kmValue, name });
-    } else {
-      const newId = useAppStore.getState().nextShopId;
-      addShop();
-      updateShop(newId, { at: kmValue, name });
-    }
+    const newId = useAppStore.getState().nextShopId;
+    addShop();
+    updateShop(newId, { at: kmValue, name });
     closeShopSheet();
   }
 
@@ -107,19 +99,6 @@ export function MobileShopSheet() {
           >
             {strings.shopSheetAdd}
           </button>
-
-          {editId != null && (
-            <button
-              type="button"
-              onClick={() => {
-                removeShop(editId);
-                closeShopSheet();
-              }}
-              style={{ border: '1px solid #E3D3CD', borderRadius: 12, padding: 13, background: '#fff', color: 'var(--food)', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}
-            >
-              {strings.removeItem}
-            </button>
-          )}
         </div>
       </div>
     </>
