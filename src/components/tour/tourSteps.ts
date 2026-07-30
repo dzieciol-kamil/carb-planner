@@ -7,21 +7,31 @@ export type TourCopyKey =
   | 'tourWelcomeBody'
   | 'tourRouteTitle'
   | 'tourRouteBody'
+  | 'tourRouteBodyMobile'
   | 'tourChartTitle'
   | 'tourChartBody'
+  | 'tourChartBodyMobile'
   | 'tourFillTitle'
   | 'tourFillBody'
+  | 'tourFillBodyMobile'
   | 'tourAddFillTitle'
   | 'tourAddFillBody'
+  | 'tourAddFillBodyMobile'
   | 'tourAddShopTitle'
   | 'tourAddShopBody'
+  | 'tourAddShopBodyMobile'
   | 'tourClosingTitle'
-  | 'tourClosingBody';
+  | 'tourClosingBody'
+  | 'tourClosingBodyMobile';
 
 export interface TourStep {
   target: TourTarget | null;
   titleKey: TourCopyKey;
   bodyKey: TourCopyKey;
+  // Only set for steps whose interaction differs enough between mouse and touch
+  // (drag/hover vs. tap/steppers) that the desktop copy would describe the wrong
+  // gesture. Steps without one share the desktop body key on mobile too.
+  mobileBodyKey?: TourCopyKey;
   onEnter?: () => (() => void) | void;
 }
 
@@ -38,10 +48,10 @@ export const TOUR_STEPS: TourStep[] = [
       useAppStore.getState().loadTourDemoData();
     },
   },
-  { target: 'route-summary', titleKey: 'tourRouteTitle', bodyKey: 'tourRouteBody' },
-  { target: 'chart', titleKey: 'tourChartTitle', bodyKey: 'tourChartBody' },
-  { target: 'demo-fill', titleKey: 'tourFillTitle', bodyKey: 'tourFillBody' },
-  { target: 'demo-add-fill', titleKey: 'tourAddFillTitle', bodyKey: 'tourAddFillBody' },
-  { target: 'add-shop', titleKey: 'tourAddShopTitle', bodyKey: 'tourAddShopBody' },
-  { target: null, titleKey: 'tourClosingTitle', bodyKey: 'tourClosingBody' },
+  { target: 'route-summary', titleKey: 'tourRouteTitle', bodyKey: 'tourRouteBody', mobileBodyKey: 'tourRouteBodyMobile' },
+  { target: 'chart', titleKey: 'tourChartTitle', bodyKey: 'tourChartBody', mobileBodyKey: 'tourChartBodyMobile' },
+  { target: 'demo-fill', titleKey: 'tourFillTitle', bodyKey: 'tourFillBody', mobileBodyKey: 'tourFillBodyMobile' },
+  { target: 'demo-add-fill', titleKey: 'tourAddFillTitle', bodyKey: 'tourAddFillBody', mobileBodyKey: 'tourAddFillBodyMobile' },
+  { target: 'add-shop', titleKey: 'tourAddShopTitle', bodyKey: 'tourAddShopBody', mobileBodyKey: 'tourAddShopBodyMobile' },
+  { target: null, titleKey: 'tourClosingTitle', bodyKey: 'tourClosingBody', mobileBodyKey: 'tourClosingBodyMobile' },
 ];

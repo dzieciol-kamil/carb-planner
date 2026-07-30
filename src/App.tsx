@@ -38,7 +38,12 @@ function App() {
   }, [setAutoView]);
 
   if (!isDesktopView(viewMode, autoView)) {
-    return <MobileApp />;
+    return (
+      <>
+        <MobileApp />
+        <TourOverlay />
+      </>
+    );
   }
 
   return (

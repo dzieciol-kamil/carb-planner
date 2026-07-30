@@ -44,6 +44,7 @@ export function MobileApp() {
           <span style={{ fontSize: 16, fontWeight: 700, letterSpacing: '-0.01em' }}>CARB FUELING</span>
           <button
             type="button"
+            data-tour="route-summary"
             onClick={openRouteSheet}
             style={{
               border: '1px solid var(--chip-border)',

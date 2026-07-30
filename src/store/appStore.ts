@@ -304,7 +304,7 @@ export const useAppStore = create<AppState>()(
     closeRouteSheet: () => set((s) => ({ ui: { ...s.ui, routeSheet: false } })),
     openShopSheet: (editId) => set((s) => ({ ui: { ...s.ui, shopSheet: { editId } } })),
     closeShopSheet: () => set((s) => ({ ui: { ...s.ui, shopSheet: null } })),
-    startTour: () => set((s) => ({ ui: { ...s.ui, tourStep: 0, tourSeen: true, tourDemoFid: null } })),
+    startTour: () => set((s) => ({ ui: { ...s.ui, tab: 'plan', tourStep: 0, tourSeen: true, tourDemoFid: null } })),
     closeTour: () => set((s) => ({ ui: { ...s.ui, tourStep: null } })),
     setTourStep: (n) => set((s) => ({ ui: { ...s.ui, tourStep: Math.max(0, n) } })),
     loadTourDemoData: () =>
