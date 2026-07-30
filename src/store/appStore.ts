@@ -35,6 +35,20 @@ function reconcileToRoute(route: RouteInput, fills: Fill[], foods: FoodItem[], s
   };
 }
 
+function clamp(n: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, n));
+}
+
+// Minutes are intentionally left unclamped while typing (80 in the minutes field is a
+// valid way to enter "1h 20m" mid-edit) — this rolls any minutes overflow/underflow into
+// hours once the field is committed, so the fields end up showing the normalized split
+// instead of leaving e.g. "80" sitting in the minutes box.
+function normalizeHoursMinutes(route: RouteInput): RouteInput {
+  if (route.mode !== 'time') return route;
+  const totalMinutes = Math.max(0, Math.round(route.hours) * 60 + Math.round(route.minutes));
+  return { ...route, hours: Math.floor(totalMinutes / 60), minutes: totalMinutes % 60 };
+}
+
 export type ViewMode = 'auto' | 'desktop' | 'mobile';
 export type YMode = 'rate' | 'fluid' | 'sum';
 export type PanelId = 'settings' | 'mix' | null;
@@ -245,15 +259,19 @@ export const useAppStore = create<AppState>()(
     // digits (e.g. typing "50" over "90" passes through "5"), destructively
     // collapsing them before the final value ever lands. Reconcile once the field
     // is actually committed instead — see reconcilePlan, wired to onCommit.
-    setDistance: (n) => set((s) => ({ route: { ...s.route, distance: n } })),
-    setSpeed: (n) => set((s) => ({ route: { ...s.route, speed: n } })),
-    setHours: (n) => set((s) => ({ route: { ...s.route, hours: n } })),
+    setDistance: (n) => set((s) => ({ route: { ...s.route, distance: clamp(n, 0, 2000) } })),
+    setSpeed: (n) => set((s) => ({ route: { ...s.route, speed: clamp(n, 0, 100) } })),
+    setHours: (n) => set((s) => ({ route: { ...s.route, hours: clamp(n, 0, 999) } })),
+    // Deliberately unclamped — see normalizeHoursMinutes, applied on commit via reconcilePlan.
     setMinutes: (n) => set((s) => ({ route: { ...s.route, minutes: n } })),
     reconcilePlan: () =>
-      set((s) => ({ ...reconcileToRoute(s.route, s.fills, s.foods, s.shops) })),
-    setWeight: (n) => set((s) => ({ route: { ...s.route, weight: n } })),
-    setPreMealCarbs: (n) => set((s) => ({ route: { ...s.route, preMealCarbs: n } })),
-    setPreMealMinutes: (n) => set((s) => ({ route: { ...s.route, preMealMinutes: n } })),
+      set((s) => {
+        const route = normalizeHoursMinutes(s.route);
+        return { route, ...reconcileToRoute(route, s.fills, s.foods, s.shops) };
+      }),
+    setWeight: (n) => set((s) => ({ route: { ...s.route, weight: clamp(n, 20, 300) } })),
+    setPreMealCarbs: (n) => set((s) => ({ route: { ...s.route, preMealCarbs: clamp(n, 0, 500) } })),
+    setPreMealMinutes: (n) => set((s) => ({ route: { ...s.route, preMealMinutes: clamp(n, 0, 1440) } })),
     setIntensity: (i) => set((s) => ({ route: { ...s.route, intensity: i } })),
     setTemp: (n) => set((s) => ({ route: { ...s.route, temp: n } })),
     toggleGpx: () => set((s) => ({ route: { ...s.route, useGpx: !s.route.useGpx } })),
@@ -377,13 +395,13 @@ export const useAppStore = create<AppState>()(
     removeShop: (id) =>
       set((s) => ({ shops: s.shops.filter((x) => x.id !== id), ui: { ...s.ui, hoverKey: null, dragKey: null } })),
 
-    setRatio: (n) => set((s) => ({ mix: { ...s.mix, ratio: Math.min(10, Math.max(0.2, n)) } })),
-    setConc: (n) => set((s) => ({ mix: { ...s.mix, conc: n } })),
-    setSalt: (n) => set((s) => ({ mix: { ...s.mix, salt: n } })),
-    setCitric: (n) => set((s) => ({ mix: { ...s.mix, citric: n } })),
-    setGelConc: (n) => set((s) => ({ mix: { ...s.mix, gelConc: n } })),
-    setGelSalt: (n) => set((s) => ({ mix: { ...s.mix, gelSalt: n } })),
-    setGelCitric: (n) => set((s) => ({ mix: { ...s.mix, gelCitric: n } })),
+    setRatio: (n) => set((s) => ({ mix: { ...s.mix, ratio: clamp(n, 0.2, 10) } })),
+    setConc: (n) => set((s) => ({ mix: { ...s.mix, conc: clamp(n, 0, 100) } })),
+    setSalt: (n) => set((s) => ({ mix: { ...s.mix, salt: clamp(n, 0, 10) } })),
+    setCitric: (n) => set((s) => ({ mix: { ...s.mix, citric: clamp(n, 0, 10) } })),
+    setGelConc: (n) => set((s) => ({ mix: { ...s.mix, gelConc: clamp(n, 0, 100) } })),
+    setGelSalt: (n) => set((s) => ({ mix: { ...s.mix, gelSalt: clamp(n, 0, 10) } })),
+    setGelCitric: (n) => set((s) => ({ mix: { ...s.mix, gelCitric: clamp(n, 0, 10) } })),
     resetMix: () => set({ mix: { ...defaultMix } }),
 
     updateVessel: (gid, patch) => set((s) => ({ gear: s.gear.map((g) => (g.gid === gid ? { ...g, ...patch } : g)) })),

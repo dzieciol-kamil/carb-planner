@@ -3,6 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://kddudi.goatcounter.com; connect-src 'self' https://kddudi.goatcounter.com; base-uri 'self'; form-action 'self';"
+    />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href="https://carbfueling.com/" />
     <meta name="theme-color" content="#16191c" />
@@ -51,7 +55,10 @@
       href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
-    <script data-goatcounter="https://kddudi.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+    <!-- Self-hosted instead of loaded from gc.zgo.at: keeps analytics off a third-party
+         CDN that could otherwise serve modified JS with full page access. Update by
+         re-downloading https://gc.zgo.at/count.js into public/count.js. -->
+    <script data-goatcounter="https://kddudi.goatcounter.com/count" async src="/count.js"></script>
   </head>
   <body>
     <div id="root"></div>
