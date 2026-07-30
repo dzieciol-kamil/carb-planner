@@ -239,6 +239,7 @@ export interface StringTable {
   noGap: string;
   rateInSegmentSuffix: string;
   eatenOnceLabel: string;
+  carbCardTitle: string;
 }
 
 export const STR: Record<Lang, StringTable> = {
@@ -496,6 +497,7 @@ export const STR: Record<Lang, StringTable> = {
     noGap: 'brak wolnego odcinka',
     rateInSegmentSuffix: ' g/h w tym odcinku',
     eatenOnceLabel: 'zjedzone jednorazowo',
+    carbCardTitle: 'Węglowodany',
   },
   en: {
     tagline: 'carbohydrate & hydration planner',
@@ -750,6 +752,7 @@ export const STR: Record<Lang, StringTable> = {
     noGap: 'no free gap',
     rateInSegmentSuffix: ' g/h in this stretch',
     eatenOnceLabel: 'eaten once',
+    carbCardTitle: 'Carbs',
   },
 };
 
