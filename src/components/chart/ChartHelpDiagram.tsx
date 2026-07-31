@@ -29,6 +29,9 @@ const ABSORBED_PTS: [number, number][] = [
   [30, 200], [55, 185], [80, 195], [105, 175], [130, 190], [155, 165], [180, 180],
   [205, 150], [230, 145], [255, 115], [280, 100], [330, 90], [380, 80],
 ];
+const ABSORBED_SEG_A: [number, number][] = [[30, 200], [55, 185], [80, 195], [105, 175], [130, 190]];
+const ABSORBED_SEG_B: [number, number][] = [[130, 190], [155, 165], [180, 180], [205, 150], [230, 145], [255, 115]];
+const ABSORBED_SEG_C: [number, number][] = [[255, 115], [280, 100], [330, 90], [380, 80]];
 const GUT_PTS: [number, number][] = [
   [30, 40], [70, 30], [110, 38], [150, 34], [190, 26], [230, 32], [270, 28], [310, 20], [350, 24], [380, 22],
 ];
@@ -86,7 +89,9 @@ function rateDiagram(strings: StringTable) {
       <path d={DEFICIT_FILL} fill={CHART_COLORS.climb} opacity={0.16} />
       <line x1={30} x2={380} y1={CAP_Y} y2={CAP_Y} stroke={CHART_COLORS.carb} strokeWidth={1} strokeDasharray="3 5" opacity={0.8} />
       <path d={pathFrom(NEED_PTS)} fill="none" stroke="#A8AEA9" strokeWidth={2} strokeDasharray="6 5" />
-      <path d={pathFrom(ABSORBED_PTS)} fill="none" stroke={CHART_COLORS.carb} strokeWidth={2.8} />
+      <path d={pathFrom(ABSORBED_SEG_A)} fill="none" stroke={CHART_COLORS.neutralLine} strokeWidth={2.8} />
+      <path d={pathFrom(ABSORBED_SEG_B)} fill="none" stroke={CHART_COLORS.carb} strokeWidth={2.8} />
+      <path d={pathFrom(ABSORBED_SEG_C)} fill="none" stroke={CHART_COLORS.gel} strokeWidth={2.8} />
       {callouts.map((c) => marker(c.n, c.x, c.y, c.color))}
     </>,
   );
@@ -114,12 +119,17 @@ function sumDiagram(strings: StringTable) {
   const callouts: Callout[] = [
     { n: 1, x: 280, y: 105, color: CHART_COLORS.carb, label: strings.absorbed, body: strings.chartHelpSumAbsorbedBody },
     { n: 2, x: 330, y: 58, color: CHART_COLORS.neutralLine, label: strings.need, body: strings.chartHelpSumNeedBody },
-    { n: 3, x: 230, y: 95, color: CHART_COLORS.gel, label: strings.intake, body: strings.chartHelpSumIntakeBody },
+    { n: 3, x: 230, y: 95, color: CHART_COLORS.carb, label: strings.intake, body: strings.chartHelpSumIntakeBody },
+    { n: 4, x: 200, y: 34, color: '#B08E1E', label: strings.gutLane, body: strings.chartHelpGutBody },
   ];
   const svg = frame(
     <>
+      <path d={pathFrom(GUT_PTS) + ` L${GUT_PTS[GUT_PTS.length - 1][0]},${GUT_BASE_Y} L${GUT_PTS[0][0]},${GUT_BASE_Y} Z`} fill="#C9A227" opacity={0.18} />
+      <path d={pathFrom(GUT_PTS)} fill="none" stroke="#B08E1E" strokeWidth={1.6} />
+      <line x1={30} x2={380} y1={GUT_LIMIT_Y} y2={GUT_LIMIT_Y} stroke={CHART_COLORS.climb} strokeWidth={1} strokeDasharray="4 4" opacity={0.7} />
+      <line x1={30} x2={380} y1={GUT_BASE_Y} y2={GUT_BASE_Y} stroke="#E3E5E0" strokeWidth={1} />
       <path d={pathFrom(SUM_NEED_PTS)} fill="none" stroke="#A8AEA9" strokeWidth={2} strokeDasharray="6 5" />
-      <path d={pathFrom(SUM_INTAKE_PTS)} fill="none" stroke={CHART_COLORS.gel} strokeWidth={1.2} strokeDasharray="2 4" opacity={0.7} />
+      <path d={pathFrom(SUM_INTAKE_PTS)} fill="none" stroke={CHART_COLORS.carb} strokeWidth={1.2} strokeDasharray="2 4" opacity={0.7} />
       <path d={pathFrom(SUM_ABSORBED_PTS)} fill="none" stroke={CHART_COLORS.carb} strokeWidth={2.8} />
       {callouts.map((c) => marker(c.n, c.x, c.y, c.color))}
     </>,

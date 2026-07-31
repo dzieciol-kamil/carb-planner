@@ -1,6 +1,7 @@
-import type { CSSProperties } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { t } from '../../i18n/strings';
-import { useAppStore } from '../../store/appStore';
+import { hasPlanData, useAppStore } from '../../store/appStore';
+import { TourReplayConfirm } from '../tour/TourReplayConfirm';
 import { tourGhostBtn } from '../tour/tourStyles';
 import { ChartHelpDiagram } from './ChartHelpDiagram';
 
@@ -15,12 +16,17 @@ export function ChartHelpModal({ desktop }: ChartHelpModalProps) {
   const closeChartHelp = useAppStore((s) => s.closeChartHelp);
   const startTour = useAppStore((s) => s.startTour);
   const strings = t(lang);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
-  if (!open) return null;
+  if (!open && !confirmOpen) return null;
 
   function openFullTour() {
     closeChartHelp();
-    startTour();
+    if (hasPlanData(useAppStore.getState())) {
+      setConfirmOpen(true);
+    } else {
+      startTour();
+    }
   }
 
   const panelStyle: CSSProperties = desktop
@@ -61,25 +67,39 @@ export function ChartHelpModal({ desktop }: ChartHelpModalProps) {
       };
 
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 210 }}>
-      <div onClick={closeChartHelp} style={{ position: 'absolute', inset: 0, background: 'rgba(18,20,18,0.55)' }} />
-      <div style={panelStyle}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-          <span style={{ fontSize: 15, fontWeight: 700 }}>{strings.chartHelpTitle}</span>
-          <button
-            onClick={closeChartHelp}
-            style={{ border: 'none', background: 'none', cursor: 'pointer', fontSize: 13, color: 'var(--muted)', padding: 0 }}
-          >
-            ✕
-          </button>
+    <>
+      {open && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 210 }}>
+          <div onClick={closeChartHelp} style={{ position: 'absolute', inset: 0, background: 'rgba(18,20,18,0.55)' }} />
+          <div style={panelStyle}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+              <span style={{ fontSize: 15, fontWeight: 700 }}>{strings.chartHelpTitle}</span>
+              <button
+                onClick={closeChartHelp}
+                style={{ border: 'none', background: 'none', cursor: 'pointer', fontSize: 13, color: 'var(--muted)', padding: 0 }}
+              >
+                ✕
+              </button>
+            </div>
+            <ChartHelpDiagram mode={yMode} strings={strings} />
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <button onClick={openFullTour} style={tourGhostBtn}>
+                {strings.chartHelpFullTour}
+              </button>
+            </div>
+          </div>
         </div>
-        <ChartHelpDiagram mode={yMode} strings={strings} />
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <button onClick={openFullTour} style={tourGhostBtn}>
-            {strings.chartHelpFullTour}
-          </button>
-        </div>
-      </div>
-    </div>
+      )}
+      {confirmOpen && (
+        <TourReplayConfirm
+          strings={strings}
+          onCancel={() => setConfirmOpen(false)}
+          onConfirm={() => {
+            setConfirmOpen(false);
+            startTour();
+          }}
+        />
+      )}
+    </>
   );
 }
