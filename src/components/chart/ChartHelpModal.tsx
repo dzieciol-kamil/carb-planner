@@ -54,7 +54,7 @@ export function ChartHelpModal({ desktop }: ChartHelpModalProps) {
         left: 0,
         right: 0,
         bottom: 0,
-        maxHeight: '85vh',
+        maxHeight: '94vh',
         background: '#fff',
         borderRadius: '16px 16px 0 0',
         boxShadow: '0 -12px 40px rgba(0,0,0,0.22)',
@@ -81,7 +81,7 @@ export function ChartHelpModal({ desktop }: ChartHelpModalProps) {
                 ✕
               </button>
             </div>
-            <ChartHelpDiagram mode={yMode} strings={strings} />
+            <ChartHelpDiagram mode={yMode} strings={strings} desktop={desktop} />
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <button onClick={openFullTour} style={tourGhostBtn}>
                 {strings.chartHelpFullTour}
