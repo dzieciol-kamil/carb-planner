@@ -208,3 +208,20 @@ describe('mobile ui state', () => {
     expect(useAppStore.getState().ui.shopSheet).toBeNull();
   });
 });
+
+describe('chart help modal', () => {
+  test('closed by default', () => {
+    expect(useAppStore.getState().ui.chartHelp).toBe(false);
+  });
+
+  test('openChartHelp sets chartHelp true', () => {
+    useAppStore.getState().openChartHelp();
+    expect(useAppStore.getState().ui.chartHelp).toBe(true);
+  });
+
+  test('closeChartHelp sets chartHelp false', () => {
+    useAppStore.getState().openChartHelp();
+    useAppStore.getState().closeChartHelp();
+    expect(useAppStore.getState().ui.chartHelp).toBe(false);
+  });
+});
