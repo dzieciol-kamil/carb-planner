@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { ChartCard } from './components/chart/ChartCard';
+import { ChartHelpModal } from './components/chart/ChartHelpModal';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { MobileApp } from './components/mobile/MobileApp';
@@ -42,6 +43,7 @@ function App() {
       <>
         <MobileApp />
         <TourOverlay />
+        <ChartHelpModal desktop={false} />
       </>
     );
   }
@@ -61,6 +63,7 @@ function App() {
       </div>
       <Footer />
       <TourOverlay />
+      <ChartHelpModal desktop />
     </div>
   );
 }
