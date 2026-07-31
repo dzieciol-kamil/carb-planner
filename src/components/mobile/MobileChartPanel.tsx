@@ -49,6 +49,7 @@ export function MobileChartPanel() {
   const gpxPeek = useAppStore((s) => s.ui.gpxPeek);
   const toggleGpxPeek = useAppStore((s) => s.toggleGpxPeek);
   const lang = useAppStore((s) => s.ui.lang);
+  const openChartHelp = useAppStore((s) => s.openChartHelp);
   const strings = t(lang);
 
   const distanceKm = dist(route);
@@ -111,7 +112,34 @@ export function MobileChartPanel() {
           </div>
         </div>
 
-        <p style={{ margin: 0, fontSize: 11, lineHeight: 1.45, color: 'var(--muted)' }}>{narration}</p>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+          <button
+            type="button"
+            onClick={openChartHelp}
+            title={strings.chartHelpBtnLabel}
+            aria-label={strings.chartHelpBtnLabel}
+            style={{
+              flexShrink: 0,
+              width: 30,
+              height: 30,
+              borderRadius: '50%',
+              border: '1px solid var(--chip-border)',
+              background: '#fff',
+              color: 'var(--muted)',
+              fontSize: 13,
+              fontWeight: 700,
+              fontFamily: "'JetBrains Mono', monospace",
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 0,
+              cursor: 'pointer',
+            }}
+          >
+            ?
+          </button>
+          <p style={{ margin: 0, fontSize: 11, lineHeight: 1.45, color: 'var(--muted)', flex: 1 }}>{narration}</p>
+        </div>
       </div>
 
       <div data-mobile-sticky style={{ position: 'sticky', top: 0, zIndex: 5, background: '#fff', borderBottom: '1px solid var(--border-soft)', padding: '0 14px 9px', display: 'flex', flexDirection: 'column', gap: 8 }}>
