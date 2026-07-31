@@ -46,6 +46,7 @@ export function ChartCard() {
   const setYMode = useAppStore((s) => s.setYMode);
   const setXUnit = useAppStore((s) => s.setXUnit);
   const addShop = useAppStore((s) => s.addShop);
+  const openChartHelp = useAppStore((s) => s.openChartHelp);
   const strings = t(lang);
 
   const planState = { route, mix, gear, fills, foods, foodLib };
@@ -125,11 +126,43 @@ export function ChartCard() {
       </div>
 
       <div style={{ display: 'flex', alignItems: 'stretch', gap: 12 }}>
-        <div style={{ width: 168, flex: '0 0 168px', display: 'flex', flexDirection: 'column', gap: 44 }}>
-          {showGutLane && <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{strings.gutHint}</span>}
-          {yMode === 'sum' && <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{strings.curveHintSum}</span>}
-          {yMode === 'rate' && <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{strings.curveHint}</span>}
-          {yMode === 'fluid' && <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{strings.capNoteFluid}</span>}
+        <div style={{ width: 168, flex: '0 0 168px', position: 'relative' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 44 }}>
+            {showGutLane && <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{strings.gutHint}</span>}
+            {yMode === 'sum' && <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{strings.curveHintSum}</span>}
+            {yMode === 'rate' && <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{strings.curveHint}</span>}
+            {yMode === 'fluid' && <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{strings.capNoteFluid}</span>}
+          </div>
+          <button
+            type="button"
+            onClick={openChartHelp}
+            title={strings.chartHelpBtnLabel}
+            aria-label={strings.chartHelpBtnLabel}
+            style={{
+              position: 'absolute',
+              left: 0,
+              // 22 mirrors Chart.tsx's PB (bottom axis padding) for showAxis=true, the
+              // exact call this component makes below — keeps the icon's bottom edge
+              // flush with the chart's 0-baseline.
+              bottom: 22,
+              width: 20,
+              height: 20,
+              borderRadius: '50%',
+              border: '1px solid var(--chip-border)',
+              background: '#fff',
+              color: 'var(--muted)',
+              fontSize: 11,
+              fontWeight: 700,
+              fontFamily: "'JetBrains Mono', monospace",
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: 0,
+              cursor: 'pointer',
+            }}
+          >
+            ?
+          </button>
         </div>
         <div data-tour="chart" style={{ flex: 1, minWidth: 0, position: 'relative' }}>
           <Chart height={CHART_HEIGHT} showAxis />
