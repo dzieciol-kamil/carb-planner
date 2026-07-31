@@ -204,12 +204,13 @@ export interface StringTable {
   chartHelpTitle: string;
   chartHelpFullTour: string;
   chartHelpScrubNote: string;
-  chartHelpDeficitLabel: string;
-  chartHelpDeficitBody: string;
+  chartHelpAxisNote: string;
   chartHelpAbsorbedBody: string;
   chartHelpNeedBody: string;
   chartHelpCapBody: string;
   chartHelpGutBody: string;
+  chartHelpDeficitLabel: string;
+  chartHelpDeficitBody: string;
   chartHelpFluidAbsorbedBody: string;
   chartHelpSweatBody: string;
   chartHelpSumAbsorbedBody: string;
@@ -484,13 +485,14 @@ export const STR: Record<Lang, StringTable> = {
     chartHelpBtnLabel: 'Wyjaśnij wykres',
     chartHelpTitle: 'Jak czytać ten wykres',
     chartHelpFullTour: 'Pokaż mi cały samouczek',
-    chartHelpScrubNote: 'Przeciągnij palcem lub kursorem po wykresie, żeby zobaczyć dokładne liczby w danym miejscu trasy.',
+    chartHelpScrubNote: 'Przeciągnij palcem po wykresie, żeby zobaczyć dokładne liczby w danym miejscu trasy.',
+    chartHelpAxisNote: 'Dokładne wartości pokazują liczby przy osiach po lewej i na dole wykresu.',
+    chartHelpAbsorbedBody: 'Powoli zwiększa to ilość węglowodanów dostępnych w Twoim organizmie. Planując trasę, starasz się utrzymać tę linię jak najbliżej zapotrzebowania. Kolor linii zmienia się zależnie od tego, co zjadłeś.',
+    chartHelpNeedBody: 'Tyle węglowodanów wymaga od Ciebie trasa w tej godzinie — w czasie wysiłku powinieneś przyjąć tyle węglowodanów.',
+    chartHelpCapBody: 'Maksimum, jakie Twoje jelito wchłonie w ciągu godziny, niezależnie od tego, ile zjesz lub wypijesz.',
+    chartHelpGutBody: 'To, co zjesz lub wypijesz, trafia do żołądka i tam się powoli trawi.',
     chartHelpDeficitLabel: 'Niedobór',
     chartHelpDeficitBody: 'Tu wchłaniasz mniej, niż potrzebujesz — ryzyko spadku formy.',
-    chartHelpAbsorbedBody: 'Ile węglowodanów faktycznie wchłaniasz w tej godzinie. Kolor linii zmienia się zależnie od tego, co akurat wchłaniasz (żel, izotonik, jedzenie...).',
-    chartHelpNeedBody: 'Ile potrzebujesz w tej godzinie, żeby nie zabrakło energii.',
-    chartHelpCapBody: 'Maksimum, jakie Twoje jelito wchłonie w ciągu godziny, niezależnie od tego, ile zjesz lub wypijesz.',
-    chartHelpGutBody: 'Co aktualnie czeka na strawienie. Rośnie, gdy jesz szybciej, niż trawisz.',
     chartHelpFluidAbsorbedBody: 'Ile faktycznie pijesz w tej godzinie.',
     chartHelpSweatBody: 'Ile tracisz z potem — Twoje zapotrzebowanie na płyny.',
     chartHelpSumAbsorbedBody: 'Łącznie wchłonięte węglowodany od startu trasy.',
@@ -762,13 +764,14 @@ export const STR: Record<Lang, StringTable> = {
     chartHelpBtnLabel: 'Explain the chart',
     chartHelpTitle: 'How to read this chart',
     chartHelpFullTour: 'Show me the full tour',
-    chartHelpScrubNote: 'Drag your finger or cursor across the chart to see exact numbers at any point on the route.',
+    chartHelpScrubNote: 'Drag your finger across the chart to see exact numbers at any point on the route.',
+    chartHelpAxisNote: 'Exact values are shown by the numbers along the left and bottom axes.',
+    chartHelpAbsorbedBody: "This slowly increases the amount of carbs available in your body. When planning the route, you try to keep this line as close as possible to what you need. The line's color changes depending on what you've eaten.",
+    chartHelpNeedBody: "This is how many carbs the route demands from you in that hour — during the effort you should take in this many carbs.",
+    chartHelpCapBody: 'The most your gut can absorb per hour, no matter how much you eat or drink.',
+    chartHelpGutBody: 'What you eat or drink goes into your stomach, where it slowly digests.',
     chartHelpDeficitLabel: 'Deficit',
     chartHelpDeficitBody: "Here you're absorbing less than you need — risk of running low.",
-    chartHelpAbsorbedBody: "How many carbs you're actually absorbing in that hour. The line's color changes depending on what you're currently absorbing (gel, isotonic drink, food...).",
-    chartHelpNeedBody: 'How much you need in that hour to avoid running out of energy.',
-    chartHelpCapBody: 'The most your gut can absorb per hour, no matter how much you eat or drink.',
-    chartHelpGutBody: "What's currently waiting to be digested. It grows when you eat faster than you digest.",
     chartHelpFluidAbsorbedBody: "How much you're actually drinking in that hour.",
     chartHelpSweatBody: 'How much you lose through sweat — your fluid requirement.',
     chartHelpSumAbsorbedBody: 'Total carbs absorbed since the start of the route.',

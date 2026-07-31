@@ -140,7 +140,7 @@ export function ChartCard() {
             aria-label={strings.chartHelpBtnLabel}
             style={{
               position: 'absolute',
-              left: 0,
+              right: 0,
               // 22 mirrors Chart.tsx's PB (bottom axis padding) for showAxis=true, the
               // exact call this component makes below — keeps the icon's bottom edge
               // flush with the chart's 0-baseline.
