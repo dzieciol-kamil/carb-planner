@@ -200,6 +200,21 @@ export interface StringTable {
   narrationProfile: string;
   scrubHint: string;
   legendGpx: string;
+  chartHelpBtnLabel: string;
+  chartHelpTitle: string;
+  chartHelpFullTour: string;
+  chartHelpScrubNote: string;
+  chartHelpDeficitLabel: string;
+  chartHelpDeficitBody: string;
+  chartHelpAbsorbedBody: string;
+  chartHelpNeedBody: string;
+  chartHelpCapBody: string;
+  chartHelpGutBody: string;
+  chartHelpFluidAbsorbedBody: string;
+  chartHelpSweatBody: string;
+  chartHelpSumAbsorbedBody: string;
+  chartHelpSumNeedBody: string;
+  chartHelpSumIntakeBody: string;
   foodSection2: string;
   gearHintMobile: string;
   mixHintMobile: string;
@@ -466,6 +481,21 @@ export const STR: Record<Lang, StringTable> = {
     narrationProfile: 'Profil trasy — wysokość nad poziomem morza. Podjazdy podnoszą zapotrzebowanie.',
     scrubHint: 'przesuń palcem, by odczytać',
     legendGpx: 'cel',
+    chartHelpBtnLabel: 'Wyjaśnij wykres',
+    chartHelpTitle: 'Jak czytać ten wykres',
+    chartHelpFullTour: 'Pokaż mi cały samouczek',
+    chartHelpScrubNote: 'Przeciągnij palcem lub kursorem po wykresie, żeby zobaczyć dokładne liczby w danym miejscu trasy.',
+    chartHelpDeficitLabel: 'Niedobór',
+    chartHelpDeficitBody: 'Tu wchłaniasz mniej, niż potrzebujesz — ryzyko spadku formy.',
+    chartHelpAbsorbedBody: 'Ile węglowodanów faktycznie wchłaniasz w tej godzinie.',
+    chartHelpNeedBody: 'Ile potrzebujesz w tej godzinie, żeby nie zabrakło energii.',
+    chartHelpCapBody: 'Maksimum, jakie Twoje jelito wchłonie w ciągu godziny, niezależnie od tego, ile zjesz lub wypijesz.',
+    chartHelpGutBody: 'Co aktualnie czeka na strawienie. Rośnie, gdy jesz szybciej, niż trawisz.',
+    chartHelpFluidAbsorbedBody: 'Ile faktycznie pijesz w tej godzinie.',
+    chartHelpSweatBody: 'Ile tracisz z potem — Twoje zapotrzebowanie na płyny.',
+    chartHelpSumAbsorbedBody: 'Łącznie wchłonięte węglowodany od startu trasy.',
+    chartHelpSumNeedBody: 'Łącznie ile było Ci potrzeba od startu trasy.',
+    chartHelpSumIntakeBody: 'Ile faktycznie zjadłeś — różnica czeka w żołądku.',
     foodSection2: 'Jedzenie',
     gearHintMobile: 'Co masz na rowerze. Objętość i dozwolona zawartość decydują o tym, ile węgli wchodzi w jedno napełnienie.',
     mixHintMobile: 'Skład izo i żelu. Zmiana przelicza gramaturę dla każdego napełnienia i limit wchłaniania.',
@@ -729,6 +759,21 @@ export const STR: Record<Lang, StringTable> = {
     narrationProfile: 'Route profile — elevation above sea level. Climbs raise the requirement.',
     scrubHint: 'drag to read',
     legendGpx: 'target',
+    chartHelpBtnLabel: 'Explain the chart',
+    chartHelpTitle: 'How to read this chart',
+    chartHelpFullTour: 'Show me the full tour',
+    chartHelpScrubNote: 'Drag your finger or cursor across the chart to see exact numbers at any point on the route.',
+    chartHelpDeficitLabel: 'Deficit',
+    chartHelpDeficitBody: "Here you're absorbing less than you need — risk of running low.",
+    chartHelpAbsorbedBody: "How many carbs you're actually absorbing in that hour.",
+    chartHelpNeedBody: 'How much you need in that hour to avoid running out of energy.',
+    chartHelpCapBody: 'The most your gut can absorb per hour, no matter how much you eat or drink.',
+    chartHelpGutBody: "What's currently waiting to be digested. It grows when you eat faster than you digest.",
+    chartHelpFluidAbsorbedBody: "How much you're actually drinking in that hour.",
+    chartHelpSweatBody: 'How much you lose through sweat — your fluid requirement.',
+    chartHelpSumAbsorbedBody: 'Total carbs absorbed since the start of the route.',
+    chartHelpSumNeedBody: "Total amount you've needed since the start of the route.",
+    chartHelpSumIntakeBody: "How much you've actually eaten — the difference is waiting in your stomach.",
     foodSection2: 'Food',
     gearHintMobile: "What's on your bike. Volume and allowed contents decide how many carbs fit in one fill.",
     mixHintMobile: 'Isotonic and gel composition. Changing it recalculates grams per fill and the absorption limit.',
