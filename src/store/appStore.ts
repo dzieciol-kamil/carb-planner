@@ -74,6 +74,7 @@ interface UiState {
   mixSheet: boolean;
   routeSheet: boolean;
   shopSheet: { editId: number | null } | null;
+  chartHelp: boolean;
 }
 
 interface AppState {
@@ -118,6 +119,8 @@ interface AppState {
   toggleGpxPeek: () => void;
   openMixSheet: () => void;
   closeMixSheet: () => void;
+  openChartHelp: () => void;
+  closeChartHelp: () => void;
   openRouteSheet: () => void;
   closeRouteSheet: () => void;
   openShopSheet: (editId: number | null) => void;
@@ -241,6 +244,7 @@ export const useAppStore = create<AppState>()(
       mixSheet: false,
       routeSheet: false,
       shopSheet: null,
+      chartHelp: false,
     },
     nextGid: 3,
     nextFid: 1,
@@ -300,6 +304,8 @@ export const useAppStore = create<AppState>()(
     toggleGpxPeek: () => set((s) => ({ ui: { ...s.ui, gpxPeek: !s.ui.gpxPeek } })),
     openMixSheet: () => set((s) => ({ ui: { ...s.ui, mixSheet: true } })),
     closeMixSheet: () => set((s) => ({ ui: { ...s.ui, mixSheet: false } })),
+    openChartHelp: () => set((s) => ({ ui: { ...s.ui, chartHelp: true } })),
+    closeChartHelp: () => set((s) => ({ ui: { ...s.ui, chartHelp: false } })),
     openRouteSheet: () => set((s) => ({ ui: { ...s.ui, routeSheet: true } })),
     closeRouteSheet: () => set((s) => ({ ui: { ...s.ui, routeSheet: false } })),
     openShopSheet: (editId) => set((s) => ({ ui: { ...s.ui, shopSheet: { editId } } })),

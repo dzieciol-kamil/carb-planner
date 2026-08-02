@@ -200,6 +200,22 @@ export interface StringTable {
   narrationProfile: string;
   scrubHint: string;
   legendGpx: string;
+  chartHelpBtnLabel: string;
+  chartHelpTitle: string;
+  chartHelpFullTour: string;
+  chartHelpScrubNote: string;
+  chartHelpAxisNote: string;
+  chartHelpAbsorbedBody: string;
+  chartHelpNeedBody: string;
+  chartHelpCapBody: string;
+  chartHelpGutBody: string;
+  chartHelpDeficitLabel: string;
+  chartHelpDeficitBody: string;
+  chartHelpFluidAbsorbedBody: string;
+  chartHelpSweatBody: string;
+  chartHelpSumAbsorbedBody: string;
+  chartHelpSumNeedBody: string;
+  chartHelpSumIntakeBody: string;
   foodSection2: string;
   gearHintMobile: string;
   mixHintMobile: string;
@@ -466,6 +482,22 @@ export const STR: Record<Lang, StringTable> = {
     narrationProfile: 'Profil trasy — wysokość nad poziomem morza. Podjazdy podnoszą zapotrzebowanie.',
     scrubHint: 'przesuń palcem, by odczytać',
     legendGpx: 'cel',
+    chartHelpBtnLabel: 'Wyjaśnij wykres',
+    chartHelpTitle: 'Jak czytać ten wykres',
+    chartHelpFullTour: 'Pokaż mi cały samouczek',
+    chartHelpScrubNote: 'Przeciągnij palcem po wykresie, żeby zobaczyć dokładne liczby w danym miejscu trasy.',
+    chartHelpAxisNote: 'Dokładne wartości pokazują liczby przy osiach po lewej i na dole wykresu.',
+    chartHelpAbsorbedBody: 'Powoli zwiększa to ilość węglowodanów dostępnych w Twoim organizmie. Planując trasę, starasz się utrzymać tę linię jak najbliżej zapotrzebowania. Kolor linii zmienia się zależnie od tego, co zjadłeś.',
+    chartHelpNeedBody: 'Tyle węglowodanów wymaga od Ciebie trasa w tej godzinie — w czasie wysiłku powinieneś przyjąć tyle węglowodanów.',
+    chartHelpCapBody: 'Maksimum, jakie Twoje jelito wchłonie w ciągu godziny, niezależnie od tego, ile zjesz lub wypijesz.',
+    chartHelpGutBody: 'To, co zjesz lub wypijesz, trafia do żołądka i tam się powoli trawi.',
+    chartHelpDeficitLabel: 'Niedobór',
+    chartHelpDeficitBody: 'Tu wchłaniasz mniej, niż potrzebujesz — ryzyko spadku formy.',
+    chartHelpFluidAbsorbedBody: 'Ile faktycznie pijesz w tej godzinie.',
+    chartHelpSweatBody: 'Ile tracisz z potem — Twoje zapotrzebowanie na płyny.',
+    chartHelpSumAbsorbedBody: 'Łącznie wchłonięte węglowodany od startu trasy.',
+    chartHelpSumNeedBody: 'Łącznie ile było Ci potrzeba od startu trasy.',
+    chartHelpSumIntakeBody: 'Ile faktycznie zjadłeś — różnica czeka w żołądku.',
     foodSection2: 'Jedzenie',
     gearHintMobile: 'Co masz na rowerze. Objętość i dozwolona zawartość decydują o tym, ile węgli wchodzi w jedno napełnienie.',
     mixHintMobile: 'Skład izo i żelu. Zmiana przelicza gramaturę dla każdego napełnienia i limit wchłaniania.',
@@ -729,6 +761,22 @@ export const STR: Record<Lang, StringTable> = {
     narrationProfile: 'Route profile — elevation above sea level. Climbs raise the requirement.',
     scrubHint: 'drag to read',
     legendGpx: 'target',
+    chartHelpBtnLabel: 'Explain the chart',
+    chartHelpTitle: 'How to read this chart',
+    chartHelpFullTour: 'Show me the full tour',
+    chartHelpScrubNote: 'Drag your finger across the chart to see exact numbers at any point on the route.',
+    chartHelpAxisNote: 'Exact values are shown by the numbers along the left and bottom axes.',
+    chartHelpAbsorbedBody: "This slowly increases the amount of carbs available in your body. When planning the route, you try to keep this line as close as possible to what you need. The line's color changes depending on what you've eaten.",
+    chartHelpNeedBody: "This is how many carbs the route demands from you in that hour — during the effort you should take in this many carbs.",
+    chartHelpCapBody: 'The most your gut can absorb per hour, no matter how much you eat or drink.',
+    chartHelpGutBody: 'What you eat or drink goes into your stomach, where it slowly digests.',
+    chartHelpDeficitLabel: 'Deficit',
+    chartHelpDeficitBody: "Here you're absorbing less than you need — risk of running low.",
+    chartHelpFluidAbsorbedBody: "How much you're actually drinking in that hour.",
+    chartHelpSweatBody: 'How much you lose through sweat — your fluid requirement.',
+    chartHelpSumAbsorbedBody: 'Total carbs absorbed since the start of the route.',
+    chartHelpSumNeedBody: "Total amount you've needed since the start of the route.",
+    chartHelpSumIntakeBody: "How much you've actually eaten — the difference is waiting in your stomach.",
     foodSection2: 'Food',
     gearHintMobile: "What's on your bike. Volume and allowed contents decide how many carbs fit in one fill.",
     mixHintMobile: 'Isotonic and gel composition. Changing it recalculates grams per fill and the absorption limit.',
