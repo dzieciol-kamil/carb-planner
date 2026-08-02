@@ -28,7 +28,3 @@ If the port is already in use, the script prints the running server's URL instea
 - `src/store/appStore.ts` (zustand) is the single source of app state, persisted to `localStorage` via `persistStorage.ts`. No backend.
 - `src/components/` is organized by area: `mobile/`, `panels/`, `timeline/`, `lanes/`, `chart/`, `recipes/`, `tour/`, `ui/`.
 - `src/i18n/strings.ts` holds all user-facing copy — don't inline strings in components.
-
-## Other notes
-
-- `IDEAS.md` is the unscheduled backlog — check it for context before proposing new features, and add to it rather than implementing on spec.
