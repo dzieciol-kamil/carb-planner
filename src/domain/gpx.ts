@@ -42,7 +42,9 @@ export function parseGpxXml(xml: string): GpxParseResult {
     const b = raw[i];
     const dLat = (b.lat - a.lat) * rad;
     const dLon = (b.lon - a.lon) * rad;
-    const h = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLon / 2) ** 2;
+    const h =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLon / 2) ** 2;
     cum[i] = cum[i - 1] + 2 * EARTH_RADIUS_KM * Math.asin(Math.min(1, Math.sqrt(h)));
   }
 
@@ -65,7 +67,9 @@ export function parseGpxXml(xml: string): GpxParseResult {
 
 const MAX_GPX_FILE_BYTES = 20 * 1024 * 1024;
 
-export function loadGpxFile(file: File): Promise<{ track: GpxTrack; distanceKm: number; fileName: string }> {
+export function loadGpxFile(
+  file: File,
+): Promise<{ track: GpxTrack; distanceKm: number; fileName: string }> {
   return new Promise((resolve, reject) => {
     if (file.size > MAX_GPX_FILE_BYTES) {
       reject(new Error('gpx file too large'));

@@ -25,11 +25,36 @@ const cardStyle: CSSProperties = {
   gap: 12,
 };
 
-const titleRowStyle: CSSProperties = { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 };
-const titleStyle: CSSProperties = { fontSize: 13, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' };
-const trackStyle: CSSProperties = { height: 10, borderRadius: 6, background: 'var(--border-soft)', overflow: 'hidden' };
-const footerRowStyle: CSSProperties = { display: 'flex', justifyContent: 'space-between', gap: 10, fontSize: 12, color: 'var(--muted-2)', whiteSpace: 'nowrap' };
-const footerValueStyle: CSSProperties = { fontFamily: "'JetBrains Mono', monospace", color: 'var(--ink)' };
+const titleRowStyle: CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: 8,
+};
+const titleStyle: CSSProperties = {
+  fontSize: 13,
+  fontWeight: 700,
+  letterSpacing: '0.1em',
+  textTransform: 'uppercase',
+};
+const trackStyle: CSSProperties = {
+  height: 10,
+  borderRadius: 6,
+  background: 'var(--border-soft)',
+  overflow: 'hidden',
+};
+const footerRowStyle: CSSProperties = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  gap: 10,
+  fontSize: 12,
+  color: 'var(--muted-2)',
+  whiteSpace: 'nowrap',
+};
+const footerValueStyle: CSSProperties = {
+  fontFamily: "'JetBrains Mono', monospace",
+  color: 'var(--ink)',
+};
 
 export function SummaryCards() {
   const route = useAppStore((s) => s.route);
@@ -46,14 +71,39 @@ export function SummaryCards() {
   const hydColor = statusColor(summary.hydrationPct, 'var(--water)');
 
   return (
-    <div style={{ flex: '1 1 36%', minWidth: 240, boxSizing: 'border-box', display: 'flex', flexDirection: 'column', gap: 14 }}>
+    <div
+      style={{
+        flex: '1 1 36%',
+        minWidth: 240,
+        boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 14,
+      }}
+    >
       <div style={cardStyle}>
         <div style={titleRowStyle}>
           <span style={titleStyle}>{strings.coverage}</span>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: 700, color: carbColor }}>{summary.coverage}%</span>
+          <span
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 11,
+              fontWeight: 700,
+              color: carbColor,
+            }}
+          >
+            {summary.coverage}%
+          </span>
         </div>
         <div style={trackStyle}>
-          <div style={{ width: `${Math.min(100, summary.coverage)}%`, height: '100%', background: carbColor, borderRadius: 6 }} />
+          <div
+            style={{
+              width: `${Math.min(100, summary.coverage)}%`,
+              height: '100%',
+              background: carbColor,
+              borderRadius: 6,
+            }}
+          />
         </div>
         <div style={footerRowStyle}>
           <span>
@@ -71,10 +121,26 @@ export function SummaryCards() {
       <div style={cardStyle}>
         <div style={titleRowStyle}>
           <span style={titleStyle}>{strings.hydration}</span>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: 700, color: hydColor }}>{summary.hydrationPct}%</span>
+          <span
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 11,
+              fontWeight: 700,
+              color: hydColor,
+            }}
+          >
+            {summary.hydrationPct}%
+          </span>
         </div>
         <div style={trackStyle}>
-          <div style={{ width: `${Math.min(100, summary.hydrationPct)}%`, height: '100%', background: hydColor, borderRadius: 6 }} />
+          <div
+            style={{
+              width: `${Math.min(100, summary.hydrationPct)}%`,
+              height: '100%',
+              background: hydColor,
+              borderRadius: 6,
+            }}
+          />
         </div>
         <div style={footerRowStyle}>
           <span>

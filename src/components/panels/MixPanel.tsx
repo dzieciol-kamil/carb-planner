@@ -10,10 +10,45 @@ import { PanelShell } from './PanelShell';
 const RATIO_PRESETS = [2, 1.5, 1, 0.8];
 const CONTENT_OPTIONS: Content[] = ['water', 'izo', 'gel'];
 
-const sectionCardStyle: CSSProperties = { border: '1px solid #E9EBE5', borderRadius: 12, padding: '12px 14px 14px', background: '#FBFCFA', marginBottom: 10 };
-const miniLabelStyle: CSSProperties = { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6, border: '1px solid var(--chip-border)', borderRadius: 10, padding: '9px 10px', background: '#fff' };
-const miniInputStyle: CSSProperties = { width: 46, border: 'none', background: 'transparent', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, fontWeight: 700, textAlign: 'right' };
-const stepBtnStyle: CSSProperties = { border: 'none', background: 'transparent', color: 'var(--muted)', cursor: 'pointer', fontSize: 14, fontWeight: 700, width: 16, height: 22, padding: 0, lineHeight: 1, flex: '0 0 auto' };
+const sectionCardStyle: CSSProperties = {
+  border: '1px solid #E9EBE5',
+  borderRadius: 12,
+  padding: '12px 14px 14px',
+  background: '#FBFCFA',
+  marginBottom: 10,
+};
+const miniLabelStyle: CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: 6,
+  border: '1px solid var(--chip-border)',
+  borderRadius: 10,
+  padding: '9px 10px',
+  background: '#fff',
+};
+const miniInputStyle: CSSProperties = {
+  width: 46,
+  border: 'none',
+  background: 'transparent',
+  fontFamily: "'JetBrains Mono', monospace",
+  fontSize: 13,
+  fontWeight: 700,
+  textAlign: 'right',
+};
+const stepBtnStyle: CSSProperties = {
+  border: 'none',
+  background: 'transparent',
+  color: 'var(--muted)',
+  cursor: 'pointer',
+  fontSize: 14,
+  fontWeight: 700,
+  width: 16,
+  height: 22,
+  padding: 0,
+  lineHeight: 1,
+  flex: '0 0 auto',
+};
 
 function contentLabel(content: Content, lang: 'pl' | 'en'): string {
   const strings = t(lang);
@@ -66,18 +101,57 @@ export function MixPanel() {
 
   return (
     <PanelShell title={strings.gearMix} onClose={closePanel}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 6 }}>
-        <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted)' }}>{strings.mixSection}</span>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 12,
+          marginBottom: 6,
+        }}
+      >
+        <span
+          style={{
+            fontSize: 12,
+            fontWeight: 700,
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+            color: 'var(--muted)',
+          }}
+        >
+          {strings.mixSection}
+        </span>
         <button
           onClick={resetMix}
-          style={{ border: '1px solid var(--chip-border)', background: '#fff', borderRadius: 8, padding: '5px 10px', fontFamily: 'Archivo, sans-serif', fontSize: 11, fontWeight: 600, color: 'var(--muted-2)', cursor: 'pointer' }}
+          style={{
+            border: '1px solid var(--chip-border)',
+            background: '#fff',
+            borderRadius: 8,
+            padding: '5px 10px',
+            fontFamily: 'Archivo, sans-serif',
+            fontSize: 11,
+            fontWeight: 600,
+            color: 'var(--muted-2)',
+            cursor: 'pointer',
+          }}
         >
           {strings.resetDefaults}
         </button>
       </div>
-      <p style={{ margin: '0 0 12px', fontSize: 12, lineHeight: 1.5, color: 'var(--muted-2)' }}>{strings.mixHint}</p>
+      <p style={{ margin: '0 0 12px', fontSize: 12, lineHeight: 1.5, color: 'var(--muted-2)' }}>
+        {strings.mixHint}
+      </p>
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 10, flexWrap: 'wrap' }}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 12,
+          marginBottom: 10,
+          flexWrap: 'wrap',
+        }}
+      >
         <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{strings.ratio}</span>
         <span style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
           {RATIO_PRESETS.map((r) => {
@@ -86,9 +160,17 @@ export function MixPanel() {
               <button
                 key={r}
                 onClick={() => setRatio(r)}
-                style={{ ...cOpt(mix.ratio === r, 'var(--ink)'), display: 'flex', flexDirection: 'row', alignItems: 'baseline', gap: 4 }}
+                style={{
+                  ...cOpt(mix.ratio === r, 'var(--ink)'),
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'baseline',
+                  gap: 4,
+                }}
               >
-                {caption && <span style={{ fontSize: 10, fontWeight: 600, opacity: 0.75 }}>{caption}</span>}
+                {caption && (
+                  <span style={{ fontSize: 10, fontWeight: 600, opacity: 0.75 }}>{caption}</span>
+                )}
                 <span>{r}:1</span>
               </button>
             );
@@ -112,7 +194,15 @@ export function MixPanel() {
               value={mix.ratio}
               onChange={setRatio}
               fallback={2}
-              style={{ width: 44, border: 'none', background: 'transparent', fontFamily: "'JetBrains Mono', monospace", fontSize: 12, fontWeight: 700, textAlign: 'right' }}
+              style={{
+                width: 44,
+                border: 'none',
+                background: 'transparent',
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: 12,
+                fontWeight: 700,
+                textAlign: 'right',
+              }}
             />
             <span style={{ fontSize: 10.5, color: 'var(--muted)' }}>:1</span>
           </label>
@@ -124,24 +214,35 @@ export function MixPanel() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
           <label style={miniLabelStyle}>
             <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
-              <span style={{ fontSize: 11, color: 'var(--ink-soft)', fontWeight: 600 }}>{strings.concLabel}</span>
+              <span style={{ fontSize: 11, color: 'var(--ink-soft)', fontWeight: 600 }}>
+                {strings.concLabel}
+              </span>
               <span style={{ fontSize: 10, color: 'var(--muted-3)' }}>{strings.per100}</span>
             </span>
             <NumberInput step={0.5} value={mix.conc} onChange={setConc} style={miniInputStyle} />
           </label>
           <label style={miniLabelStyle}>
             <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
-              <span style={{ fontSize: 11, color: 'var(--ink-soft)', fontWeight: 600 }}>{strings.saltLabel}</span>
+              <span style={{ fontSize: 11, color: 'var(--ink-soft)', fontWeight: 600 }}>
+                {strings.saltLabel}
+              </span>
               <span style={{ fontSize: 10, color: 'var(--muted-3)' }}>{strings.per100}</span>
             </span>
             <NumberInput step={0.05} value={mix.salt} onChange={setSalt} style={miniInputStyle} />
           </label>
           <label style={miniLabelStyle}>
             <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
-              <span style={{ fontSize: 11, color: 'var(--ink-soft)', fontWeight: 600 }}>{strings.citricLabel}</span>
+              <span style={{ fontSize: 11, color: 'var(--ink-soft)', fontWeight: 600 }}>
+                {strings.citricLabel}
+              </span>
               <span style={{ fontSize: 10, color: 'var(--muted-3)' }}>{strings.per100}</span>
             </span>
-            <NumberInput step={0.05} value={mix.citric} onChange={setCitric} style={miniInputStyle} />
+            <NumberInput
+              step={0.05}
+              value={mix.citric}
+              onChange={setCitric}
+              style={miniInputStyle}
+            />
           </label>
         </div>
       </div>
@@ -151,31 +252,63 @@ export function MixPanel() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
           <label style={miniLabelStyle}>
             <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
-              <span style={{ fontSize: 11, color: 'var(--ink-soft)', fontWeight: 600 }}>{strings.gelConcLabel}</span>
+              <span style={{ fontSize: 11, color: 'var(--ink-soft)', fontWeight: 600 }}>
+                {strings.gelConcLabel}
+              </span>
               <span style={{ fontSize: 10, color: 'var(--muted-3)' }}>{strings.per100}</span>
             </span>
-            <NumberInput step={1} value={mix.gelConc} onChange={setGelConc} style={miniInputStyle} />
+            <NumberInput
+              step={1}
+              value={mix.gelConc}
+              onChange={setGelConc}
+              style={miniInputStyle}
+            />
           </label>
           <label style={miniLabelStyle}>
             <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
-              <span style={{ fontSize: 11, color: 'var(--ink-soft)', fontWeight: 600 }}>{strings.saltLabel}</span>
+              <span style={{ fontSize: 11, color: 'var(--ink-soft)', fontWeight: 600 }}>
+                {strings.saltLabel}
+              </span>
               <span style={{ fontSize: 10, color: 'var(--muted-3)' }}>{strings.per100}</span>
             </span>
-            <NumberInput step={0.05} value={mix.gelSalt} onChange={setGelSalt} style={miniInputStyle} />
+            <NumberInput
+              step={0.05}
+              value={mix.gelSalt}
+              onChange={setGelSalt}
+              style={miniInputStyle}
+            />
           </label>
           <label style={miniLabelStyle}>
             <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
-              <span style={{ fontSize: 11, color: 'var(--ink-soft)', fontWeight: 600 }}>{strings.citricLabel}</span>
+              <span style={{ fontSize: 11, color: 'var(--ink-soft)', fontWeight: 600 }}>
+                {strings.citricLabel}
+              </span>
               <span style={{ fontSize: 10, color: 'var(--muted-3)' }}>{strings.per100}</span>
             </span>
-            <NumberInput step={0.05} value={mix.gelCitric} onChange={setGelCitric} style={miniInputStyle} />
+            <NumberInput
+              step={0.05}
+              value={mix.gelCitric}
+              onChange={setGelCitric}
+              style={miniInputStyle}
+            />
           </label>
         </div>
       </div>
 
       <div style={{ height: 14 }} />
 
-      <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: 12 }}>{strings.gear}</div>
+      <div
+        style={{
+          fontSize: 12,
+          fontWeight: 700,
+          letterSpacing: '0.1em',
+          textTransform: 'uppercase',
+          color: 'var(--muted)',
+          marginBottom: 12,
+        }}
+      >
+        {strings.gear}
+      </div>
 
       <div data-gear-list style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         {gear.map((vessel) => (
@@ -193,7 +326,16 @@ export function MixPanel() {
             <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
               <span
                 onPointerDown={createVesselReorderHandler(vessel.gid)}
-                style={{ cursor: 'grab', touchAction: 'none', color: 'var(--muted-3)', fontSize: 14, lineHeight: 1, padding: '0 2px', userSelect: 'none', flex: '0 0 auto' }}
+                style={{
+                  cursor: 'grab',
+                  touchAction: 'none',
+                  color: 'var(--muted-3)',
+                  fontSize: 14,
+                  lineHeight: 1,
+                  padding: '0 2px',
+                  userSelect: 'none',
+                  flex: '0 0 auto',
+                }}
               >
                 ⠿
               </span>
@@ -201,25 +343,76 @@ export function MixPanel() {
                 type="text"
                 value={vessel.name}
                 onChange={(e) => updateVessel(vessel.gid, { name: e.target.value })}
-                style={{ flex: 1, border: '1px solid var(--chip-border)', borderRadius: 10, padding: '9px 11px', fontFamily: 'Archivo, sans-serif', fontSize: 13, fontWeight: 600, background: '#fff' }}
+                style={{
+                  flex: 1,
+                  border: '1px solid var(--chip-border)',
+                  borderRadius: 10,
+                  padding: '9px 11px',
+                  fontFamily: 'Archivo, sans-serif',
+                  fontSize: 13,
+                  fontWeight: 600,
+                  background: '#fff',
+                }}
               />
-              <span style={{ display: 'flex', alignItems: 'center', gap: 6, border: '1px solid var(--chip-border)', borderRadius: 10, padding: '0 10px', width: 92, background: '#fff' }}>
+              <span
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  border: '1px solid var(--chip-border)',
+                  borderRadius: 10,
+                  padding: '0 10px',
+                  width: 92,
+                  background: '#fff',
+                }}
+              >
                 <NumberInput
                   value={vessel.vol}
                   onChange={(vol) => updateVessel(vessel.gid, { vol })}
-                  style={{ width: '100%', border: 'none', padding: '9px 0', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, fontWeight: 600 }}
+                  style={{
+                    width: '100%',
+                    border: 'none',
+                    padding: '9px 0',
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontSize: 13,
+                    fontWeight: 600,
+                  }}
                 />
                 <span style={{ fontSize: 11, color: 'var(--muted-3)' }}>ml</span>
               </span>
-              <button onClick={() => removeVessel(vessel.gid)} style={{ border: 'none', background: 'transparent', color: '#B0B5B0', cursor: 'pointer', fontSize: 13, padding: 6, width: 26, flex: '0 0 26px' }}>
+              <button
+                onClick={() => removeVessel(vessel.gid)}
+                style={{
+                  border: 'none',
+                  background: 'transparent',
+                  color: '#B0B5B0',
+                  cursor: 'pointer',
+                  fontSize: 13,
+                  padding: 6,
+                  width: 26,
+                  flex: '0 0 26px',
+                }}
+              >
                 ✕
               </button>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 10, flexWrap: 'wrap' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                marginTop: 10,
+                flexWrap: 'wrap',
+              }}
+            >
               <span style={{ fontSize: 11, color: 'var(--muted)' }}>{strings.canCarry}</span>
               <span style={{ display: 'flex', gap: 5 }}>
                 {CONTENT_OPTIONS.map((k) => (
-                  <button key={k} onClick={() => toggleVesselAllowed(vessel.gid, k)} style={cOpt((vessel.allowed || []).includes(k), sourceColor(k))}>
+                  <button
+                    key={k}
+                    onClick={() => toggleVesselAllowed(vessel.gid, k)}
+                    style={cOpt((vessel.allowed || []).includes(k), sourceColor(k))}
+                  >
                     {contentLabel(k, lang)}
                   </button>
                 ))}
@@ -241,9 +434,16 @@ export function MixPanel() {
                     flex: '0 0 auto',
                   }}
                 >
-                  <span style={{ fontSize: 11, color: 'var(--muted-3)' }}>{strings.gelPartsLabel}</span>
+                  <span style={{ fontSize: 11, color: 'var(--muted-3)' }}>
+                    {strings.gelPartsLabel}
+                  </span>
                   <span style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <button type="button" onClick={() => setVesselGelParts(vessel.gid, vessel.gelParts - 1)} style={stepBtnStyle} aria-label="-">
+                    <button
+                      type="button"
+                      onClick={() => setVesselGelParts(vessel.gid, vessel.gelParts - 1)}
+                      style={stepBtnStyle}
+                      aria-label="-"
+                    >
                       −
                     </button>
                     <NumberInput
@@ -254,9 +454,23 @@ export function MixPanel() {
                       fallback={1}
                       value={vessel.gelParts}
                       onChange={(gelParts) => setVesselGelParts(vessel.gid, gelParts)}
-                      style={{ width: 16, border: 'none', padding: '9px 0', background: 'transparent', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, fontWeight: 600, textAlign: 'center' }}
+                      style={{
+                        width: 16,
+                        border: 'none',
+                        padding: '9px 0',
+                        background: 'transparent',
+                        fontFamily: "'JetBrains Mono', monospace",
+                        fontSize: 13,
+                        fontWeight: 600,
+                        textAlign: 'center',
+                      }}
                     />
-                    <button type="button" onClick={() => setVesselGelParts(vessel.gid, vessel.gelParts + 1)} style={stepBtnStyle} aria-label="+">
+                    <button
+                      type="button"
+                      onClick={() => setVesselGelParts(vessel.gid, vessel.gelParts + 1)}
+                      style={stepBtnStyle}
+                      aria-label="+"
+                    >
                       +
                     </button>
                   </span>
@@ -269,7 +483,19 @@ export function MixPanel() {
 
       <button
         onClick={addVessel}
-        style={{ marginTop: 12, border: '1px dashed #C9CEC7', background: '#F7F8F5', borderRadius: 10, padding: '11px 16px', fontFamily: 'Archivo, sans-serif', fontSize: 13, fontWeight: 600, color: 'var(--ink-soft)', cursor: 'pointer', width: '100%' }}
+        style={{
+          marginTop: 12,
+          border: '1px dashed #C9CEC7',
+          background: '#F7F8F5',
+          borderRadius: 10,
+          padding: '11px 16px',
+          fontFamily: 'Archivo, sans-serif',
+          fontSize: 13,
+          fontWeight: 600,
+          color: 'var(--ink-soft)',
+          cursor: 'pointer',
+          width: '100%',
+        }}
       >
         + {strings.addGear}
       </button>

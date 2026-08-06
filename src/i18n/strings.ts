@@ -289,12 +289,17 @@ export const STR: Record<Lang, StringTable> = {
     savedLocally: 'Zapisane lokalnie',
     canCarry: 'Może wozić:',
     gelPartsLabel: 'porcje',
-    gearHint: 'Nazwa, pojemność i to, co dany bidon może wozić. Żel dzieli się na tyle porcji, ile tu ustawisz.',
-    settingsHint: 'Wszystko zapisuje się w tej przeglądarce (localStorage) — bez konta, bez backendu.',
+    gearHint:
+      'Nazwa, pojemność i to, co dany bidon może wozić. Żel dzieli się na tyle porcji, ile tu ustawisz.',
+    settingsHint:
+      'Wszystko zapisuje się w tej przeglądarce (localStorage) — bez konta, bez backendu.',
     curve: 'Planowanie',
-    gutHint: 'To Twój żołądek: górny pasek pokazuje, co w nim zalega i jak szybko się trawi, aż do górnego limitu pojemności.',
-    curveHint: 'Gruba ciągła linia to tempo, w jakim realnie wchłaniasz węglowodany — rdzawe pola to godziny, w których wchłaniasz mniej, niż potrzebujesz.',
-    curveHintSum: 'Gruba ciągła linia to suma węglowodanów, które realnie wchłonąłeś do danej godziny.',
+    gutHint:
+      'To Twój żołądek: górny pasek pokazuje, co w nim zalega i jak szybko się trawi, aż do górnego limitu pojemności.',
+    curveHint:
+      'Gruba ciągła linia to tempo, w jakim realnie wchłaniasz węglowodany — rdzawe pola to godziny, w których wchłaniasz mniej, niż potrzebujesz.',
+    curveHintSum:
+      'Gruba ciągła linia to suma węglowodanów, które realnie wchłonąłeś do danej godziny.',
     intake: 'Zjedzone',
     absorbed: 'Wchłonięte',
     gutLane: 'W żołądku',
@@ -320,8 +325,10 @@ export const STR: Record<Lang, StringTable> = {
     tAbsorbed: 'Wchłonięte',
     tCap: 'Limit wchłaniania',
     tGutPeak: 'Max w żołądku',
-    timelineHint: 'Podgląd — pozycję, zakres i zawartość każdej dolewki ustawiasz na wykresie powyżej.',
-    dragHint: 'Paski nie nachodzą na siebie — w ciasnej luce przeciągany pasek się skraca. Kreski porcji żelu przesuwasz osobno.',
+    timelineHint:
+      'Podgląd — pozycję, zakres i zawartość każdej dolewki ustawiasz na wykresie powyżej.',
+    dragHint:
+      'Paski nie nachodzą na siebie — w ciasnej luce przeciągany pasek się skraca. Kreski porcji żelu przesuwasz osobno.',
     addFuel: 'Dodaj jedzenie:',
     removeItem: 'Usuń',
     addShopStop: 'Dodaj sklep',
@@ -415,14 +422,27 @@ export const STR: Record<Lang, StringTable> = {
       'Twoja lista produktów — te przyciski pojawiają się pod wykresem. Podaj same węglowodany w porcji (nie wagę batona) i ewentualny płyn.',
     mixHint: 'Wartości na 100 ml — stąd liczą się gramy dla każdego napełnienia.',
     notes: [
-      { title: 'Linia na każdy bidon', body: 'Bidon 720, bidon 610, flask — każdy ma własną linię i nie da się wrzucić żelu do bidonu z izo.' },
-      { title: 'Dolewka po wyczerpaniu', body: 'Napełnienia nie zachodzą na siebie: pasek zatrzymuje się na sąsiedzie, a + wstawia dolewkę w wolnej luce.' },
-      { title: 'Jedzenie osobno', body: 'Banan i żelki mogą się nakładać, piwo zero bierzesz jednorazowo na stacji — dlatego mają własną linię.' },
-      { title: 'Skład na bidon', body: 'Karta „Skład bidonów” liczy gramy maltodekstryny, fruktozy, soli i kwasku dla każdego napełnienia osobno.' },
+      {
+        title: 'Linia na każdy bidon',
+        body: 'Bidon 720, bidon 610, flask — każdy ma własną linię i nie da się wrzucić żelu do bidonu z izo.',
+      },
+      {
+        title: 'Dolewka po wyczerpaniu',
+        body: 'Napełnienia nie zachodzą na siebie: pasek zatrzymuje się na sąsiedzie, a + wstawia dolewkę w wolnej luce.',
+      },
+      {
+        title: 'Jedzenie osobno',
+        body: 'Banan i żelki mogą się nakładać, piwo zero bierzesz jednorazowo na stacji — dlatego mają własną linię.',
+      },
+      {
+        title: 'Skład na bidon',
+        body: 'Karta „Skład bidonów” liczy gramy maltodekstryny, fruktozy, soli i kwasku dla każdego napełnienia osobno.',
+      },
     ],
     ftAboutBody:
       'Carb Fueling liczy, ile węglowodanów i płynów zabrać na trasę — z dystansu, tempa, wagi, intensywności i temperatury — a potem rozkłada je na bidony, flaski i jedzenie w czasie. Plan, sprzęt i lista produktów zapisują się w tej przeglądarce.',
-    ftPrivacy: 'Bez konta, bez serwera, bez cookies. Anonimowe liczniki odwiedzin (GoatCounter) — bez śledzenia Cię między stronami.',
+    ftPrivacy:
+      'Bez konta, bez serwera, bez cookies. Anonimowe liczniki odwiedzin (GoatCounter) — bez śledzenia Cię między stronami.',
     ftLegal: 'Zastrzeżenie prawne',
     ftLegalBody:
       'To narzędzie edukacyjne i pomocnicze — nie jest poradą medyczną, dietetyczną ani treningową i nie zastępuje kontaktu ze specjalistą. Wyliczenia są szacunkowe, oparte na uśrednionych modelach; Twoje realne zapotrzebowanie, tolerancja żołądkowa, poziom nawodnienia i reakcja na wysiłek mogą się od nich istotnie różnić. Korzystasz z aplikacji na własną odpowiedzialność i wyłącznie na własne ryzyko. Autor nie ponosi odpowiedzialności za jakiekolwiek skutki zdrowotne, kontuzje, szkody, straty ani decyzje podjęte na podstawie wyników — w szczególności nie odpowiada za Twoje zdrowie ani życie. Jeśli chorujesz (m.in. cukrzyca, choroby nerek, serca, przewodu pokarmowego), przyjmujesz leki, jesteś w ciąży albo planujesz długi lub bardzo intensywny start — skonsultuj plan żywieniowy z lekarzem lub dietetykiem sportowym. Nie ignoruj objawów: przy zawrotach głowy, nudnościach, dezorientacji, skurczach lub podejrzeniu hiponatremii przerwij wysiłek i szukaj pomocy. Aplikacja jest dostarczana „taką, jaka jest”, bez żadnych gwarancji.',
@@ -433,7 +453,8 @@ export const STR: Record<Lang, StringTable> = {
     ftSources2: 'Utrata potu: przybliżenie z wagi, intensywności i temperatury.',
     ftCopyright: '© 2026 Carb Fueling · open source',
     tourWelcomeTitle: 'Witaj w Carb Fueling',
-    tourWelcomeBody: 'W kilku krokach pokażemy, jak zaplanować węglowodany i płyny na trasę oraz jak czytać wynik. Zajmie to około minuty.',
+    tourWelcomeBody:
+      'W kilku krokach pokażemy, jak zaplanować węglowodany i płyny na trasę oraz jak czytać wynik. Zajmie to około minuty.',
     tourRouteTitle: 'Trasa i wynik',
     tourRouteBody:
       'Tu opisujesz przejazd — dystansem i tempem albo czasem trwania — oraz warunki (intensywność, temperatura, posiłek przed startem). Karty obok pokazują, czy Twój plan pokrywa zapotrzebowanie na węglowodany i płyny. Możesz też wczytać własny plik GPX — wtedy tempo i zapotrzebowanie dopasują się do prawdziwego profilu Twojej trasy (podjazdów i zjazdów), a nie uśrednionego.',
@@ -471,25 +492,34 @@ export const STR: Record<Lang, StringTable> = {
     tourStepLabel: 'Krok',
     tourReplayButton: 'Pokaż tour ponownie',
     tourConfirmTitle: 'Uruchomić tour ponownie?',
-    tourConfirmBody: 'Tour wczyta przykładowe dane (trasa i jeden bidon) w miejsce Twojego aktualnego planu. Tej zmiany nie da się cofnąć.',
+    tourConfirmBody:
+      'Tour wczyta przykładowe dane (trasa i jeden bidon) w miejsce Twojego aktualnego planu. Tej zmiany nie da się cofnąć.',
     tourConfirmCancel: 'Anuluj',
     tourConfirmStart: 'Uruchom tour',
     tabMix: 'Mieszanka',
     editRoutePrefix: 'Edytuj trasę:',
-    narrationRate: 'Ile węgli na godzinę realnie wchłaniasz (linia) wobec zapotrzebowania (przerywana). Kropkowana to limit wchłaniania.',
-    narrationFluid: 'Ile płynu pijesz na godzinę (linia) wobec tego, ile tracisz z potem (przerywana).',
-    narrationSum: 'Węgle zsumowane od startu: co wchłoniesz (linia) wobec zapotrzebowania (przerywana).',
-    narrationProfile: 'Profil trasy — wysokość nad poziomem morza. Podjazdy podnoszą zapotrzebowanie.',
+    narrationRate:
+      'Ile węgli na godzinę realnie wchłaniasz (linia) wobec zapotrzebowania (przerywana). Kropkowana to limit wchłaniania.',
+    narrationFluid:
+      'Ile płynu pijesz na godzinę (linia) wobec tego, ile tracisz z potem (przerywana).',
+    narrationSum:
+      'Węgle zsumowane od startu: co wchłoniesz (linia) wobec zapotrzebowania (przerywana).',
+    narrationProfile:
+      'Profil trasy — wysokość nad poziomem morza. Podjazdy podnoszą zapotrzebowanie.',
     scrubHint: 'przesuń palcem, by odczytać',
     legendGpx: 'cel',
     chartHelpBtnLabel: 'Wyjaśnij wykres',
     chartHelpTitle: 'Jak czytać ten wykres',
     chartHelpFullTour: 'Pokaż mi cały samouczek',
-    chartHelpScrubNote: 'Przeciągnij palcem po wykresie, żeby zobaczyć dokładne liczby w danym miejscu trasy.',
+    chartHelpScrubNote:
+      'Przeciągnij palcem po wykresie, żeby zobaczyć dokładne liczby w danym miejscu trasy.',
     chartHelpAxisNote: 'Dokładne wartości pokazują liczby przy osiach po lewej i na dole wykresu.',
-    chartHelpAbsorbedBody: 'Powoli zwiększa to ilość węglowodanów dostępnych w Twoim organizmie. Planując trasę, starasz się utrzymać tę linię jak najbliżej zapotrzebowania. Kolor linii zmienia się zależnie od tego, co zjadłeś.',
-    chartHelpNeedBody: 'Tyle węglowodanów wymaga od Ciebie trasa w tej godzinie — w czasie wysiłku powinieneś przyjąć tyle węglowodanów.',
-    chartHelpCapBody: 'Maksimum, jakie Twoje jelito wchłonie w ciągu godziny, niezależnie od tego, ile zjesz lub wypijesz.',
+    chartHelpAbsorbedBody:
+      'Powoli zwiększa to ilość węglowodanów dostępnych w Twoim organizmie. Planując trasę, starasz się utrzymać tę linię jak najbliżej zapotrzebowania. Kolor linii zmienia się zależnie od tego, co zjadłeś.',
+    chartHelpNeedBody:
+      'Tyle węglowodanów wymaga od Ciebie trasa w tej godzinie — w czasie wysiłku powinieneś przyjąć tyle węglowodanów.',
+    chartHelpCapBody:
+      'Maksimum, jakie Twoje jelito wchłonie w ciągu godziny, niezależnie od tego, ile zjesz lub wypijesz.',
     chartHelpGutBody: 'To, co zjesz lub wypijesz, trafia do żołądka i tam się powoli trawi.',
     chartHelpDeficitLabel: 'Niedobór',
     chartHelpDeficitBody: 'Tu wchłaniasz mniej, niż potrzebujesz — ryzyko spadku formy.',
@@ -499,8 +529,10 @@ export const STR: Record<Lang, StringTable> = {
     chartHelpSumNeedBody: 'Łącznie ile było Ci potrzeba od startu trasy.',
     chartHelpSumIntakeBody: 'Ile faktycznie zjadłeś — różnica czeka w żołądku.',
     foodSection2: 'Jedzenie',
-    gearHintMobile: 'Co masz na rowerze. Objętość i dozwolona zawartość decydują o tym, ile węgli wchodzi w jedno napełnienie.',
-    mixHintMobile: 'Skład izo i żelu. Zmiana przelicza gramaturę dla każdego napełnienia i limit wchłaniania.',
+    gearHintMobile:
+      'Co masz na rowerze. Objętość i dozwolona zawartość decydują o tym, ile węgli wchodzi w jedno napełnienie.',
+    mixHintMobile:
+      'Skład izo i żelu. Zmiana przelicza gramaturę dla każdego napełnienia i limit wchłaniania.',
     absCapNoteMobile: 'Przy tej proporcji limit to {cap} g/h — kropkowana linia na wykresie.',
     gelPartsStepper: 'Porcje żelu z jednego napełnienia',
     foodStepwise: 'stopniowo',
@@ -523,7 +555,8 @@ export const STR: Record<Lang, StringTable> = {
     routeSheetIntensity: 'Intensywność',
     routeSheetTemp: 'Temperatura',
     routeSheetGpxSection: 'PROFIL GPX',
-    routeSheetGpxNote: 'Włączony profil zmienia zapotrzebowanie na podjazdach. Ikona oka nad wykresem pokazuje sam profil.',
+    routeSheetGpxNote:
+      'Włączony profil zmienia zapotrzebowanie na podjazdach. Ikona oka nad wykresem pokazuje sam profil.',
     routeSheetLoadFile: 'Wczytaj plik',
     routeSheetDone: 'Gotowe',
     shopSheetTitle: 'PUNKT ORIENTACYJNY',
@@ -569,12 +602,16 @@ export const STR: Record<Lang, StringTable> = {
     savedLocally: 'Saved locally',
     canCarry: 'Can carry:',
     gelPartsLabel: 'portions',
-    gearHint: 'Name, capacity and what this bottle may carry. Gel splits into as many portions as you set here.',
+    gearHint:
+      'Name, capacity and what this bottle may carry. Gel splits into as many portions as you set here.',
     settingsHint: 'Everything is stored in this browser (localStorage) — no account, no backend.',
     curve: 'Planning',
-    gutHint: "This is your stomach: the top strip shows what's sitting in it and how fast it's digesting, up to its capacity limit.",
-    curveHint: "The thick solid line is the rate you're actually absorbing carbs at — rust areas are the hours you're absorbing less than you need.",
-    curveHintSum: "The thick solid line is the cumulative carbs you've actually absorbed by a given hour.",
+    gutHint:
+      "This is your stomach: the top strip shows what's sitting in it and how fast it's digesting, up to its capacity limit.",
+    curveHint:
+      "The thick solid line is the rate you're actually absorbing carbs at — rust areas are the hours you're absorbing less than you need.",
+    curveHintSum:
+      "The thick solid line is the cumulative carbs you've actually absorbed by a given hour.",
     intake: 'Eaten',
     absorbed: 'Absorbed',
     gutLane: 'In the gut',
@@ -600,8 +637,10 @@ export const STR: Record<Lang, StringTable> = {
     tAbsorbed: 'Absorbed',
     tCap: 'Absorption limit',
     tGutPeak: 'Peak in stomach',
-    timelineHint: 'Read-only view — set position, range and contents of each refill on the chart above.',
-    dragHint: 'Bars never overlap — a dragged bar shortens to fit a tight gap. Gel portion marks drag on their own.',
+    timelineHint:
+      'Read-only view — set position, range and contents of each refill on the chart above.',
+    dragHint:
+      'Bars never overlap — a dragged bar shortens to fit a tight gap. Gel portion marks drag on their own.',
     addFuel: 'Add food:',
     removeItem: 'Remove',
     addShopStop: 'Add shop stop',
@@ -691,17 +730,31 @@ export const STR: Record<Lang, StringTable> = {
     fCarbs: 'carbs (g)',
     fMl: 'fluid (ml)',
     fCont: 'over time',
-    foodSectionHint: 'Your product list — these buttons show up under the chart. Enter carbs per serving (not the bar weight) and any fluid.',
+    foodSectionHint:
+      'Your product list — these buttons show up under the chart. Enter carbs per serving (not the bar weight) and any fluid.',
     mixHint: 'Values per 100 ml — per-fill grams are derived from this.',
     notes: [
-      { title: 'A lane per bottle', body: 'Big bottle, small bottle, flask — each has its own lane, so gel cannot land in the izo bottle.' },
-      { title: 'Refill once empty', body: 'Fills never overlap: a bar stops at its neighbour and + inserts a refill into a free gap.' },
-      { title: 'Food apart', body: 'Banana and chews may overlap, a zero beer is one stop — hence their own lane.' },
-      { title: 'Per-bottle recipe', body: 'The recipe card computes maltodextrin, fructose, salt and citric grams for every single fill.' },
+      {
+        title: 'A lane per bottle',
+        body: 'Big bottle, small bottle, flask — each has its own lane, so gel cannot land in the izo bottle.',
+      },
+      {
+        title: 'Refill once empty',
+        body: 'Fills never overlap: a bar stops at its neighbour and + inserts a refill into a free gap.',
+      },
+      {
+        title: 'Food apart',
+        body: 'Banana and chews may overlap, a zero beer is one stop — hence their own lane.',
+      },
+      {
+        title: 'Per-bottle recipe',
+        body: 'The recipe card computes maltodextrin, fructose, salt and citric grams for every single fill.',
+      },
     ],
     ftAboutBody:
       'Carb Fueling works out how many carbs and how much fluid to take on a ride — from distance, pace, weight, intensity and temperature — then spreads them across bottles, flasks and food over time. Your plan, gear and product list stay in this browser.',
-    ftPrivacy: 'No account, no server, no cookies. Anonymous, cookieless visit counts (GoatCounter) — no cross-site tracking.',
+    ftPrivacy:
+      'No account, no server, no cookies. Anonymous, cookieless visit counts (GoatCounter) — no cross-site tracking.',
     ftLegal: 'Disclaimer',
     ftLegalBody:
       'This is an educational planning aid — not medical, dietary or coaching advice, and no substitute for a professional. All figures are estimates based on averaged models; your real requirement, gut tolerance, hydration status and response to effort may differ significantly. You use the app on your own responsibility and entirely at your own risk. The author accepts no liability for any health consequences, injury, damage, loss or decisions made on the basis of these results — and specifically takes no responsibility for your health or life. If you have a medical condition (including diabetes, kidney, heart or gastrointestinal disease), take medication, are pregnant, or are preparing for a long or very hard event, discuss your fuelling plan with a doctor or sports dietitian. Never ignore symptoms: if you feel dizzy, nauseous, disoriented, cramping, or suspect hyponatraemia, stop and seek help. The app is provided "as is", without warranty of any kind.',
@@ -712,12 +765,13 @@ export const STR: Record<Lang, StringTable> = {
     ftSources2: 'Sweat loss: an estimate from weight, intensity and temperature.',
     ftCopyright: '© 2026 Carb Fueling · open source',
     tourWelcomeTitle: 'Welcome to Carb Fueling',
-    tourWelcomeBody: "A few steps to show you how to plan carbs and fluids for your ride, and how to read the result. Takes about a minute.",
+    tourWelcomeBody:
+      'A few steps to show you how to plan carbs and fluids for your ride, and how to read the result. Takes about a minute.',
     tourRouteTitle: 'Route & result',
     tourRouteBody:
       "Describe your ride here — distance and pace, or a duration — plus conditions (intensity, temperature, pre-ride meal). The cards next to it show whether your plan covers your carb and fluid needs. You can also load your own GPX file — pace and requirement will then match your route's real profile (climbs and descents) instead of an averaged one.",
     tourRouteBodyMobile:
-      "Edit your route with the button at the top of the screen — distance and pace, or a duration, plus conditions (intensity, temperature, pre-ride meal) and loading a GPX file. These cards show whether your plan covers your carb and fluid needs.",
+      'Edit your route with the button at the top of the screen — distance and pace, or a duration, plus conditions (intensity, temperature, pre-ride meal) and loading a GPX file. These cards show whether your plan covers your carb and fluid needs.',
     tourChartTitle: 'The chart: supply vs. requirement',
     tourChartBody:
       "The numbers on the left are the scale: grams of carbs per hour (g/h). The solid line is how many carbs you're actually delivering, the dashed line is how many you need. The dotted horizontal line is the absorption limit: the most your gut can absorb per hour no matter how much you eat — anything above it waits in the stomach. The bar above the chart is that stomach: it shows what it's currently digesting. We added a sample bottle so you can see how this looks in practice.",
@@ -725,24 +779,24 @@ export const STR: Record<Lang, StringTable> = {
       "The solid line is how many carbs per hour you're actually delivering, the dashed line is how many you need. The dotted horizontal line is the absorption limit: the most your gut can absorb per hour no matter how much you eat — anything above it waits in the stomach. The top of the chart is that stomach: it shows what it's currently digesting. Drag your finger across the chart to read exact values at any point on the route. We added a sample bottle so you can see how this looks in practice.",
     tourFillTitle: 'A bottle: move it, resize it, change its contents',
     tourFillBody:
-      "This bar is the bottle we just added. You can drag the middle to move it along the route, or either edge to shorten or lengthen the stretch you drink it over. Hovering it reveals buttons to switch its contents (water / isotonic / gel) if the bottle allows more than one. Try it once you close the tour.",
+      'This bar is the bottle we just added. You can drag the middle to move it along the route, or either edge to shorten or lengthen the stretch you drink it over. Hovering it reveals buttons to switch its contents (water / isotonic / gel) if the bottle allows more than one. Try it once you close the tour.',
     tourFillBodyMobile:
-      "This is the bottle we just added. Tap it to expand its editor — the \"from\" and \"to\" buttons move it along the route or change how long the segment is, and the buttons next to them switch its contents (water / isotonic / gel) if the bottle allows more than one.",
+      'This is the bottle we just added. Tap it to expand its editor — the "from" and "to" buttons move it along the route or change how long the segment is, and the buttons next to them switch its contents (water / isotonic / gel) if the bottle allows more than one.',
     tourAddFillTitle: 'Add another fill',
     tourAddFillBody:
-      "This \"+\" button inserts another fill into the first free gap on the route — useful once a bottle runs dry and needs refilling with something else. The same idea applies to food: the product buttons under the chart add another item with one click.",
+      'This "+" button inserts another fill into the first free gap on the route — useful once a bottle runs dry and needs refilling with something else. The same idea applies to food: the product buttons under the chart add another item with one click.',
     tourAddFillBodyMobile:
-      "This button inserts another fill into the first free gap on the route — useful once a bottle runs dry and needs refilling with something else. The same applies to food: the product buttons further down add another item with one tap.",
+      'This button inserts another fill into the first free gap on the route — useful once a bottle runs dry and needs refilling with something else. The same applies to food: the product buttons further down add another item with one tap.',
     tourAddShopTitle: 'Resupply points',
     tourAddShopBody:
-      "This \"+\" adds a resupply marker on the chart (e.g. a shop) — drag it anywhere on the route to mark which kilometer you plan to buy more food or drink at.",
+      'This "+" adds a resupply marker on the chart (e.g. a shop) — drag it anywhere on the route to mark which kilometer you plan to buy more food or drink at.',
     tourAddShopBodyMobile:
-      "This button opens a small form for a resupply point — enter the kilometer and a name (e.g. a shop) to mark where you plan to buy more food or drink.",
+      'This button opens a small form for a resupply point — enter the kilometer and a name (e.g. a shop) to mark where you plan to buy more food or drink.',
     tourClosingTitle: "That's the essentials",
     tourClosingBody:
       "Recipes for topping up the bottles and fills you've added are under the chart. Settings (weight, available-product settings) and Mix & bottles (set ratios and available bottles) are in the header. Replay this tour any time from the button in the footer.",
     tourClosingBodyMobile:
-      "Recipes for topping up bottles are behind the \"Bottle recipes\" button on the plan list. Change settings and language in the \"Me\" tab, and mix ratios and available bottles in the \"Mix\" and \"Gear\" tabs. Replay this tour any time from the button in the \"Me\" tab.",
+      'Recipes for topping up bottles are behind the "Bottle recipes" button on the plan list. Change settings and language in the "Me" tab, and mix ratios and available bottles in the "Mix" and "Gear" tabs. Replay this tour any time from the button in the "Me" tab.',
     tourNext: 'Next',
     tourBack: 'Back',
     tourSkip: 'Skip',
@@ -750,24 +804,31 @@ export const STR: Record<Lang, StringTable> = {
     tourStepLabel: 'Step',
     tourReplayButton: 'Replay tour',
     tourConfirmTitle: 'Replay the tour?',
-    tourConfirmBody: "The tour will load sample data (a route and one bottle) over your current plan. This can't be undone.",
+    tourConfirmBody:
+      "The tour will load sample data (a route and one bottle) over your current plan. This can't be undone.",
     tourConfirmCancel: 'Cancel',
     tourConfirmStart: 'Start tour',
     tabMix: 'Mix',
     editRoutePrefix: 'Edit route:',
-    narrationRate: "How many carbs per hour you're actually absorbing (line) vs. requirement (dashed). Dotted is the absorption limit.",
-    narrationFluid: "How much fluid you're drinking per hour (line) vs. how much you lose to sweat (dashed).",
-    narrationSum: "Carbs summed from the start: what you'll absorb (line) vs. requirement (dashed).",
+    narrationRate:
+      "How many carbs per hour you're actually absorbing (line) vs. requirement (dashed). Dotted is the absorption limit.",
+    narrationFluid:
+      "How much fluid you're drinking per hour (line) vs. how much you lose to sweat (dashed).",
+    narrationSum:
+      "Carbs summed from the start: what you'll absorb (line) vs. requirement (dashed).",
     narrationProfile: 'Route profile — elevation above sea level. Climbs raise the requirement.',
     scrubHint: 'drag to read',
     legendGpx: 'target',
     chartHelpBtnLabel: 'Explain the chart',
     chartHelpTitle: 'How to read this chart',
     chartHelpFullTour: 'Show me the full tour',
-    chartHelpScrubNote: 'Drag your finger across the chart to see exact numbers at any point on the route.',
+    chartHelpScrubNote:
+      'Drag your finger across the chart to see exact numbers at any point on the route.',
     chartHelpAxisNote: 'Exact values are shown by the numbers along the left and bottom axes.',
-    chartHelpAbsorbedBody: "This slowly increases the amount of carbs available in your body. When planning the route, you try to keep this line as close as possible to what you need. The line's color changes depending on what you've eaten.",
-    chartHelpNeedBody: "This is how many carbs the route demands from you in that hour — during the effort you should take in this many carbs.",
+    chartHelpAbsorbedBody:
+      "This slowly increases the amount of carbs available in your body. When planning the route, you try to keep this line as close as possible to what you need. The line's color changes depending on what you've eaten.",
+    chartHelpNeedBody:
+      'This is how many carbs the route demands from you in that hour — during the effort you should take in this many carbs.',
     chartHelpCapBody: 'The most your gut can absorb per hour, no matter how much you eat or drink.',
     chartHelpGutBody: 'What you eat or drink goes into your stomach, where it slowly digests.',
     chartHelpDeficitLabel: 'Deficit',
@@ -776,10 +837,13 @@ export const STR: Record<Lang, StringTable> = {
     chartHelpSweatBody: 'How much you lose through sweat — your fluid requirement.',
     chartHelpSumAbsorbedBody: 'Total carbs absorbed since the start of the route.',
     chartHelpSumNeedBody: "Total amount you've needed since the start of the route.",
-    chartHelpSumIntakeBody: "How much you've actually eaten — the difference is waiting in your stomach.",
+    chartHelpSumIntakeBody:
+      "How much you've actually eaten — the difference is waiting in your stomach.",
     foodSection2: 'Food',
-    gearHintMobile: "What's on your bike. Volume and allowed contents decide how many carbs fit in one fill.",
-    mixHintMobile: 'Isotonic and gel composition. Changing it recalculates grams per fill and the absorption limit.',
+    gearHintMobile:
+      "What's on your bike. Volume and allowed contents decide how many carbs fit in one fill.",
+    mixHintMobile:
+      'Isotonic and gel composition. Changing it recalculates grams per fill and the absorption limit.',
     absCapNoteMobile: 'At this ratio the limit is {cap} g/h — the dotted line on the chart.',
     gelPartsStepper: 'Gel portions per fill',
     foodStepwise: 'over time',
@@ -802,7 +866,8 @@ export const STR: Record<Lang, StringTable> = {
     routeSheetIntensity: 'Intensity',
     routeSheetTemp: 'Temperature',
     routeSheetGpxSection: 'GPX PROFILE',
-    routeSheetGpxNote: 'An enabled profile changes the requirement on climbs. The eye icon above the chart shows the profile itself.',
+    routeSheetGpxNote:
+      'An enabled profile changes the requirement on climbs. The eye icon above the chart shows the profile itself.',
     routeSheetLoadFile: 'Load file',
     routeSheetDone: 'Done',
     shopSheetTitle: 'LANDMARK',

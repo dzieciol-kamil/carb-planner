@@ -55,23 +55,47 @@ export function MobileChartPanel() {
   const distanceKm = dist(route);
   const showEye = !!route.gpxTrack && route.useGpx;
 
-  const narration = gpxPeek && showEye
-    ? strings.narrationProfile
-    : yMode === 'fluid'
-      ? strings.narrationFluid
-      : yMode === 'sum'
-        ? strings.narrationSum
-        : strings.narrationRate;
+  const narration =
+    gpxPeek && showEye
+      ? strings.narrationProfile
+      : yMode === 'fluid'
+        ? strings.narrationFluid
+        : yMode === 'sum'
+          ? strings.narrationSum
+          : strings.narrationRate;
 
   const axisPoints = [0, distanceKm / 3, (distanceKm * 2) / 3, distanceKm];
 
   return (
     <>
-      <div style={{ background: '#fff', padding: '11px 14px 9px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-          <div style={{ display: 'flex', gap: 2, background: 'var(--track)', borderRadius: 9, padding: 3 }}>
+      <div
+        style={{
+          background: '#fff',
+          padding: '11px 14px 9px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 8,
+        }}
+      >
+        <div
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              gap: 2,
+              background: 'var(--track)',
+              borderRadius: 9,
+              padding: 3,
+            }}
+          >
             {Y_MODES.map(({ mode, label }) => (
-              <button key={mode} type="button" style={segBtnStyle(yMode === mode)} onClick={() => setYMode(mode)}>
+              <button
+                key={mode}
+                type="button"
+                style={segBtnStyle(yMode === mode)}
+                onClick={() => setYMode(mode)}
+              >
                 {label}
               </button>
             ))}
@@ -95,14 +119,27 @@ export function MobileChartPanel() {
                   justifyContent: 'center',
                 }}
               >
-                <svg width="16" height="16" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 22 22"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={1.9}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <path d="M2 11 C2 11 6 5 11 5 C16 5 20 11 20 11 C20 11 16 17 11 17 C6 17 2 11 2 11 Z" />
                   <circle cx="11" cy="11" r="3" />
                 </svg>
               </button>
             )}
             <div style={{ display: 'flex', gap: 4 }}>
-              <button type="button" style={xBtnStyle(xUnit === 'km')} onClick={() => setXUnit('km')}>
+              <button
+                type="button"
+                style={xBtnStyle(xUnit === 'km')}
+                onClick={() => setXUnit('km')}
+              >
                 km
               </button>
               <button type="button" style={xBtnStyle(xUnit === 'h')} onClick={() => setXUnit('h')}>
@@ -138,16 +175,39 @@ export function MobileChartPanel() {
           >
             ?
           </button>
-          <p style={{ margin: 0, fontSize: 11, lineHeight: 1.45, color: 'var(--muted)', flex: 1 }}>{narration}</p>
+          <p style={{ margin: 0, fontSize: 11, lineHeight: 1.45, color: 'var(--muted)', flex: 1 }}>
+            {narration}
+          </p>
         </div>
       </div>
 
-      <div data-mobile-sticky style={{ position: 'sticky', top: 0, zIndex: 5, background: '#fff', borderBottom: '1px solid var(--border-soft)', padding: '0 14px 9px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <div
+        data-mobile-sticky
+        style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 5,
+          background: '#fff',
+          borderBottom: '1px solid var(--border-soft)',
+          padding: '0 14px 9px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 8,
+        }}
+      >
         <div data-tour="chart">
           <MobileChart />
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: 'var(--muted)' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: 10,
+            color: 'var(--muted)',
+          }}
+        >
           {axisPoints.map((km, i) => (
             <span key={i}>{fmtX(km, i === axisPoints.length - 1, route, xUnit)}</span>
           ))}

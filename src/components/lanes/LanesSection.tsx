@@ -8,8 +8,22 @@ import { FillBar } from './FillBar';
 import { FoodBar } from './FoodBar';
 
 const rowStyle: CSSProperties = { display: 'flex', alignItems: 'center', gap: 12 };
-const labelColStyle: CSSProperties = { width: 168, flex: '0 0 168px', display: 'flex', flexDirection: 'column', gap: 1, minWidth: 0 };
-const nameStyle: CSSProperties = { fontSize: 12, fontWeight: 600, color: 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' };
+const labelColStyle: CSSProperties = {
+  width: 168,
+  flex: '0 0 168px',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 1,
+  minWidth: 0,
+};
+const nameStyle: CSSProperties = {
+  fontSize: 12,
+  fontWeight: 600,
+  color: 'var(--ink)',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+};
 const subStyle: CSSProperties = {
   fontFamily: "'JetBrains Mono', monospace",
   fontSize: 10,
@@ -18,10 +32,23 @@ const subStyle: CSSProperties = {
   overflow: 'hidden',
   textOverflow: 'ellipsis',
 };
-const addColStyle: CSSProperties = { width: 40, flex: '0 0 40px', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' };
+const addColStyle: CSSProperties = {
+  width: 40,
+  flex: '0 0 40px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'flex-end',
+};
 
 function trackStyle(tone: string): CSSProperties {
-  return { position: 'relative', flex: 1, minWidth: 0, height: 24, background: tone, borderRadius: 6 };
+  return {
+    position: 'relative',
+    flex: 1,
+    minWidth: 0,
+    height: 24,
+    background: tone,
+    borderRadius: 6,
+  };
 }
 
 function addButtonStyle(can: boolean): CSSProperties {
@@ -62,14 +89,17 @@ export function LanesSection() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 5, marginTop: 10 }}>
       {gear.map((vessel) => {
-        const vesselFills = fills.filter((f) => f.gid === vessel.gid).sort((a, b) => a.from - b.from);
+        const vesselFills = fills
+          .filter((f) => f.gid === vessel.gid)
+          .sort((a, b) => a.from - b.from);
         const can = gaps(vesselFills, distanceKm).length > 0;
         return (
           <div key={vessel.gid} style={rowStyle}>
             <div style={labelColStyle}>
               <span style={nameStyle}>{vessel.name}</span>
               <span style={subStyle}>
-                {vessel.vol} ml · {(vessel.allowed || []).map((k) => contentLabelFor(k, strings)).join(' / ')}
+                {vessel.vol} ml ·{' '}
+                {(vessel.allowed || []).map((k) => contentLabelFor(k, strings)).join(' / ')}
               </span>
             </div>
             <div style={trackStyle('#F4F5F2')}>
@@ -95,7 +125,9 @@ export function LanesSection() {
       {foodRows.map((row, i) => (
         <div key={'food' + i} style={rowStyle}>
           <div style={labelColStyle}>
-            <span style={{ ...nameStyle, color: i === 0 ? 'var(--ink)' : 'transparent' }}>{i === 0 ? strings.foodLane : ''}</span>
+            <span style={{ ...nameStyle, color: i === 0 ? 'var(--ink)' : 'transparent' }}>
+              {i === 0 ? strings.foodLane : ''}
+            </span>
             <span style={subStyle}>{i === 0 ? strings.foodLaneSub : ''}</span>
           </div>
           <div style={trackStyle('#FAF3EF')}>

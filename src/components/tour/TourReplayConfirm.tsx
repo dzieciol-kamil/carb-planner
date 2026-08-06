@@ -9,8 +9,20 @@ interface TourReplayConfirmProps {
 
 export function TourReplayConfirm({ strings, onCancel, onConfirm }: TourReplayConfirmProps) {
   return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div onClick={onCancel} style={{ position: 'absolute', inset: 0, background: 'rgba(18,20,18,0.55)' }} />
+    <div
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 200,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <div
+        onClick={onCancel}
+        style={{ position: 'absolute', inset: 0, background: 'rgba(18,20,18,0.55)' }}
+      />
       <div
         style={{
           position: 'relative',
@@ -28,7 +40,9 @@ export function TourReplayConfirm({ strings, onCancel, onConfirm }: TourReplayCo
         }}
       >
         <span style={{ fontSize: 15, fontWeight: 700 }}>{strings.tourConfirmTitle}</span>
-        <span style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--ink-soft)' }}>{strings.tourConfirmBody}</span>
+        <span style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--ink-soft)' }}>
+          {strings.tourConfirmBody}
+        </span>
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
           <button onClick={onCancel} style={tourGhostBtn}>
             {strings.tourConfirmCancel}

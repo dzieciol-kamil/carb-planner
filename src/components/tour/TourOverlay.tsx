@@ -1,4 +1,12 @@
-import { forwardRef, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import {
+  forwardRef,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from 'react';
 import { t } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
 import { tourGhostBtn, tourPrimaryBtn } from './tourStyles';
@@ -70,7 +78,8 @@ export function TourOverlay() {
         // enough to tuck the target's top edge behind that sticky panel while still
         // reporting/highlighting it as if fully visible. Cap the scroll so the target's
         // top never ends up above the sticky panel's bottom edge.
-        const stickyHeight = document.querySelector('[data-mobile-sticky]')?.getBoundingClientRect().height ?? 0;
+        const stickyHeight =
+          document.querySelector('[data-mobile-sticky]')?.getBoundingClientRect().height ?? 0;
         desiredScrollTop = Math.min(desiredScrollTop, contentTop - stickyHeight);
         scrollEl.scrollTo({ top: Math.max(0, desiredScrollTop), behavior: 'auto' });
       } else {
@@ -84,7 +93,12 @@ export function TourOverlay() {
     const tick = () => {
       const next = measure(target);
       setRect((prev) =>
-        prev && next && prev.top === next.top && prev.left === next.left && prev.width === next.width && prev.height === next.height
+        prev &&
+        next &&
+        prev.top === next.top &&
+        prev.left === next.left &&
+        prev.width === next.width &&
+        prev.height === next.height
           ? prev
           : next,
       );
@@ -113,17 +127,60 @@ export function TourOverlay() {
 
   const isFirst = tourStep === 0;
   const isLast = tourStep === TOUR_STEPS.length - 1;
-  const cutout = rect ? { top: rect.top - PAD, left: rect.left - PAD, width: rect.width + PAD * 2, height: rect.height + PAD * 2 } : null;
+  const cutout = rect
+    ? {
+        top: rect.top - PAD,
+        left: rect.left - PAD,
+        width: rect.width + PAD * 2,
+        height: rect.height + PAD * 2,
+      }
+    : null;
   const bodyKey = mobileScrollEl() && step.mobileBodyKey ? step.mobileBodyKey : step.bodyKey;
 
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 200 }}>
       {cutout ? (
         <>
-          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, height: Math.max(0, cutout.top), background: BACKDROP }} />
-          <div style={{ position: 'fixed', top: cutout.top + cutout.height, left: 0, right: 0, bottom: 0, background: BACKDROP }} />
-          <div style={{ position: 'fixed', top: cutout.top, left: 0, width: Math.max(0, cutout.left), height: cutout.height, background: BACKDROP }} />
-          <div style={{ position: 'fixed', top: cutout.top, left: cutout.left + cutout.width, right: 0, height: cutout.height, background: BACKDROP }} />
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: Math.max(0, cutout.top),
+              background: BACKDROP,
+            }}
+          />
+          <div
+            style={{
+              position: 'fixed',
+              top: cutout.top + cutout.height,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: BACKDROP,
+            }}
+          />
+          <div
+            style={{
+              position: 'fixed',
+              top: cutout.top,
+              left: 0,
+              width: Math.max(0, cutout.left),
+              height: cutout.height,
+              background: BACKDROP,
+            }}
+          />
+          <div
+            style={{
+              position: 'fixed',
+              top: cutout.top,
+              left: cutout.left + cutout.width,
+              right: 0,
+              height: cutout.height,
+              background: BACKDROP,
+            }}
+          />
           <div
             style={{
               position: 'fixed',
@@ -143,17 +200,52 @@ export function TourOverlay() {
       )}
 
       <TourTooltip ref={tooltipRef} cutout={cutout}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted)' }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 12,
+          }}
+        >
+          <span
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 10,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              color: 'var(--muted)',
+            }}
+          >
             {strings.tourStepLabel} {tourStep + 1} / {TOUR_STEPS.length}
           </span>
-          <button onClick={closeTour} style={{ border: 'none', background: 'none', cursor: 'pointer', fontSize: 13, color: 'var(--muted)', padding: 0 }}>
+          <button
+            onClick={closeTour}
+            style={{
+              border: 'none',
+              background: 'none',
+              cursor: 'pointer',
+              fontSize: 13,
+              color: 'var(--muted)',
+              padding: 0,
+            }}
+          >
             ✕
           </button>
         </div>
         <span style={{ fontSize: 15, fontWeight: 700 }}>{strings[step.titleKey]}</span>
-        <span style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--ink-soft)' }}>{strings[bodyKey]}</span>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginTop: 4 }}>
+        <span style={{ fontSize: 13, lineHeight: 1.55, color: 'var(--ink-soft)' }}>
+          {strings[bodyKey]}
+        </span>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 10,
+            marginTop: 4,
+          }}
+        >
           <button onClick={closeTour} style={tourGhostBtn}>
             {strings.tourSkip}
           </button>
@@ -163,7 +255,10 @@ export function TourOverlay() {
                 {strings.tourBack}
               </button>
             )}
-            <button onClick={() => (isLast ? closeTour() : setTourStep(tourStep + 1))} style={tourPrimaryBtn}>
+            <button
+              onClick={() => (isLast ? closeTour() : setTourStep(tourStep + 1))}
+              style={tourPrimaryBtn}
+            >
               {isLast ? strings.tourFinish : strings.tourNext}
             </button>
           </div>
@@ -178,7 +273,10 @@ interface TourTooltipProps {
   children: ReactNode;
 }
 
-const TourTooltip = forwardRef<HTMLDivElement, TourTooltipProps>(function TourTooltip({ cutout, children }, ref) {
+const TourTooltip = forwardRef<HTMLDivElement, TourTooltipProps>(function TourTooltip(
+  { cutout, children },
+  ref,
+) {
   // Narrow phones can't fit the desktop-sized tooltip between the margins.
   const width = Math.min(TOOLTIP_WIDTH, window.innerWidth - MARGIN * 2);
   // The mobile scroll container's own rect already excludes the bottom tab bar (a flex

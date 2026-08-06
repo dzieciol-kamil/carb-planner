@@ -27,8 +27,24 @@ function contStyle(active: boolean): CSSProperties {
   };
 }
 
-const sectionTitleStyle: CSSProperties = { fontSize: 12, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: 12 };
-const textInputStyle: CSSProperties = { minWidth: 0, border: '1px solid var(--chip-border)', borderRadius: 10, padding: '9px 11px', fontFamily: 'Archivo, sans-serif', fontSize: 13, fontWeight: 600, background: '#fff' };
+const sectionTitleStyle: CSSProperties = {
+  fontSize: 12,
+  fontWeight: 700,
+  letterSpacing: '0.1em',
+  textTransform: 'uppercase',
+  color: 'var(--muted)',
+  marginBottom: 12,
+};
+const textInputStyle: CSSProperties = {
+  minWidth: 0,
+  border: '1px solid var(--chip-border)',
+  borderRadius: 10,
+  padding: '9px 11px',
+  fontFamily: 'Archivo, sans-serif',
+  fontSize: 13,
+  fontWeight: 600,
+  background: '#fff',
+};
 const numberFieldStyle: CSSProperties = {
   display: 'flex',
   alignItems: 'center',
@@ -61,7 +77,11 @@ export function SettingsPanel() {
         <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{strings.viewLabel}</span>
         <div style={{ display: 'flex', gap: 6 }}>
           {VIEW_MODES.map((v) => (
-            <button key={v} onClick={() => setViewMode(v)} style={{ ...contStyle(viewMode === v), width: 'auto', flex: 1 }}>
+            <button
+              key={v}
+              onClick={() => setViewMode(v)}
+              style={{ ...contStyle(viewMode === v), width: 'auto', flex: 1 }}
+            >
               {v === 'auto' ? strings.viewAuto : v === 'desktop' ? strings.desktop : strings.mobile}
             </button>
           ))}
@@ -75,15 +95,51 @@ export function SettingsPanel() {
       </div>
 
       <label style={{ display: 'flex', flexDirection: 'column', gap: 7, marginBottom: 24 }}>
-        <span style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--muted-2)' }}>
+        <span
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            fontSize: 12,
+            color: 'var(--muted-2)',
+          }}
+        >
           <span>{strings.weight}</span>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--ink)', fontWeight: 700 }}>{weight} kg</span>
+          <span
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              color: 'var(--ink)',
+              fontWeight: 700,
+            }}
+          >
+            {weight} kg
+          </span>
         </span>
-        <input type="range" min={45} max={120} step={1} value={weight} onChange={(e) => setWeight(parseFloat(e.target.value))} style={{ width: '100%' }} />
+        <input
+          type="range"
+          min={45}
+          max={120}
+          step={1}
+          value={weight}
+          onChange={(e) => setWeight(parseFloat(e.target.value))}
+          style={{ width: '100%' }}
+        />
       </label>
 
-      <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--muted)', marginBottom: 6 }}>{strings.foodSection}</div>
-      <p style={{ margin: '0 0 14px', fontSize: 12, lineHeight: 1.5, color: 'var(--muted-2)' }}>{strings.foodSectionHint}</p>
+      <div
+        style={{
+          fontSize: 12,
+          fontWeight: 700,
+          letterSpacing: '0.1em',
+          textTransform: 'uppercase',
+          color: 'var(--muted)',
+          marginBottom: 6,
+        }}
+      >
+        {strings.foodSection}
+      </div>
+      <p style={{ margin: '0 0 14px', fontSize: 12, lineHeight: 1.5, color: 'var(--muted-2)' }}>
+        {strings.foodSectionHint}
+      </p>
 
       <div
         style={{
@@ -123,7 +179,9 @@ export function SettingsPanel() {
             <input
               type="text"
               value={entry[lang] || entry.en}
-              onChange={(e) => updateFoodLibEntry(entry.key, { pl: e.target.value, en: e.target.value })}
+              onChange={(e) =>
+                updateFoodLibEntry(entry.key, { pl: e.target.value, en: e.target.value })
+              }
               style={textInputStyle}
             />
             <span style={numberFieldStyle}>
@@ -132,7 +190,15 @@ export function SettingsPanel() {
                 step={1}
                 value={entry.carbs}
                 onChange={(carbs) => updateFoodLibEntry(entry.key, { carbs: Math.max(0, carbs) })}
-                style={{ width: '100%', border: 'none', padding: '9px 0', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, fontWeight: 600, background: 'transparent' }}
+                style={{
+                  width: '100%',
+                  border: 'none',
+                  padding: '9px 0',
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  background: 'transparent',
+                }}
               />
               <span style={{ fontSize: 11, color: 'var(--muted-3)' }}>g</span>
             </span>
@@ -142,14 +208,38 @@ export function SettingsPanel() {
                 step={10}
                 value={entry.ml || 0}
                 onChange={(ml) => updateFoodLibEntry(entry.key, { ml: Math.max(0, ml) })}
-                style={{ width: '100%', border: 'none', padding: '9px 0', fontFamily: "'JetBrains Mono', monospace", fontSize: 13, fontWeight: 600, background: 'transparent' }}
+                style={{
+                  width: '100%',
+                  border: 'none',
+                  padding: '9px 0',
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  background: 'transparent',
+                }}
               />
               <span style={{ fontSize: 11, color: 'var(--muted-3)' }}>ml</span>
             </span>
-            <button onClick={() => updateFoodLibEntry(entry.key, { cont: !entry.cont, span: entry.span || 18 })} style={contStyle(!!entry.cont)}>
+            <button
+              onClick={() =>
+                updateFoodLibEntry(entry.key, { cont: !entry.cont, span: entry.span || 18 })
+              }
+              style={contStyle(!!entry.cont)}
+            >
               {strings.fCont}
             </button>
-            <button onClick={() => removeFoodLibEntry(entry.key)} style={{ border: 'none', background: 'transparent', color: '#B0B5B0', cursor: 'pointer', fontSize: 13, padding: 4, justifySelf: 'end' }}>
+            <button
+              onClick={() => removeFoodLibEntry(entry.key)}
+              style={{
+                border: 'none',
+                background: 'transparent',
+                color: '#B0B5B0',
+                cursor: 'pointer',
+                fontSize: 13,
+                padding: 4,
+                justifySelf: 'end',
+              }}
+            >
               ✕
             </button>
           </div>
@@ -158,7 +248,19 @@ export function SettingsPanel() {
 
       <button
         onClick={addFoodLibEntry}
-        style={{ marginTop: 12, border: '1px dashed #C9CEC7', background: '#F7F8F5', borderRadius: 10, padding: '11px 16px', fontFamily: 'Archivo, sans-serif', fontSize: 13, fontWeight: 600, color: 'var(--ink-soft)', cursor: 'pointer', width: '100%' }}
+        style={{
+          marginTop: 12,
+          border: '1px dashed #C9CEC7',
+          background: '#F7F8F5',
+          borderRadius: 10,
+          padding: '11px 16px',
+          fontFamily: 'Archivo, sans-serif',
+          fontSize: 13,
+          fontWeight: 600,
+          color: 'var(--ink-soft)',
+          cursor: 'pointer',
+          width: '100%',
+        }}
       >
         + {strings.addFoodItem}
       </button>

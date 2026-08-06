@@ -9,7 +9,11 @@ import { MobilePlanCard, type PlanCardItem } from './MobilePlanCard';
 const MIN_GAP_KM = 6;
 
 function selKeyFor(item: PlanCardItem): string {
-  return item.kind === 'fill' ? 'f' + item.fid : item.kind === 'shop' ? 's' + item.id : 'x' + item.id;
+  return item.kind === 'fill'
+    ? 'f' + item.fid
+    : item.kind === 'shop'
+      ? 's' + item.id
+      : 'x' + item.id;
 }
 
 function coverageCardStyle(inNorm: boolean): CSSProperties {
@@ -44,7 +48,8 @@ export function MobilePlanList() {
   const summary = planSummary({ route, mix, gear, fills, foods, foodLib });
   const distanceKm = dist(route);
 
-  const carbPct = summary.target > 0 ? Math.round((summary.absorbedTotal / summary.target) * 100) : 100;
+  const carbPct =
+    summary.target > 0 ? Math.round((summary.absorbedTotal / summary.target) * 100) : 100;
   const carbInNorm = carbPct >= 90 && carbPct <= 115;
   const hydPct = summary.hydrationPct;
   const hydInNorm = hydPct >= 70;
@@ -92,7 +97,8 @@ export function MobilePlanList() {
     }
     const scrollEl = el.closest('[data-mobile-scroll]') as HTMLElement | null;
     if (!scrollEl) return;
-    const contentTop = el.getBoundingClientRect().top - scrollEl.getBoundingClientRect().top + scrollEl.scrollTop;
+    const contentTop =
+      el.getBoundingClientRect().top - scrollEl.getBoundingClientRect().top + scrollEl.scrollTop;
     if (prevSelKeyRef.current === selKey && prevContentTopRef.current != null) {
       const delta = contentTop - prevContentTopRef.current;
       if (Math.abs(delta) > 0.5) {
@@ -108,30 +114,117 @@ export function MobilePlanList() {
     <div style={{ padding: '12px 14px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
       <div style={{ display: 'flex', gap: 9 }}>
         <div style={coverageCardStyle(carbInNorm)}>
-          <div style={{ fontSize: 10, fontWeight: 600, textTransform: 'uppercase', color: carbInNorm ? '#3D7A26' : '#A3512A' }}>{strings.carbCardTitle}</div>
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 22, fontWeight: 700, color: carbInNorm ? '#3D7A26' : '#A3512A' }}>{carbPct}%</div>
-          <div style={{ height: 4, borderRadius: 2, background: '#fff', overflow: 'hidden', margin: '6px 0' }}>
-            <div style={{ width: Math.min(100, carbPct) + '%', height: '100%', background: carbInNorm ? '#3D7A26' : '#A3512A' }} />
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 600,
+              textTransform: 'uppercase',
+              color: carbInNorm ? '#3D7A26' : '#A3512A',
+            }}
+          >
+            {strings.carbCardTitle}
           </div>
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: carbInNorm ? '#3D7A26' : '#A3512A' }}>
+          <div
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 22,
+              fontWeight: 700,
+              color: carbInNorm ? '#3D7A26' : '#A3512A',
+            }}
+          >
+            {carbPct}%
+          </div>
+          <div
+            style={{
+              height: 4,
+              borderRadius: 2,
+              background: '#fff',
+              overflow: 'hidden',
+              margin: '6px 0',
+            }}
+          >
+            <div
+              style={{
+                width: Math.min(100, carbPct) + '%',
+                height: '100%',
+                background: carbInNorm ? '#3D7A26' : '#A3512A',
+              }}
+            />
+          </div>
+          <div
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 10,
+              color: carbInNorm ? '#3D7A26' : '#A3512A',
+            }}
+          >
             {Math.round(summary.absorbedTotal)} / {Math.round(summary.target)} g
           </div>
         </div>
         <div style={coverageCardStyle(hydInNorm)}>
-          <div style={{ fontSize: 10, fontWeight: 600, textTransform: 'uppercase', color: hydInNorm ? '#3D7A26' : '#A3512A' }}>{strings.hydration}</div>
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 22, fontWeight: 700, color: hydInNorm ? '#3D7A26' : '#A3512A' }}>{hydPct}%</div>
-          <div style={{ height: 4, borderRadius: 2, background: '#fff', overflow: 'hidden', margin: '6px 0' }}>
-            <div style={{ width: Math.min(100, hydPct) + '%', height: '100%', background: hydInNorm ? '#3D7A26' : '#A3512A' }} />
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 600,
+              textTransform: 'uppercase',
+              color: hydInNorm ? '#3D7A26' : '#A3512A',
+            }}
+          >
+            {strings.hydration}
           </div>
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: hydInNorm ? '#3D7A26' : '#A3512A' }}>
+          <div
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 22,
+              fontWeight: 700,
+              color: hydInNorm ? '#3D7A26' : '#A3512A',
+            }}
+          >
+            {hydPct}%
+          </div>
+          <div
+            style={{
+              height: 4,
+              borderRadius: 2,
+              background: '#fff',
+              overflow: 'hidden',
+              margin: '6px 0',
+            }}
+          >
+            <div
+              style={{
+                width: Math.min(100, hydPct) + '%',
+                height: '100%',
+                background: hydInNorm ? '#3D7A26' : '#A3512A',
+              }}
+            />
+          </div>
+          <div
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 10,
+              color: hydInNorm ? '#3D7A26' : '#A3512A',
+            }}
+          >
             {summary.fluidPlanned} / {summary.sweatLoss} ml
           </div>
         </div>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>PLAN</span>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>
+        <span
+          style={{
+            fontSize: 12,
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            letterSpacing: '0.08em',
+          }}
+        >
+          PLAN
+        </span>
+        <span
+          style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--muted)' }}
+        >
           {items.length} {strings.itemsSuffix}
         </span>
       </div>
@@ -194,9 +287,19 @@ export function MobilePlanList() {
               cursor: 'pointer',
             }}
           >
-            <span style={{ width: 8, height: 8, borderRadius: '50%', background: sourceColor('food') }} />
+            <span
+              style={{ width: 8, height: 8, borderRadius: '50%', background: sourceColor('food') }}
+            />
             <span style={{ fontSize: 12 }}>{entry[lang] || entry.en}</span>
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: 'var(--muted-3)' }}>{entry.carbs}g</span>
+            <span
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: 10,
+                color: 'var(--muted-3)',
+              }}
+            >
+              {entry.carbs}g
+            </span>
           </button>
         ))}
       </div>
@@ -235,7 +338,16 @@ export function MobilePlanList() {
           cursor: 'pointer',
         }}
       >
-        <span style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{strings.bidonComposition}</span>
+        <span
+          style={{
+            fontSize: 12,
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            letterSpacing: '0.08em',
+          }}
+        >
+          {strings.bidonComposition}
+        </span>
         <span style={{ fontSize: 12, color: 'var(--muted)' }}>{strings.perFillGrams}</span>
       </button>
     </div>

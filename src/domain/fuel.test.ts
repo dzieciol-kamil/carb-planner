@@ -336,7 +336,9 @@ describe('carbsFill', () => {
 
 describe('fracFill', () => {
   const route = makeRoute({ mode: 'route', distance: 100, useGpx: false });
-  const gear: Vessel[] = [{ gid: 'g1', name: 'Bidon', vol: 720, allowed: ['water', 'izo'], gelParts: 4 }];
+  const gear: Vessel[] = [
+    { gid: 'g1', name: 'Bidon', vol: 720, allowed: ['water', 'izo'], gelParts: 4 },
+  ];
 
   test('continuous fill ramps from 0 to 1 between from and to', () => {
     const f: Fill = { fid: 1, gid: 'g1', content: 'izo', from: 20, to: 80 };
@@ -355,7 +357,9 @@ describe('fracFill', () => {
   });
 
   test('gel split into parts steps at each portion position', () => {
-    const gelGear: Vessel[] = [{ gid: 'g2', name: 'Flask', vol: 250, allowed: ['gel'], gelParts: 3 }];
+    const gelGear: Vessel[] = [
+      { gid: 'g2', name: 'Flask', vol: 250, allowed: ['gel'], gelParts: 3 },
+    ];
     const f: Fill = { fid: 3, gid: 'g2', content: 'gel', from: 0, to: 90 };
     const gelRoute = makeRoute({ mode: 'route', distance: 90, useGpx: false });
     expect(fracFill(f, 0, gelGear, gelRoute)).toBeCloseTo(1 / 3, 6);
@@ -376,7 +380,15 @@ describe('fracFood', () => {
   });
 
   test('continuous food ramps like a fill', () => {
-    const fd: FoodItem = { id: 2, key: 'chew', name: 'Zelki', carbs: 30, cont: true, from: 20, to: 80 };
+    const fd: FoodItem = {
+      id: 2,
+      key: 'chew',
+      name: 'Zelki',
+      carbs: 30,
+      cont: true,
+      from: 20,
+      to: 80,
+    };
     expect(fracFood(fd, 20, route)).toBe(0);
     expect(fracFood(fd, 50, route)).toBeCloseTo(0.5, 6);
     expect(fracFood(fd, 80, route)).toBe(1);
@@ -386,7 +398,14 @@ describe('fracFood', () => {
 describe('samples', () => {
   test('zero positions in the plan: no intake anywhere, need still ramps up', () => {
     const plan = makePlan({
-      route: makeRoute({ mode: 'route', distance: 100, speed: 25, weight: 75, intensity: 'mid', useGpx: false }),
+      route: makeRoute({
+        mode: 'route',
+        distance: 100,
+        speed: 25,
+        weight: 75,
+        intensity: 'mid',
+        useGpx: false,
+      }),
       fills: [],
       foods: [],
     });
@@ -498,7 +517,15 @@ describe('planSummary', () => {
     const fills: Fill[] = [{ fid: 1, gid: 'g1', content: 'izo', from: 0, to: 100 }];
     const foods: FoodItem[] = [{ id: 1, key: 'ban', name: 'Banana', carbs: 25, from: 50, to: 50 }];
     const plan = makePlan({
-      route: makeRoute({ mode: 'route', distance: 100, speed: 25, weight: 75, intensity: 'mid', temp: 20, useGpx: false }),
+      route: makeRoute({
+        mode: 'route',
+        distance: 100,
+        speed: 25,
+        weight: 75,
+        intensity: 'mid',
+        temp: 20,
+        useGpx: false,
+      }),
       gear,
       fills,
       foods,
@@ -520,7 +547,14 @@ describe('planSummary', () => {
 
   test('zero-duration plan has zero sweat loss and reports full hydration coverage', () => {
     const zeroHrsPlan = makePlan({
-      route: makeRoute({ mode: 'time', hours: 0, minutes: 0, weight: 75, intensity: 'low', temp: 0 }),
+      route: makeRoute({
+        mode: 'time',
+        hours: 0,
+        minutes: 0,
+        weight: 75,
+        intensity: 'low',
+        temp: 0,
+      }),
     });
     expect(planSummary(zeroHrsPlan).sweatLoss).toBe(0);
     expect(planSummary(zeroHrsPlan).hydrationPct).toBe(100);
@@ -530,7 +564,15 @@ describe('planSummary', () => {
 describe('planExtras', () => {
   test('with no fills/foods, gut never accumulates', () => {
     const plan = makePlan({
-      route: makeRoute({ mode: 'route', distance: 100, speed: 25, weight: 75, intensity: 'mid', temp: 20, useGpx: false }),
+      route: makeRoute({
+        mode: 'route',
+        distance: 100,
+        speed: 25,
+        weight: 75,
+        intensity: 'mid',
+        temp: 20,
+        useGpx: false,
+      }),
     });
 
     const extras = planExtras(plan);

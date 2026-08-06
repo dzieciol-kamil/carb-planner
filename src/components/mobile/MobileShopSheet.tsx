@@ -15,8 +15,23 @@ const sheetStyle: CSSProperties = {
   boxShadow: '0 -12px 40px rgba(0,0,0,0.18)',
   transition: 'transform 220ms cubic-bezier(0.22,0.9,0.3,1)',
 };
-const backdropStyle: CSSProperties = { position: 'absolute', inset: 0, zIndex: 30, background: 'rgba(22,25,28,0.34)' };
-const inputStyle: CSSProperties = { width: '100%', boxSizing: 'border-box', border: '1px solid var(--chip-border)', borderRadius: 10, padding: '11px 12px', fontFamily: 'Archivo, sans-serif', fontSize: 14, fontWeight: 600, background: '#fff' };
+const backdropStyle: CSSProperties = {
+  position: 'absolute',
+  inset: 0,
+  zIndex: 30,
+  background: 'rgba(22,25,28,0.34)',
+};
+const inputStyle: CSSProperties = {
+  width: '100%',
+  boxSizing: 'border-box',
+  border: '1px solid var(--chip-border)',
+  borderRadius: 10,
+  padding: '11px 12px',
+  fontFamily: 'Archivo, sans-serif',
+  fontSize: 14,
+  fontWeight: 600,
+  background: '#fff',
+};
 
 export function MobileShopSheet() {
   const shopSheet = useAppStore((s) => s.ui.shopSheet);
@@ -56,10 +71,45 @@ export function MobileShopSheet() {
     <>
       <div style={backdropStyle} onClick={closeShopSheet} />
       <div style={sheetStyle}>
-        <div style={{ width: 38, height: 4, borderRadius: 2, background: 'var(--chip-border)', margin: '0 auto 10px' }} />
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
-          <span style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{strings.shopSheetTitle}</span>
-          <button type="button" onClick={closeShopSheet} style={{ width: 34, height: 34, border: '1px solid var(--chip-border)', borderRadius: 10, background: '#fff', cursor: 'pointer' }}>
+        <div
+          style={{
+            width: 38,
+            height: 4,
+            borderRadius: 2,
+            background: 'var(--chip-border)',
+            margin: '0 auto 10px',
+          }}
+        />
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: 14,
+          }}
+        >
+          <span
+            style={{
+              fontSize: 12,
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+            }}
+          >
+            {strings.shopSheetTitle}
+          </span>
+          <button
+            type="button"
+            onClick={closeShopSheet}
+            style={{
+              width: 34,
+              height: 34,
+              border: '1px solid var(--chip-border)',
+              borderRadius: 10,
+              background: '#fff',
+              cursor: 'pointer',
+            }}
+          >
             ✕
           </button>
         </div>
@@ -73,12 +123,23 @@ export function MobileShopSheet() {
               placeholder={'0–' + Math.round(distanceKm) + ' km'}
               value={km}
               onChange={(e) => setKm(e.target.value)}
-              style={{ ...inputStyle, fontFamily: "'JetBrains Mono', monospace", fontSize: 19, fontWeight: 700 }}
+              style={{
+                ...inputStyle,
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: 19,
+                fontWeight: 700,
+              }}
             />
           </label>
           <label style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.shopSheetName}</span>
-            <input type="text" value={name} maxLength={10} onChange={(e) => setName(e.target.value)} style={inputStyle} />
+            <input
+              type="text"
+              value={name}
+              maxLength={10}
+              onChange={(e) => setName(e.target.value)}
+              style={inputStyle}
+            />
           </label>
 
           <button

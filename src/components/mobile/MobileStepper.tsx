@@ -40,23 +40,54 @@ const valueStyle: CSSProperties = {
   fontWeight: 700,
 };
 
-export function MobileStepper({ label, value, onChange, smallStep, bigStep, min, max, format }: MobileStepperProps) {
+export function MobileStepper({
+  label,
+  value,
+  onChange,
+  smallStep,
+  bigStep,
+  min,
+  max,
+  format,
+}: MobileStepperProps) {
   const fmt = format ?? ((v: number) => String(Math.round(v)));
   const bump = (delta: number) => onChange(clampStepValue(value, delta, min, max));
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-      {label && <span style={{ fontSize: 12, color: 'var(--muted-2)', flex: '1 1 auto' }}>{label}</span>}
-      <button type="button" style={bigBtnStyle} onClick={() => bump(-bigStep)} aria-label={'-' + bigStep}>
+      {label && (
+        <span style={{ fontSize: 12, color: 'var(--muted-2)', flex: '1 1 auto' }}>{label}</span>
+      )}
+      <button
+        type="button"
+        style={bigBtnStyle}
+        onClick={() => bump(-bigStep)}
+        aria-label={'-' + bigStep}
+      >
         {'<<'}
       </button>
-      <button type="button" style={smallBtnStyle} onClick={() => bump(-smallStep)} aria-label={'-' + smallStep}>
+      <button
+        type="button"
+        style={smallBtnStyle}
+        onClick={() => bump(-smallStep)}
+        aria-label={'-' + smallStep}
+      >
         {'<'}
       </button>
       <span style={valueStyle}>{fmt(value)}</span>
-      <button type="button" style={smallBtnStyle} onClick={() => bump(smallStep)} aria-label={'+' + smallStep}>
+      <button
+        type="button"
+        style={smallBtnStyle}
+        onClick={() => bump(smallStep)}
+        aria-label={'+' + smallStep}
+      >
         {'>'}
       </button>
-      <button type="button" style={bigBtnStyle} onClick={() => bump(bigStep)} aria-label={'+' + bigStep}>
+      <button
+        type="button"
+        style={bigBtnStyle}
+        onClick={() => bump(bigStep)}
+        aria-label={'+' + bigStep}
+      >
         {'>>'}
       </button>
     </div>

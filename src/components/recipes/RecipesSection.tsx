@@ -14,7 +14,11 @@ function mixSplit(carbs: number, ratio: number): { malto: number; fructose: numb
   return { malto: (carbs * ratio) / (ratio + 1), fructose: carbs / (ratio + 1) };
 }
 
-const cardStyle: CSSProperties = { border: '1px solid var(--border-soft)', borderRadius: 12, overflow: 'hidden' };
+const cardStyle: CSSProperties = {
+  border: '1px solid var(--border-soft)',
+  borderRadius: 12,
+  overflow: 'hidden',
+};
 const cardHeadStyle: CSSProperties = {
   display: 'flex',
   alignItems: 'center',
@@ -37,11 +41,38 @@ export function RecipesSection() {
   const strings = t(lang);
 
   return (
-    <div style={{ background: '#fff', border: '1px solid var(--border)', borderRadius: 16, padding: '20px 24px' }}>
-      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '16px 24px', flexWrap: 'wrap', marginBottom: 14 }}>
+    <div
+      style={{
+        background: '#fff',
+        border: '1px solid var(--border)',
+        borderRadius: 16,
+        padding: '20px 24px',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'flex-end',
+          justifyContent: 'space-between',
+          gap: '16px 24px',
+          flexWrap: 'wrap',
+          marginBottom: 14,
+        }}
+      >
         <div style={{ flex: '1 1 320px', minWidth: 280 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>{strings.recipes}</div>
-          <div style={{ fontSize: 12, color: 'var(--muted-2)', marginTop: 4 }}>{strings.recipesHint}</div>
+          <div
+            style={{
+              fontSize: 13,
+              fontWeight: 700,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+            }}
+          >
+            {strings.recipes}
+          </div>
+          <div style={{ fontSize: 12, color: 'var(--muted-2)', marginTop: 4 }}>
+            {strings.recipesHint}
+          </div>
         </div>
         <button
           onClick={() => openPanel('mix')}
@@ -65,9 +96,23 @@ export function RecipesSection() {
         </button>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 14 }}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: 14,
+        }}
+      >
         {gear.map((vessel) => (
-          <VesselRecipeCard key={vessel.gid} vessel={vessel} fills={fills.filter((f) => f.gid === vessel.gid).sort((a, b) => a.from - b.from)} route={route} mix={mix} xUnit={xUnit} lang={lang} />
+          <VesselRecipeCard
+            key={vessel.gid}
+            vessel={vessel}
+            fills={fills.filter((f) => f.gid === vessel.gid).sort((a, b) => a.from - b.from)}
+            route={route}
+            mix={mix}
+            xUnit={xUnit}
+            lang={lang}
+          />
         ))}
       </div>
     </div>
@@ -96,7 +141,16 @@ function VesselRecipeCard({ vessel, fills, route, mix, xUnit, lang }: VesselReci
       </div>
       <div style={{ padding: '4px 14px 12px' }}>
         {fills.map((f, i) => (
-          <FillRecipe key={f.fid} fill={f} index={i} vessel={vessel} route={route} mix={mix} xUnit={xUnit} lang={lang} />
+          <FillRecipe
+            key={f.fid}
+            fill={f}
+            index={i}
+            vessel={vessel}
+            route={route}
+            mix={mix}
+            xUnit={xUnit}
+            lang={lang}
+          />
         ))}
       </div>
     </div>
@@ -126,16 +180,35 @@ function FillRecipe({ fill, index, vessel, route, mix, xUnit, lang }: FillRecipe
           { k: strings.carbsIn, v: `${carbs.toFixed(0)} g` },
           { k: strings.malto, v: `${split.malto.toFixed(1)} g` },
           { k: strings.fructose, v: `${split.fructose.toFixed(1)} g` },
-          { k: strings.salt, v: `${((vessel.vol / 100) * (fill.content === 'gel' ? mix.gelSalt : mix.salt)).toFixed(2)} g` },
-          { k: strings.citric, v: `${((vessel.vol / 100) * (fill.content === 'gel' ? mix.gelCitric : mix.citric)).toFixed(2)} g` },
+          {
+            k: strings.salt,
+            v: `${((vessel.vol / 100) * (fill.content === 'gel' ? mix.gelSalt : mix.salt)).toFixed(2)} g`,
+          },
+          {
+            k: strings.citric,
+            v: `${((vessel.vol / 100) * (fill.content === 'gel' ? mix.gelCitric : mix.citric)).toFixed(2)} g`,
+          },
           { k: strings.waterFill, v: `${vessel.vol} ml` },
         ];
-  if (fill.content === 'gel' && n > 1) lines.push({ k: strings.perPortion, v: `${(carbs / n).toFixed(0)} g / ${Math.round(vessel.vol / n)} ml` });
-  if (index > 0) lines.push({ k: strings.refillAt + fmtX(fill.from, true, route, xUnit), v: `#${index + 1}` });
+  if (fill.content === 'gel' && n > 1)
+    lines.push({
+      k: strings.perPortion,
+      v: `${(carbs / n).toFixed(0)} g / ${Math.round(vessel.vol / n)} ml`,
+    });
+  if (index > 0)
+    lines.push({ k: strings.refillAt + fmtX(fill.from, true, route, xUnit), v: `#${index + 1}` });
 
   return (
     <div style={fillBlockStyle}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 6 }}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 10,
+          marginBottom: 6,
+        }}
+      >
         <span style={{ fontSize: 12, fontWeight: 600 }}>
           {strings.fill} {index + 1} · {rangeLabel(fill.from, fill.to, false, route, xUnit)}
         </span>
@@ -157,9 +230,21 @@ function FillRecipe({ fill, index, vessel, route, mix, xUnit, lang }: FillRecipe
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
         {lines.map((line) => (
-          <div key={line.k} style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 10 }}>
+          <div
+            key={line.k}
+            style={{
+              display: 'flex',
+              alignItems: 'baseline',
+              justifyContent: 'space-between',
+              gap: 10,
+            }}
+          >
             <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{line.k}</span>
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, fontWeight: 600 }}>{line.v}</span>
+            <span
+              style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, fontWeight: 600 }}
+            >
+              {line.v}
+            </span>
           </div>
         ))}
       </div>

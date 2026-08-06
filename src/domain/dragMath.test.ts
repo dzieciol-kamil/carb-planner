@@ -20,7 +20,9 @@ import {
 } from './dragMath';
 import type { Fill, FoodItem, ShopStop, Vessel } from './types';
 
-const gear: Vessel[] = [{ gid: 'g1', name: 'Bottle', vol: 500, allowed: ['izo', 'gel'], gelParts: 3 }];
+const gear: Vessel[] = [
+  { gid: 'g1', name: 'Bottle', vol: 500, allowed: ['izo', 'gel'], gelParts: 3 },
+];
 
 function fill(overrides: Partial<Fill>): Fill {
   return { fid: 1, gid: 'g1', content: 'izo', from: 0, to: 50, ...overrides };
@@ -185,7 +187,15 @@ describe('moveFood', () => {
   });
 
   test('clamps at the route boundaries', () => {
-    const fd: FoodItem = { id: 1, key: 'chew', name: 'Chews', carbs: 30, cont: true, from: 10, to: 30 };
+    const fd: FoodItem = {
+      id: 1,
+      key: 'chew',
+      name: 'Chews',
+      carbs: 30,
+      cont: true,
+      from: 10,
+      to: 30,
+    };
     expect(moveFood(fd, 100, -50)).toEqual({ from: 0, to: 20 });
     expect(moveFood(fd, 100, 500)).toEqual({ from: 80, to: 100 });
   });
@@ -193,17 +203,41 @@ describe('moveFood', () => {
 
 describe('resizeFoodLeft / resizeFoodRight', () => {
   test('left cannot cross within 1 unit of the right edge', () => {
-    const fd: FoodItem = { id: 1, key: 'chew', name: 'Chews', carbs: 30, cont: true, from: 10, to: 30 };
+    const fd: FoodItem = {
+      id: 1,
+      key: 'chew',
+      name: 'Chews',
+      carbs: 30,
+      cont: true,
+      from: 10,
+      to: 30,
+    };
     expect(resizeFoodLeft(fd, 1000, 10)).toBe(29);
   });
 
   test('right cannot cross within 1 unit of the left edge', () => {
-    const fd: FoodItem = { id: 1, key: 'chew', name: 'Chews', carbs: 30, cont: true, from: 10, to: 30 };
+    const fd: FoodItem = {
+      id: 1,
+      key: 'chew',
+      name: 'Chews',
+      carbs: 30,
+      cont: true,
+      from: 10,
+      to: 30,
+    };
     expect(resizeFoodRight(fd, 100, -1000, 30)).toBe(11);
   });
 
   test('right is clamped to the route distance', () => {
-    const fd: FoodItem = { id: 1, key: 'chew', name: 'Chews', carbs: 30, cont: true, from: 10, to: 30 };
+    const fd: FoodItem = {
+      id: 1,
+      key: 'chew',
+      name: 'Chews',
+      carbs: 30,
+      cont: true,
+      from: 10,
+      to: 30,
+    };
     expect(resizeFoodRight(fd, 100, 1000, 30)).toBe(100);
   });
 });
@@ -278,7 +312,15 @@ describe('clampFoodToDistance', () => {
   });
 
   test('shifts left, preserving its width, when the route shrinks past its end', () => {
-    const fd: FoodItem = { id: 1, key: 'chew', name: 'Chews', carbs: 30, cont: true, from: 70, to: 90 };
+    const fd: FoodItem = {
+      id: 1,
+      key: 'chew',
+      name: 'Chews',
+      carbs: 30,
+      cont: true,
+      from: 70,
+      to: 90,
+    };
     expect(clampFoodToDistance(fd, 50)).toEqual({ ...fd, from: 30, to: 50 });
   });
 });

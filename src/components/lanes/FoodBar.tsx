@@ -91,8 +91,20 @@ export function FoodBar({ food, distanceKm }: FoodBarProps) {
     boxShadow: dragging ? '0 3px 10px rgba(0,0,0,0.25)' : 'none',
   };
   const barStyle: CSSProperties = point
-    ? { ...base, paddingLeft: 24, paddingRight: 6, borderRadius: '0 4px 4px 0', borderLeft: '3px solid var(--ink)' }
-    : { ...base, width: `${Math.max(1.2, ((food.to - food.from) / distanceKm) * 100)}%`, paddingLeft: 26, paddingRight: 0, borderRadius: 4 };
+    ? {
+        ...base,
+        paddingLeft: 24,
+        paddingRight: 6,
+        borderRadius: '0 4px 4px 0',
+        borderLeft: '3px solid var(--ink)',
+      }
+    : {
+        ...base,
+        width: `${Math.max(1.2, ((food.to - food.from) / distanceKm) * 100)}%`,
+        paddingLeft: 26,
+        paddingRight: 0,
+        borderRadius: 4,
+      };
 
   const popoverAnchor = point
     ? leftPct > 80
@@ -104,22 +116,58 @@ export function FoodBar({ food, distanceKm }: FoodBarProps) {
 
   return (
     <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-      <div onPointerDown={createFoodDragHandler(food.id, 'move')} onPointerEnter={() => setHoverKey(key)} onPointerLeave={() => setHoverKey(null)} style={barStyle}>
-        <button onClick={() => removeFood(food.id)} onPointerDown={stopPointerDown} title={strings.removeItem} style={delButtonStyle(on)}>
+      <div
+        onPointerDown={createFoodDragHandler(food.id, 'move')}
+        onPointerEnter={() => setHoverKey(key)}
+        onPointerLeave={() => setHoverKey(null)}
+        style={barStyle}
+      >
+        <button
+          onClick={() => removeFood(food.id)}
+          onPointerDown={stopPointerDown}
+          title={strings.removeItem}
+          style={delButtonStyle(on)}
+        >
           ✕
         </button>
-        <span style={{ fontSize: 10, fontWeight: 700, color: '#fff', fontFamily: "'JetBrains Mono', monospace", pointerEvents: 'none' }}>
+        <span
+          style={{
+            fontSize: 10,
+            fontWeight: 700,
+            color: '#fff',
+            fontFamily: "'JetBrains Mono', monospace",
+            pointerEvents: 'none',
+          }}
+        >
           {foodName(food, foodLib, lang)}
         </span>
         {!point && (
           <>
             <span
               onPointerDown={createFoodDragHandler(food.id, 'left')}
-              style={{ position: 'absolute', left: -6, top: -2, bottom: -2, width: 12, cursor: 'ew-resize', touchAction: 'none', zIndex: 5 }}
+              style={{
+                position: 'absolute',
+                left: -6,
+                top: -2,
+                bottom: -2,
+                width: 12,
+                cursor: 'ew-resize',
+                touchAction: 'none',
+                zIndex: 5,
+              }}
             />
             <span
               onPointerDown={createFoodDragHandler(food.id, 'resize')}
-              style={{ position: 'absolute', right: -6, top: -2, bottom: -2, width: 12, cursor: 'ew-resize', touchAction: 'none', zIndex: 5 }}
+              style={{
+                position: 'absolute',
+                right: -6,
+                top: -2,
+                bottom: -2,
+                width: 12,
+                cursor: 'ew-resize',
+                touchAction: 'none',
+                zIndex: 5,
+              }}
             />
           </>
         )}
@@ -128,12 +176,29 @@ export function FoodBar({ food, distanceKm }: FoodBarProps) {
       <div
         onPointerEnter={() => setHoverKey(key)}
         onPointerLeave={() => setHoverKey(null)}
-        style={{ position: 'absolute', bottom: '100%', paddingBottom: 7, zIndex: 20, gap: 3, ...popoverAnchor, pointerEvents: 'auto', display: on ? 'flex' : 'none' }}
+        style={{
+          position: 'absolute',
+          bottom: '100%',
+          paddingBottom: 7,
+          zIndex: 20,
+          gap: 3,
+          ...popoverAnchor,
+          pointerEvents: 'auto',
+          display: on ? 'flex' : 'none',
+        }}
       >
-        <button onClick={() => setFoodContinuous(food.id, false)} onPointerDown={stopPointerDown} style={popoverChipStyle(point)}>
+        <button
+          onClick={() => setFoodContinuous(food.id, false)}
+          onPointerDown={stopPointerDown}
+          style={popoverChipStyle(point)}
+        >
           {strings.shotMode}
         </button>
-        <button onClick={() => setFoodContinuous(food.id, true)} onPointerDown={stopPointerDown} style={popoverChipStyle(!point)}>
+        <button
+          onClick={() => setFoodContinuous(food.id, true)}
+          onPointerDown={stopPointerDown}
+          style={popoverChipStyle(!point)}
+        >
           {strings.contMode}
         </button>
       </div>

@@ -1,5 +1,15 @@
 import type { PointerEvent as ReactPointerEvent } from 'react';
-import { dragGelPart, moveFill, moveFood, moveShop, rescalePositions, resizeFillLeft, resizeFillRight, resizeFoodLeft, resizeFoodRight } from '../../domain/dragMath';
+import {
+  dragGelPart,
+  moveFill,
+  moveFood,
+  moveShop,
+  rescalePositions,
+  resizeFillLeft,
+  resizeFillRight,
+  resizeFoodLeft,
+  resizeFoodRight,
+} from '../../domain/dragMath';
 import { dist } from '../../domain/fuel';
 import { useAppStore } from '../../store/appStore';
 

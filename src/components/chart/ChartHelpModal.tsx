@@ -70,13 +70,30 @@ export function ChartHelpModal({ desktop }: ChartHelpModalProps) {
     <>
       {open && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 210 }}>
-          <div onClick={closeChartHelp} style={{ position: 'absolute', inset: 0, background: 'rgba(18,20,18,0.55)' }} />
+          <div
+            onClick={closeChartHelp}
+            style={{ position: 'absolute', inset: 0, background: 'rgba(18,20,18,0.55)' }}
+          />
           <div style={panelStyle}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: 12,
+              }}
+            >
               <span style={{ fontSize: 15, fontWeight: 700 }}>{strings.chartHelpTitle}</span>
               <button
                 onClick={closeChartHelp}
-                style={{ border: 'none', background: 'none', cursor: 'pointer', fontSize: 13, color: 'var(--muted)', padding: 0 }}
+                style={{
+                  border: 'none',
+                  background: 'none',
+                  cursor: 'pointer',
+                  fontSize: 13,
+                  color: 'var(--muted)',
+                  padding: 0,
+                }}
               >
                 ✕
               </button>

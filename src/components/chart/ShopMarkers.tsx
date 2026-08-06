@@ -30,7 +30,12 @@ function pinButtonStyle(leftPct: number): CSSProperties {
   };
 }
 
-function lineStyle(leftPct: number, height: number, bottomPadding: number, on: boolean): CSSProperties {
+function lineStyle(
+  leftPct: number,
+  height: number,
+  bottomPadding: number,
+  on: boolean,
+): CSSProperties {
   return {
     position: 'absolute',
     left: `calc(${leftPct}% - 0.75px)`,
@@ -91,14 +96,24 @@ export function ShopMarkers({ distanceKm, height, bottomPadding, route, xUnit }:
               onPointerLeave={() => setHoverKey(null)}
               style={pinButtonStyle(leftPct)}
             >
-              <svg width={PIN_W} height={PIN_H} viewBox="0 0 16 18" style={{ display: 'block', overflow: 'visible' }}>
+              <svg
+                width={PIN_W}
+                height={PIN_H}
+                viewBox="0 0 16 18"
+                style={{ display: 'block', overflow: 'visible' }}
+              >
                 <path
                   d="M8 18C8 18 1 10.5 1 7A7 7 0 1 1 15 7C15 10.5 8 18 8 18Z"
                   fill={CHART_COLORS.ink}
                   opacity={on || dragging ? 1 : 0.75}
                 />
               </svg>
-              <button onClick={() => removeShop(shop.id)} onPointerDown={stopPointerDown} title={strings.removeItem} style={removeButtonStyle(on && !dragging)}>
+              <button
+                onClick={() => removeShop(shop.id)}
+                onPointerDown={stopPointerDown}
+                title={strings.removeItem}
+                style={removeButtonStyle(on && !dragging)}
+              >
                 ✕
               </button>
               {dragging && (

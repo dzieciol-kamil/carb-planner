@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { clampGelPortion, clampStepValue, foodTouchHitbox, resolveFillMove, stepperStep } from './mobileMath';
+import {
+  clampGelPortion,
+  clampStepValue,
+  foodTouchHitbox,
+  resolveFillMove,
+  stepperStep,
+} from './mobileMath';
 
 describe('stepperStep', () => {
   it('is 5 for distances up to 120km', () => {

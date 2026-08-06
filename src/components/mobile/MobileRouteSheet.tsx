@@ -30,8 +30,21 @@ const sheetStyle: CSSProperties = {
   maxHeight: '86%',
   overflowY: 'auto',
 };
-const backdropStyle: CSSProperties = { position: 'absolute', inset: 0, zIndex: 29, background: 'rgba(22,25,28,0.34)' };
-const sectionTitleStyle: CSSProperties = { fontSize: 11, fontWeight: 700, textTransform: 'uppercase', color: 'var(--muted)', borderTop: '1px solid var(--border-soft)', paddingTop: 14, marginTop: 4 };
+const backdropStyle: CSSProperties = {
+  position: 'absolute',
+  inset: 0,
+  zIndex: 29,
+  background: 'rgba(22,25,28,0.34)',
+};
+const sectionTitleStyle: CSSProperties = {
+  fontSize: 11,
+  fontWeight: 700,
+  textTransform: 'uppercase',
+  color: 'var(--muted)',
+  borderTop: '1px solid var(--border-soft)',
+  paddingTop: 14,
+  marginTop: 4,
+};
 
 function chip(active: boolean): CSSProperties {
   return {
@@ -81,27 +94,101 @@ export function MobileRouteSheet() {
     <>
       <div style={backdropStyle} onClick={close} />
       <div style={sheetStyle}>
-        <div style={{ width: 38, height: 4, borderRadius: 2, background: 'var(--chip-border)', margin: '0 auto 10px' }} />
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-          <span style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{strings.routeSheetTitle}</span>
-          <button type="button" onClick={close} style={{ width: 34, height: 34, border: '1px solid var(--chip-border)', borderRadius: 10, background: '#fff', cursor: 'pointer' }}>
+        <div
+          style={{
+            width: 38,
+            height: 4,
+            borderRadius: 2,
+            background: 'var(--chip-border)',
+            margin: '0 auto 10px',
+          }}
+        />
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: 12,
+          }}
+        >
+          <span
+            style={{
+              fontSize: 12,
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.08em',
+            }}
+          >
+            {strings.routeSheetTitle}
+          </span>
+          <button
+            type="button"
+            onClick={close}
+            style={{
+              width: 34,
+              height: 34,
+              border: '1px solid var(--chip-border)',
+              borderRadius: 10,
+              background: '#fff',
+              cursor: 'pointer',
+            }}
+          >
             ✕
           </button>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          <MobileStepper label={strings.distance + ' (km)'} value={route.distance} min={0} max={600} smallStep={1} bigStep={5} onChange={setDistance} />
-          <MobileStepper label={strings.speed + ' (km/h)'} value={route.speed} min={8} max={50} smallStep={1} bigStep={5} onChange={setSpeed} />
+          <MobileStepper
+            label={strings.distance + ' (km)'}
+            value={route.distance}
+            min={0}
+            max={600}
+            smallStep={1}
+            bigStep={5}
+            onChange={setDistance}
+          />
+          <MobileStepper
+            label={strings.speed + ' (km/h)'}
+            value={route.speed}
+            min={8}
+            max={50}
+            smallStep={1}
+            bigStep={5}
+            onChange={setSpeed}
+          />
 
           <div style={sectionTitleStyle}>{strings.routeSheetPreStart}</div>
-          <MobileStepper label={strings.preMealCarbs + ' (g)'} value={route.preMealCarbs} min={0} max={200} smallStep={1} bigStep={5} onChange={setPreMealCarbs} />
-          <MobileStepper label={strings.preMealMinutes + ' (min)'} value={route.preMealMinutes} min={0} max={240} smallStep={1} bigStep={5} onChange={setPreMealMinutes} />
+          <MobileStepper
+            label={strings.preMealCarbs + ' (g)'}
+            value={route.preMealCarbs}
+            min={0}
+            max={200}
+            smallStep={1}
+            bigStep={5}
+            onChange={setPreMealCarbs}
+          />
+          <MobileStepper
+            label={strings.preMealMinutes + ' (min)'}
+            value={route.preMealMinutes}
+            min={0}
+            max={240}
+            smallStep={1}
+            bigStep={5}
+            onChange={setPreMealMinutes}
+          />
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{strings.routeSheetIntensity}</span>
+            <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>
+              {strings.routeSheetIntensity}
+            </span>
             <div style={{ display: 'flex', gap: 6 }}>
               {intensityOptions.map((opt) => (
-                <button key={opt.value} type="button" style={chip(route.intensity === opt.value)} onClick={() => setIntensity(opt.value)}>
+                <button
+                  key={opt.value}
+                  type="button"
+                  style={chip(route.intensity === opt.value)}
+                  onClick={() => setIntensity(opt.value)}
+                >
                   {opt.label}
                 </button>
               ))}
@@ -109,21 +196,62 @@ export function MobileRouteSheet() {
           </div>
 
           <label style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
-            <span style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--muted-2)' }}>
+            <span
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                fontSize: 12,
+                color: 'var(--muted-2)',
+              }}
+            >
               <span>{strings.routeSheetTemp}</span>
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--ink)', fontWeight: 700 }}>{route.temp} °C</span>
+              <span
+                style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  color: 'var(--ink)',
+                  fontWeight: 700,
+                }}
+              >
+                {route.temp} °C
+              </span>
             </span>
-            <input type="range" min={0} max={40} step={1} value={route.temp} onChange={(e) => setTemp(parseFloat(e.target.value))} style={{ width: '100%' }} />
+            <input
+              type="range"
+              min={0}
+              max={40}
+              step={1}
+              value={route.temp}
+              onChange={(e) => setTemp(parseFloat(e.target.value))}
+              style={{ width: '100%' }}
+            />
           </label>
 
           <div style={sectionTitleStyle}>{strings.routeSheetGpxSection}</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <span style={{ flex: 1, minWidth: 0 }}>
-              <span style={{ display: 'block', fontFamily: "'JetBrains Mono', monospace", fontSize: 12, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <span
+                style={{
+                  display: 'block',
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: 12,
+                  fontWeight: 600,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
                 {route.gpxName || strings.gpxFile}
               </span>
             </span>
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: 'var(--muted-2)' }}>+{elevationGain(route)} m</span>
+            <span
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: 12,
+                color: 'var(--muted-2)',
+              }}
+            >
+              +{elevationGain(route)} m
+            </span>
           </div>
           <div style={{ display: 'flex', gap: 6 }}>
             <label
@@ -170,12 +298,24 @@ export function MobileRouteSheet() {
               {strings.gpxOn}
             </button>
           </div>
-          <p style={{ margin: 0, fontSize: 11, color: 'var(--muted-3)' }}>{strings.routeSheetGpxNote}</p>
+          <p style={{ margin: 0, fontSize: 11, color: 'var(--muted-3)' }}>
+            {strings.routeSheetGpxNote}
+          </p>
 
           <button
             type="button"
             onClick={close}
-            style={{ marginTop: 4, background: 'var(--ink)', color: '#fff', border: 'none', borderRadius: 12, padding: 15, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}
+            style={{
+              marginTop: 4,
+              background: 'var(--ink)',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 12,
+              padding: 15,
+              fontSize: 14,
+              fontWeight: 700,
+              cursor: 'pointer',
+            }}
           >
             {strings.routeSheetDone}
           </button>

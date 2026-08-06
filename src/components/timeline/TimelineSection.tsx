@@ -11,7 +11,11 @@ function contentLabel(content: Fill['content'], lang: Lang): string {
   return content === 'water' ? strings.water : content === 'gel' ? strings.gel : strings.izo;
 }
 
-function foodName(fd: FoodItem, foodLib: { key: string; pl: string; en: string }[], lang: Lang): string {
+function foodName(
+  fd: FoodItem,
+  foodLib: { key: string; pl: string; en: string }[],
+  lang: Lang,
+): string {
   const entry = foodLib.find((x) => x.key === fd.key);
   return (entry && (entry[lang] || entry.en)) || fd.name || '—';
 }
@@ -30,9 +34,23 @@ function rowStyle(active: boolean): CSSProperties {
   };
 }
 
-const groupCardStyle: CSSProperties = { border: '1px solid var(--border-soft)', borderRadius: 12, padding: '12px 14px 10px' };
-const groupHeadStyle: CSSProperties = { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 8 };
-const metaStyle: CSSProperties = { fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--muted)' };
+const groupCardStyle: CSSProperties = {
+  border: '1px solid var(--border-soft)',
+  borderRadius: 12,
+  padding: '12px 14px 10px',
+};
+const groupHeadStyle: CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: 12,
+  marginBottom: 8,
+};
+const metaStyle: CSSProperties = {
+  fontFamily: "'JetBrains Mono', monospace",
+  fontSize: 11,
+  color: 'var(--muted)',
+};
 
 export function TimelineSection() {
   const route = useAppStore((s) => s.route);
@@ -73,15 +91,40 @@ export function TimelineSection() {
         }}
       >
         <span style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
-          <span style={{ fontSize: 10, color: 'var(--muted)', display: 'inline-block', transform: timelineOpen ? 'rotate(90deg)' : 'none', transition: 'transform .15s' }}>▸</span>
-          <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '0.09em', textTransform: 'uppercase' }}>{strings.timeline}</span>
+          <span
+            style={{
+              fontSize: 10,
+              color: 'var(--muted)',
+              display: 'inline-block',
+              transform: timelineOpen ? 'rotate(90deg)' : 'none',
+              transition: 'transform .15s',
+            }}
+          >
+            ▸
+          </span>
+          <span
+            style={{
+              fontSize: 12,
+              fontWeight: 700,
+              letterSpacing: '0.09em',
+              textTransform: 'uppercase',
+            }}
+          >
+            {strings.timeline}
+          </span>
         </span>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>{itemCountLabel}</span>
+        <span
+          style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--muted)' }}
+        >
+          {itemCountLabel}
+        </span>
       </button>
 
       {timelineOpen && (
         <div style={{ marginTop: 12 }}>
-          <p style={{ margin: '0 0 12px', fontSize: 12, color: 'var(--muted-2)' }}>{strings.timelineHint}</p>
+          <p style={{ margin: '0 0 12px', fontSize: 12, color: 'var(--muted-2)' }}>
+            {strings.timelineHint}
+          </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {gear.map((vessel) => (
               <VesselGroup
@@ -98,7 +141,15 @@ export function TimelineSection() {
                 addFillInGap={addFillInGap}
               />
             ))}
-            <FoodGroup foods={foods} foodLib={foodLib} route={route} xUnit={xUnit} lang={lang} hoverKey={hoverKey} setHoverKey={setHoverKey} />
+            <FoodGroup
+              foods={foods}
+              foodLib={foodLib}
+              route={route}
+              xUnit={xUnit}
+              lang={lang}
+              hoverKey={hoverKey}
+              setHoverKey={setHoverKey}
+            />
           </div>
         </div>
       )}
@@ -119,7 +170,18 @@ interface VesselGroupProps {
   addFillInGap: (gid: string) => void;
 }
 
-function VesselGroup({ vessel, fills, route, mix, xUnit, distanceKm, lang, hoverKey, setHoverKey, addFillInGap }: VesselGroupProps) {
+function VesselGroup({
+  vessel,
+  fills,
+  route,
+  mix,
+  xUnit,
+  distanceKm,
+  lang,
+  hoverKey,
+  setHoverKey,
+  addFillInGap,
+}: VesselGroupProps) {
   const strings = t(lang);
   const sorted = fills.slice().sort((a, b) => a.from - b.from);
   const can = gaps(sorted, distanceKm).length > 0;
@@ -128,29 +190,86 @@ function VesselGroup({ vessel, fills, route, mix, xUnit, distanceKm, lang, hover
     <div style={groupCardStyle}>
       <div style={groupHeadStyle}>
         <span style={{ display: 'flex', alignItems: 'center', gap: 9, minWidth: 0 }}>
-          <span style={{ width: 9, height: 9, borderRadius: 3, background: CHART_COLORS.carb, flexShrink: 0 }} />
+          <span
+            style={{
+              width: 9,
+              height: 9,
+              borderRadius: 3,
+              background: CHART_COLORS.carb,
+              flexShrink: 0,
+            }}
+          />
           <span style={{ fontSize: 13, fontWeight: 700 }}>{vessel.name}</span>
           <span style={metaStyle}>{vessel.vol} ml</span>
         </span>
         <span style={metaStyle}>
-          {sorted.length} × {strings.fill.toLowerCase()} · {Math.max(0, sorted.length - 1)} {strings.refills}
+          {sorted.length} × {strings.fill.toLowerCase()} · {Math.max(0, sorted.length - 1)}{' '}
+          {strings.refills}
         </span>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         {sorted.map((f, idx) => (
-          <div key={f.fid} style={rowStyle(hoverKey === 'f' + f.fid)} onMouseEnter={() => setHoverKey('f' + f.fid)} onMouseLeave={() => setHoverKey(null)}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0, width: 196, flex: '0 0 196px' }}>
-              <span style={{ width: 9, height: 9, borderRadius: 3, background: sourceColor(f.content), flexShrink: 0 }} />
+          <div
+            key={f.fid}
+            style={rowStyle(hoverKey === 'f' + f.fid)}
+            onMouseEnter={() => setHoverKey('f' + f.fid)}
+            onMouseLeave={() => setHoverKey(null)}
+          >
+            <span
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                minWidth: 0,
+                width: 196,
+                flex: '0 0 196px',
+              }}
+            >
+              <span
+                style={{
+                  width: 9,
+                  height: 9,
+                  borderRadius: 3,
+                  background: sourceColor(f.content),
+                  flexShrink: 0,
+                }}
+              />
               <span style={{ minWidth: 0 }}>
-                <span style={{ display: 'block', fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <span
+                  style={{
+                    display: 'block',
+                    fontSize: 13,
+                    fontWeight: 600,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
                   {strings.fill} {idx + 1} · {contentLabel(f.content, lang)}
                 </span>
-                <span style={{ display: 'block', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>
+                <span
+                  style={{
+                    display: 'block',
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontSize: 11,
+                    color: 'var(--muted)',
+                  }}
+                >
                   {carbsFill(f, [vessel], mix).toFixed(0)} g
                 </span>
               </span>
             </span>
-            <span style={{ flex: '1 1 90px', minWidth: 80, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, fontWeight: 600, color: 'var(--ink-soft)', textAlign: 'right' }}>
+            <span
+              style={{
+                flex: '1 1 90px',
+                minWidth: 80,
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: 12,
+                fontWeight: 600,
+                color: 'var(--ink-soft)',
+                textAlign: 'right',
+              }}
+            >
               {rangeLabel(f.from, f.to, false, route, xUnit)}
             </span>
           </div>
@@ -198,7 +317,15 @@ function FoodGroup({ foods, foodLib, route, xUnit, lang, hoverKey, setHoverKey }
     <div style={groupCardStyle}>
       <div style={groupHeadStyle}>
         <span style={{ display: 'flex', alignItems: 'center', gap: 9, minWidth: 0 }}>
-          <span style={{ width: 9, height: 9, borderRadius: 3, background: CHART_COLORS.food, flexShrink: 0 }} />
+          <span
+            style={{
+              width: 9,
+              height: 9,
+              borderRadius: 3,
+              background: CHART_COLORS.food,
+              flexShrink: 0,
+            }}
+          />
           <span style={{ fontSize: 13, fontWeight: 700 }}>{strings.foodLane}</span>
           <span style={metaStyle}>{strings.foodLaneSub}</span>
         </span>
@@ -208,23 +335,86 @@ function FoodGroup({ foods, foodLib, route, xUnit, lang, hoverKey, setHoverKey }
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         {sorted.map((fd) => (
-          <div key={fd.id} style={rowStyle(hoverKey === 'x' + fd.id)} onMouseEnter={() => setHoverKey('x' + fd.id)} onMouseLeave={() => setHoverKey(null)}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0, width: 196, flex: '0 0 196px' }}>
-              <span style={{ width: 9, height: 9, borderRadius: 3, background: CHART_COLORS.food, flexShrink: 0 }} />
+          <div
+            key={fd.id}
+            style={rowStyle(hoverKey === 'x' + fd.id)}
+            onMouseEnter={() => setHoverKey('x' + fd.id)}
+            onMouseLeave={() => setHoverKey(null)}
+          >
+            <span
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                minWidth: 0,
+                width: 196,
+                flex: '0 0 196px',
+              }}
+            >
+              <span
+                style={{
+                  width: 9,
+                  height: 9,
+                  borderRadius: 3,
+                  background: CHART_COLORS.food,
+                  flexShrink: 0,
+                }}
+              />
               <span style={{ minWidth: 0 }}>
-                <span style={{ display: 'block', fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{foodName(fd, foodLib, lang)}</span>
-                <span style={{ display: 'block', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>
-                  {fd.carbs} g{fd.ml ? ` · ${fd.ml} ml` : ''} · {fd.cont ? strings.sipped : strings.shot}
+                <span
+                  style={{
+                    display: 'block',
+                    fontSize: 13,
+                    fontWeight: 600,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  {foodName(fd, foodLib, lang)}
+                </span>
+                <span
+                  style={{
+                    display: 'block',
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontSize: 11,
+                    color: 'var(--muted)',
+                  }}
+                >
+                  {fd.carbs} g{fd.ml ? ` · ${fd.ml} ml` : ''} ·{' '}
+                  {fd.cont ? strings.sipped : strings.shot}
                 </span>
               </span>
             </span>
-            <span style={{ flex: '1 1 90px', minWidth: 80, fontFamily: "'JetBrains Mono', monospace", fontSize: 12, fontWeight: 600, color: 'var(--ink-soft)', textAlign: 'right' }}>
+            <span
+              style={{
+                flex: '1 1 90px',
+                minWidth: 80,
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: 12,
+                fontWeight: 600,
+                color: 'var(--ink-soft)',
+                textAlign: 'right',
+              }}
+            >
               {rangeLabel(fd.from, fd.to, !fd.cont, route, xUnit)}
             </span>
           </div>
         ))}
       </div>
-      <div style={{ marginTop: 8, width: '100%', color: '#9AA09B', fontSize: 11, fontFamily: 'Archivo, sans-serif', padding: '6px 0', textAlign: 'left' }}>{strings.addFoodHint}</div>
+      <div
+        style={{
+          marginTop: 8,
+          width: '100%',
+          color: '#9AA09B',
+          fontSize: 11,
+          fontFamily: 'Archivo, sans-serif',
+          padding: '6px 0',
+          textAlign: 'left',
+        }}
+      >
+        {strings.addFoodHint}
+      </div>
     </div>
   );
 }

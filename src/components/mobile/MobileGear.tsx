@@ -19,28 +19,75 @@ export function MobileGear() {
 
   return (
     <div style={{ padding: '12px 14px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-      <div style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{strings.gear}</div>
-      <p style={{ margin: 0, fontSize: 12, lineHeight: 1.5, color: 'var(--muted-2)' }}>{strings.gearHintMobile}</p>
+      <div
+        style={{
+          fontSize: 12,
+          fontWeight: 700,
+          textTransform: 'uppercase',
+          letterSpacing: '0.08em',
+        }}
+      >
+        {strings.gear}
+      </div>
+      <p style={{ margin: 0, fontSize: 12, lineHeight: 1.5, color: 'var(--muted-2)' }}>
+        {strings.gearHintMobile}
+      </p>
 
       {gear.map((vessel) => {
         const count = fills.filter((f) => f.gid === vessel.gid).length;
         const gelAllowed = vessel.allowed.includes('gel');
         return (
-          <div key={vessel.gid} style={{ border: '1px solid var(--chip-border)', borderRadius: 13, padding: 12, display: 'flex', flexDirection: 'column', gap: 11 }}>
+          <div
+            key={vessel.gid}
+            style={{
+              border: '1px solid var(--chip-border)',
+              borderRadius: 13,
+              padding: 12,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 11,
+            }}
+          >
             <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
               <input
                 type="text"
                 value={vessel.name}
                 onChange={(e) => updateVessel(vessel.gid, { name: e.target.value })}
-                style={{ flex: 1, minWidth: 0, border: '1px solid var(--chip-border)', borderRadius: 10, padding: '9px 11px', fontFamily: 'Archivo, sans-serif', fontSize: 13, fontWeight: 700, background: '#fff' }}
+                style={{
+                  flex: 1,
+                  minWidth: 0,
+                  border: '1px solid var(--chip-border)',
+                  borderRadius: 10,
+                  padding: '9px 11px',
+                  fontFamily: 'Archivo, sans-serif',
+                  fontSize: 13,
+                  fontWeight: 700,
+                  background: '#fff',
+                }}
               />
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--muted)', flex: '0 0 auto', whiteSpace: 'nowrap' }}>
+              <span
+                style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: 11,
+                  color: 'var(--muted)',
+                  flex: '0 0 auto',
+                  whiteSpace: 'nowrap',
+                }}
+              >
                 {count}
                 {strings.inPlanSuffix}
               </span>
             </div>
 
-            <MobileStepper label="ml" value={vessel.vol} min={100} max={2000} smallStep={10} bigStep={50} onChange={(vol) => updateVessel(vessel.gid, { vol })} />
+            <MobileStepper
+              label="ml"
+              value={vessel.vol}
+              min={100}
+              max={2000}
+              smallStep={10}
+              bigStep={50}
+              onChange={(vol) => updateVessel(vessel.gid, { vol })}
+            />
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               <span style={{ fontSize: 11, color: 'var(--muted)' }}>{strings.canCarry}</span>
@@ -86,7 +133,17 @@ export function MobileGear() {
             <button
               type="button"
               onClick={() => removeVessel(vessel.gid)}
-              style={{ alignSelf: 'flex-start', border: '1px solid #E3D3CD', borderRadius: 8, padding: '6px 10px', background: '#fff', color: 'var(--food)', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}
+              style={{
+                alignSelf: 'flex-start',
+                border: '1px solid #E3D3CD',
+                borderRadius: 8,
+                padding: '6px 10px',
+                background: '#fff',
+                color: 'var(--food)',
+                fontSize: 11,
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
             >
               {strings.removeItem}
             </button>
@@ -97,7 +154,16 @@ export function MobileGear() {
       <button
         type="button"
         onClick={addVessel}
-        style={{ border: '1px dashed #C9CEC7', borderRadius: 11, padding: 12, background: '#F7F8F5', fontSize: 13, fontWeight: 600, color: 'var(--ink-soft)', cursor: 'pointer' }}
+        style={{
+          border: '1px dashed #C9CEC7',
+          borderRadius: 11,
+          padding: 12,
+          background: '#F7F8F5',
+          fontSize: 13,
+          fontWeight: 600,
+          color: 'var(--ink-soft)',
+          cursor: 'pointer',
+        }}
       >
         + {strings.addGear}
       </button>
