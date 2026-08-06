@@ -123,7 +123,22 @@ export function MobileProfile() {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{strings.meView}</span>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'baseline',
+              gap: 8,
+            }}
+          >
+            <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{strings.meView}</span>
+            {viewMode === 'auto' && (
+              <span style={{ fontSize: 11, color: 'var(--muted-3)' }}>
+                {strings.autoDetected}
+                {autoView === 'desktop' ? strings.desktop : strings.mobile}
+              </span>
+            )}
+          </div>
           <div style={{ display: 'flex', gap: 6 }}>
             {(['auto', 'desktop', 'mobile'] as const).map((v) => (
               <button
@@ -150,12 +165,6 @@ export function MobileProfile() {
               </button>
             ))}
           </div>
-          {viewMode === 'auto' && (
-            <span style={{ fontSize: 11, color: 'var(--muted-3)' }}>
-              {strings.autoDetected}
-              {autoView === 'desktop' ? strings.desktop : strings.mobile}
-            </span>
-          )}
         </div>
       </div>
 
