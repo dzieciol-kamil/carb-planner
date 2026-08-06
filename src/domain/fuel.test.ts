@@ -2,6 +2,7 @@ import { describe, expect, test } from 'vitest';
 import {
   absCap,
   carbsFill,
+  citricAmount,
   cph,
   dist,
   distanceAtTime,
@@ -53,6 +54,8 @@ function makeMix(overrides: Partial<MixSettings> = {}): MixSettings {
     citric: 0.2,
     gelSalt: 0.4,
     gelCitric: 0.5,
+    citricSource: 'citric',
+    gelCitricSource: 'citric',
     ...overrides,
   };
 }
@@ -331,6 +334,34 @@ describe('carbsFill', () => {
   test('gel scales with vessel volume and gel concentration', () => {
     const f: Fill = { fid: 3, gid: 'g2', content: 'gel', from: 0, to: 50 };
     expect(carbsFill(f, gear, mix)).toBe(150);
+  });
+});
+
+describe('citricAmount', () => {
+  test('citric source passes the gram amount through unchanged', () => {
+    expect(citricAmount(1.2, 'citric')).toEqual({ amount: 1.2, unit: 'g' });
+  });
+
+  test('lemon converts citric-acid grams into juice ml using ~5% w/v yield', () => {
+    const result = citricAmount(1, 'lemon');
+    expect(result.unit).toBe('ml');
+    expect(result.amount).toBeCloseTo(20, 6);
+  });
+
+  test('lime converts citric-acid grams into juice ml using ~6% w/v yield', () => {
+    const result = citricAmount(1, 'lime');
+    expect(result.unit).toBe('ml');
+    expect(result.amount).toBeCloseTo(16.6667, 3);
+  });
+
+  test('lime yields less ml than lemon for the same citric-acid target (lime is more concentrated)', () => {
+    expect(citricAmount(1, 'lime').amount).toBeLessThan(citricAmount(1, 'lemon').amount);
+  });
+
+  test('zero grams converts to zero regardless of source', () => {
+    expect(citricAmount(0, 'citric').amount).toBe(0);
+    expect(citricAmount(0, 'lemon').amount).toBe(0);
+    expect(citricAmount(0, 'lime').amount).toBe(0);
   });
 });
 

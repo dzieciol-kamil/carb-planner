@@ -14,6 +14,7 @@ import { loadGpxFile } from '../domain/gpx';
 import { t, type Lang } from '../i18n/strings';
 import { createDebouncedLocalStorage } from './persistStorage';
 import type {
+  CitricSource,
   FoodItem,
   FoodLibEntry,
   Intensity,
@@ -173,9 +174,11 @@ interface AppState {
   setConc: (n: number) => void;
   setSalt: (n: number) => void;
   setCitric: (n: number) => void;
+  setCitricSource: (source: CitricSource) => void;
   setGelConc: (n: number) => void;
   setGelSalt: (n: number) => void;
   setGelCitric: (n: number) => void;
+  setGelCitricSource: (source: CitricSource) => void;
   resetMix: () => void;
 
   updateVessel: (gid: string, patch: Partial<Vessel>) => void;
@@ -215,6 +218,8 @@ const defaultMix: MixSettings = {
   citric: 0.2,
   gelSalt: 0.4,
   gelCitric: 0.4,
+  citricSource: 'citric',
+  gelCitricSource: 'citric',
 };
 
 const defaultGear: Vessel[] = [
@@ -470,9 +475,11 @@ export const useAppStore = create<AppState>()(
       setConc: (n) => set((s) => ({ mix: { ...s.mix, conc: clamp(n, 0, 100) } })),
       setSalt: (n) => set((s) => ({ mix: { ...s.mix, salt: clamp(n, 0, 10) } })),
       setCitric: (n) => set((s) => ({ mix: { ...s.mix, citric: clamp(n, 0, 10) } })),
+      setCitricSource: (source) => set((s) => ({ mix: { ...s.mix, citricSource: source } })),
       setGelConc: (n) => set((s) => ({ mix: { ...s.mix, gelConc: clamp(n, 0, 100) } })),
       setGelSalt: (n) => set((s) => ({ mix: { ...s.mix, gelSalt: clamp(n, 0, 10) } })),
       setGelCitric: (n) => set((s) => ({ mix: { ...s.mix, gelCitric: clamp(n, 0, 10) } })),
+      setGelCitricSource: (source) => set((s) => ({ mix: { ...s.mix, gelCitricSource: source } })),
       resetMix: () => set({ mix: { ...defaultMix } }),
 
       updateVessel: (gid, patch) =>
@@ -542,6 +549,9 @@ export const useAppStore = create<AppState>()(
           ...currentState,
           ...persisted,
           route: { ...currentState.route, ...persisted?.route },
+          // Deep-merge mix so fields added after a user's data was already persisted (e.g.
+          // citricSource) fall back to the current default instead of coming back undefined.
+          mix: { ...currentState.mix, ...persisted?.mix },
         };
       },
     },
