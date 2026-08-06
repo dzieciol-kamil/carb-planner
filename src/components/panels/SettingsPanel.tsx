@@ -1,6 +1,17 @@
-import { useState, type CSSProperties } from 'react';
+import { useRef, useState, type CSSProperties } from 'react';
+import {
+  buildSettingsExport,
+  parseSettingsImport,
+  serializeSettingsExport,
+  settingsExportFileName,
+} from '../../domain/settingsExport';
 import { t } from '../../i18n/strings';
-import { shouldConfirmViewModeChange, useAppStore, type ViewMode } from '../../store/appStore';
+import {
+  hasPlanData,
+  shouldConfirmViewModeChange,
+  useAppStore,
+  type ViewMode,
+} from '../../store/appStore';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { NumberInput } from '../ui/NumberInput';
 import { PanelShell } from './PanelShell';
@@ -69,12 +80,54 @@ export function SettingsPanel() {
   const updateFoodLibEntry = useAppStore((s) => s.updateFoodLibEntry);
   const removeFoodLibEntry = useAppStore((s) => s.removeFoodLibEntry);
   const addFoodLibEntry = useAppStore((s) => s.addFoodLibEntry);
+  const getSettingsExportData = useAppStore((s) => s.getSettingsExportData);
+  const importSettings = useAppStore((s) => s.importSettings);
   const strings = t(lang);
   const [pendingViewMode, setPendingViewMode] = useState<ViewMode | null>(null);
+  const [pendingImportFile, setPendingImportFile] = useState<File | null>(null);
+  const [importFeedback, setImportFeedback] = useState<'error' | 'success' | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleViewModePick = (v: ViewMode) => {
     if (shouldConfirmViewModeChange(v, viewMode)) setPendingViewMode(v);
     else setViewMode(v);
+  };
+
+  const handleExport = () => {
+    const file = buildSettingsExport(getSettingsExportData());
+    const blob = new Blob([serializeSettingsExport(file)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = settingsExportFileName();
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImportPick = () => fileInputRef.current?.click();
+
+  const handleFileChosen = (file: File | null) => {
+    if (!file) return;
+    if (hasPlanData(useAppStore.getState())) setPendingImportFile(file);
+    else void applyImportedFile(file);
+  };
+
+  const applyImportedFile = async (file: File) => {
+    setImportFeedback(null);
+    try {
+      const text = await file.text();
+      const result = parseSettingsImport(text);
+      if (!result.ok) {
+        setImportFeedback('error');
+        return;
+      }
+      importSettings(result.data);
+      setImportFeedback('success');
+    } catch {
+      setImportFeedback('error');
+    }
   };
 
   return (
@@ -276,6 +329,72 @@ export function SettingsPanel() {
         >
           + {strings.addFoodItem}
         </button>
+
+        <div style={{ ...sectionTitleStyle, marginTop: 28 }}>{strings.backupSection}</div>
+        <p style={{ margin: '0 0 14px', fontSize: 12, lineHeight: 1.5, color: 'var(--muted-2)' }}>
+          {strings.backupHint}
+        </p>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <button
+            onClick={handleExport}
+            style={{
+              border: '1px solid var(--chip-border)',
+              background: '#fff',
+              color: 'var(--ink)',
+              borderRadius: 10,
+              padding: '10px 16px',
+              fontFamily: 'Archivo, sans-serif',
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: 'pointer',
+              flex: 1,
+            }}
+          >
+            {strings.exportSettingsButton}
+          </button>
+          <button
+            onClick={handleImportPick}
+            style={{
+              border: '1px solid var(--chip-border)',
+              background: '#fff',
+              color: 'var(--ink)',
+              borderRadius: 10,
+              padding: '10px 16px',
+              fontFamily: 'Archivo, sans-serif',
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: 'pointer',
+              flex: 1,
+            }}
+          >
+            {strings.importSettingsButton}
+          </button>
+        </div>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="application/json,.json"
+          style={{ display: 'none' }}
+          onChange={(e) => {
+            const file = e.target.files?.[0] ?? null;
+            handleFileChosen(file);
+            e.target.value = '';
+          }}
+        />
+        {importFeedback && (
+          <p
+            style={{
+              margin: '10px 0 0',
+              fontSize: 12,
+              lineHeight: 1.5,
+              color: importFeedback === 'error' ? '#B3402A' : 'var(--muted-2)',
+            }}
+          >
+            {importFeedback === 'error'
+              ? strings.importSettingsError
+              : strings.importSettingsSuccess}
+          </p>
+        )}
       </PanelShell>
       {pendingViewMode && (
         <ConfirmDialog
@@ -287,6 +406,20 @@ export function SettingsPanel() {
           onConfirm={() => {
             setViewMode(pendingViewMode);
             setPendingViewMode(null);
+          }}
+        />
+      )}
+      {pendingImportFile && (
+        <ConfirmDialog
+          title={strings.importSettingsConfirmTitle}
+          body={strings.importSettingsConfirmBody}
+          cancelLabel={strings.importSettingsConfirmCancel}
+          confirmLabel={strings.importSettingsConfirmConfirm}
+          onCancel={() => setPendingImportFile(null)}
+          onConfirm={() => {
+            const file = pendingImportFile;
+            setPendingImportFile(null);
+            void applyImportedFile(file);
           }}
         />
       )}

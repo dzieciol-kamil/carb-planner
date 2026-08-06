@@ -11,6 +11,7 @@ import {
 } from '../domain/dragMath';
 import { dist } from '../domain/fuel';
 import { loadGpxFile } from '../domain/gpx';
+import type { SettingsExportData } from '../domain/settingsExport';
 import { t, type Lang } from '../i18n/strings';
 import { createDebouncedLocalStorage } from './persistStorage';
 import type {
@@ -127,6 +128,9 @@ interface AppState {
   toggleGpx: () => void;
   loadGpxFromFile: (file: File) => Promise<void>;
 
+  getSettingsExportData: () => SettingsExportData;
+  importSettings: (data: SettingsExportData) => void;
+
   setLang: (lang: Lang) => void;
   setViewMode: (mode: ViewMode) => void;
   setAutoView: (view: 'desktop' | 'mobile') => void;
@@ -237,7 +241,7 @@ const defaultFoodLib: FoodLibEntry[] = [
 
 export const useAppStore = create<AppState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       route: defaultRoute,
       mix: defaultMix,
       gear: defaultGear,
@@ -320,6 +324,67 @@ export const useAppStore = create<AppState>()(
           set((s) => ({ route: { ...s.route, gpxError: 'gpxBad' } }));
         }
       },
+
+      // Snapshot of everything a settings backup should cover: gear/products/
+      // profile plus the current plan (route, fills, foods, shops) and the
+      // durable UI prefs (lang, view mode, chart units/mode). Deliberately
+      // excludes transient UI (open panels/sheets, hover/drag/selection, tour
+      // progress) — see SettingsExportData in domain/settingsExport.ts.
+      getSettingsExportData: () => {
+        const s = get();
+        return {
+          route: s.route,
+          mix: s.mix,
+          gear: s.gear,
+          fills: s.fills,
+          foods: s.foods,
+          shops: s.shops,
+          foodLib: s.foodLib,
+          ui: { lang: s.ui.lang, viewMode: s.ui.viewMode, xUnit: s.ui.xUnit, yMode: s.ui.yMode },
+          nextGid: s.nextGid,
+          nextFid: s.nextFid,
+          nextFoodId: s.nextFoodId,
+          nextFoodKey: s.nextFoodKey,
+          nextShopId: s.nextShopId,
+        };
+      },
+      // Wholesale-replaces settings/plan with an imported backup. Reconciles
+      // fills/foods/shops against the imported route's distance the same way
+      // any other route edit does, in case the file predates a since-changed
+      // clamping rule. Closes any open panel/sheet and clears selection/hover/
+      // drag state, since those may reference ids that no longer exist.
+      importSettings: (data) =>
+        set((s) => {
+          const reconciled = reconcileToRoute(data.route, data.fills, data.foods, data.shops);
+          return {
+            route: data.route,
+            mix: data.mix,
+            gear: data.gear,
+            ...reconciled,
+            foodLib: data.foodLib,
+            nextGid: data.nextGid,
+            nextFid: data.nextFid,
+            nextFoodId: data.nextFoodId,
+            nextFoodKey: data.nextFoodKey,
+            nextShopId: data.nextShopId,
+            ui: {
+              ...s.ui,
+              lang: data.ui.lang,
+              viewMode: data.ui.viewMode,
+              xUnit: data.ui.xUnit,
+              yMode: data.ui.yMode,
+              panel: null,
+              selKey: null,
+              hoverKey: null,
+              dragKey: null,
+              mixSheet: false,
+              routeSheet: false,
+              shopSheet: null,
+              chartHelp: false,
+              tourStep: null,
+            },
+          };
+        }),
 
       setLang: (lang) => set((s) => ({ ui: { ...s.ui, lang } })),
       setViewMode: (viewMode) => set((s) => ({ ui: { ...s.ui, viewMode } })),
