@@ -16,6 +16,7 @@ import {
   prof,
   rangeLabel,
   rateStats,
+  recoveryCarbs,
   samples,
   sweat,
   timeAtDistance,
@@ -619,5 +620,23 @@ describe('planExtras', () => {
 
     expect(extras.refillTotal).toBe(2); // g1: 3 fills -> 2 refills, g2: 1 fill -> 0 refills
     expect(extras.gelPortions).toBe(3); // single gel fill on g2, gelParts: 3
+  });
+});
+
+describe('recoveryCarbs', () => {
+  test('70 kg rider: 1.0-1.2 g/kg range', () => {
+    expect(recoveryCarbs(70)).toEqual({ min: 70, max: 84 });
+  });
+
+  test('default 78 kg rider', () => {
+    expect(recoveryCarbs(78)).toEqual({ min: 78, max: 94 });
+  });
+
+  test('rounds each bound to the nearest gram', () => {
+    expect(recoveryCarbs(65)).toEqual({ min: 65, max: 78 });
+  });
+
+  test('zero weight yields zero range', () => {
+    expect(recoveryCarbs(0)).toEqual({ min: 0, max: 0 });
   });
 });
