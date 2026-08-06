@@ -262,6 +262,9 @@ export interface StringTable {
   eatenOnceLabel: string;
   carbCardTitle: string;
   inPlanSuffix: string;
+  recoveryTitle: string;
+  recoveryHint: string;
+  recoveryNote: string;
 }
 
 export const STR: Record<Lang, StringTable> = {
@@ -582,6 +585,9 @@ export const STR: Record<Lang, StringTable> = {
     eatenOnceLabel: 'zjedzone jednorazowo',
     carbCardTitle: 'Węglowodany',
     inPlanSuffix: '× w planie',
+    recoveryTitle: 'Regeneracja',
+    recoveryHint: 'Zjedz tyle w ciągu pierwszych 30 minut po zakończeniu jazdy.',
+    recoveryNote: 'Uzupełnia plan tankowania na trasie — nie zastępuje go.',
   },
   en: {
     tagline: 'carbohydrate & hydration planner',
@@ -898,6 +904,9 @@ export const STR: Record<Lang, StringTable> = {
     eatenOnceLabel: 'eaten once',
     carbCardTitle: 'Carbs',
     inPlanSuffix: '× in plan',
+    recoveryTitle: 'Recovery',
+    recoveryHint: 'Aim to eat this much within the first 30 minutes after finishing.',
+    recoveryNote: "Complements your fueling plan — it doesn't replace it.",
   },
 };
 
