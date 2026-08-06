@@ -75,7 +75,10 @@ export function FillBar({ fill, vessel, distanceKm }: FillBarProps) {
   const vol = volOf(fill, gear);
   const allowed = vessel.allowed || [];
 
-  const label = fill.content === 'gel' ? `${strings.gel} · ${vol} ml · ${n}×` : `${contentLabel(fill.content, lang)} · ${vol} ml`;
+  const label =
+    fill.content === 'gel'
+      ? `${strings.gel} · ${vol} ml · ${n}×`
+      : `${contentLabel(fill.content, lang)} · ${vol} ml`;
 
   const leftPct = (fill.from / distanceKm) * 100;
   const widthPct = Math.max(1.2, ((fill.to - fill.from) / distanceKm) * 100);
@@ -115,17 +118,50 @@ export function FillBar({ fill, vessel, distanceKm }: FillBarProps) {
           boxShadow: dragging ? '0 3px 10px rgba(0,0,0,0.25)' : 'none',
         }}
       >
-        <button onClick={() => removeFill(fill.fid)} onPointerDown={stopPointerDown} title={strings.removeItem} style={delButtonStyle(on)}>
+        <button
+          onClick={() => removeFill(fill.fid)}
+          onPointerDown={stopPointerDown}
+          title={strings.removeItem}
+          style={delButtonStyle(on)}
+        >
           ✕
         </button>
-        <span style={{ fontSize: 10, fontWeight: 700, color: '#fff', fontFamily: "'JetBrains Mono', monospace", pointerEvents: 'none' }}>{label}</span>
+        <span
+          style={{
+            fontSize: 10,
+            fontWeight: 700,
+            color: '#fff',
+            fontFamily: "'JetBrains Mono', monospace",
+            pointerEvents: 'none',
+          }}
+        >
+          {label}
+        </span>
         <span
           onPointerDown={createFillDragHandler(fill.fid, 'left')}
-          style={{ position: 'absolute', left: -5, top: -2, bottom: -2, width: 11, cursor: 'ew-resize', touchAction: 'none', zIndex: 5 }}
+          style={{
+            position: 'absolute',
+            left: -5,
+            top: -2,
+            bottom: -2,
+            width: 11,
+            cursor: 'ew-resize',
+            touchAction: 'none',
+            zIndex: 5,
+          }}
         />
         <span
           onPointerDown={createFillDragHandler(fill.fid, 'resize')}
-          style={{ position: 'absolute', right: -5, top: -2, bottom: -2, width: 11, cursor: 'ew-resize', touchAction: 'none', zIndex: 5 }}
+          style={{
+            position: 'absolute',
+            right: -5,
+            top: -2,
+            bottom: -2,
+            width: 11,
+            cursor: 'ew-resize',
+            touchAction: 'none',
+            zIndex: 5,
+          }}
         />
         {parts.slice(1, -1).map((_, i) => {
           const k = i + 1;
@@ -148,7 +184,16 @@ export function FillBar({ fill, vessel, distanceKm }: FillBarProps) {
                 justifyContent: 'center',
               }}
             >
-              <span style={{ width: on ? 3 : 2, background: on ? '#fff' : 'rgba(255,255,255,0.85)', borderRadius: 2, pointerEvents: 'none', marginTop: on ? 0 : 3, marginBottom: on ? 0 : 3 }} />
+              <span
+                style={{
+                  width: on ? 3 : 2,
+                  background: on ? '#fff' : 'rgba(255,255,255,0.85)',
+                  borderRadius: 2,
+                  pointerEvents: 'none',
+                  marginTop: on ? 0 : 3,
+                  marginBottom: on ? 0 : 3,
+                }}
+              />
             </span>
           );
         })}
@@ -164,13 +209,20 @@ export function FillBar({ fill, vessel, distanceKm }: FillBarProps) {
             paddingBottom: 7,
             zIndex: 20,
             gap: 3,
-            ...(anchorRight ? { right: `${100 - (fill.to / distanceKm) * 100}%` } : { left: `${leftPct}%` }),
+            ...(anchorRight
+              ? { right: `${100 - (fill.to / distanceKm) * 100}%` }
+              : { left: `${leftPct}%` }),
             pointerEvents: 'auto',
             display: on && allowed.length > 1 ? 'flex' : 'none',
           }}
         >
           {allowed.map((k) => (
-            <button key={k} onClick={() => setFillContent(fill.fid, k)} onPointerDown={stopPointerDown} style={popoverChipStyle(fill.content === k, sourceColor(k))}>
+            <button
+              key={k}
+              onClick={() => setFillContent(fill.fid, k)}
+              onPointerDown={stopPointerDown}
+              style={popoverChipStyle(fill.content === k, sourceColor(k))}
+            >
               {contentLabel(k, lang)}
             </button>
           ))}

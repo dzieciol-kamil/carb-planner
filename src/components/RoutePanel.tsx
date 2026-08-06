@@ -18,7 +18,13 @@ const inputStyle: CSSProperties = {
   background: '#fff',
 };
 
-const labelStyle: CSSProperties = { display: 'flex', flexDirection: 'column', gap: 5, flex: '1 1 0', minWidth: 0 };
+const labelStyle: CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 5,
+  flex: '1 1 0',
+  minWidth: 0,
+};
 
 function seg(on: boolean): CSSProperties {
   return {
@@ -104,10 +110,33 @@ export function RoutePanel() {
         justifyContent: 'flex-start',
       }}
     >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 14, flex: '0 0 272px', width: 272 }}>
-        <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>{strings.route}</span>
+      <div
+        style={{ display: 'flex', flexDirection: 'column', gap: 14, flex: '0 0 272px', width: 272 }}
+      >
+        <span
+          style={{
+            fontSize: 13,
+            fontWeight: 700,
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+          }}
+        >
+          {strings.route}
+        </span>
 
-        <div style={{ display: 'flex', alignSelf: 'flex-start', width: 272, maxWidth: '100%', boxSizing: 'border-box', background: 'var(--track)', borderRadius: 9, padding: 3, gap: 2 }}>
+        <div
+          style={{
+            display: 'flex',
+            alignSelf: 'flex-start',
+            width: 272,
+            maxWidth: '100%',
+            boxSizing: 'border-box',
+            background: 'var(--track)',
+            borderRadius: 9,
+            padding: 3,
+            gap: 2,
+          }}
+        >
           <button onClick={() => setMode('route')} style={seg(route.mode === 'route')}>
             {strings.byRoute}
           </button>
@@ -117,10 +146,24 @@ export function RoutePanel() {
         </div>
 
         {route.mode === 'route' ? (
-          <div style={{ display: 'flex', gap: 12, alignItems: 'flex-end', width: 272, maxWidth: '100%' }}>
+          <div
+            style={{
+              display: 'flex',
+              gap: 12,
+              alignItems: 'flex-end',
+              width: 272,
+              maxWidth: '100%',
+            }}
+          >
             <label style={labelStyle}>
               <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.distance} (km)</span>
-              <NumberInput value={route.distance} onChange={setDistance} onCommit={reconcilePlan} zeroAsEmpty style={inputStyle} />
+              <NumberInput
+                value={route.distance}
+                onChange={setDistance}
+                onCommit={reconcilePlan}
+                zeroAsEmpty
+                style={inputStyle}
+              />
             </label>
             <label style={labelStyle}>
               <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.speed} (km/h)</span>
@@ -128,26 +171,59 @@ export function RoutePanel() {
             </label>
           </div>
         ) : (
-          <div style={{ display: 'flex', gap: 12, alignItems: 'flex-end', width: 272, maxWidth: '100%' }}>
+          <div
+            style={{
+              display: 'flex',
+              gap: 12,
+              alignItems: 'flex-end',
+              width: 272,
+              maxWidth: '100%',
+            }}
+          >
             <label style={labelStyle}>
               <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.hours}</span>
-              <NumberInput value={route.hours} onChange={setHours} onCommit={reconcilePlan} zeroAsEmpty style={inputStyle} />
+              <NumberInput
+                value={route.hours}
+                onChange={setHours}
+                onCommit={reconcilePlan}
+                zeroAsEmpty
+                style={inputStyle}
+              />
             </label>
             <label style={labelStyle}>
               <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.minutes}</span>
-              <NumberInput value={route.minutes} onChange={setMinutes} onCommit={reconcilePlan} zeroAsEmpty style={inputStyle} />
+              <NumberInput
+                value={route.minutes}
+                onChange={setMinutes}
+                onCommit={reconcilePlan}
+                zeroAsEmpty
+                style={inputStyle}
+              />
             </label>
           </div>
         )}
       </div>
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px 44px', flex: '0 0 394px' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, flex: '0 0 220px', width: 220, paddingTop: 20 }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 16,
+            flex: '0 0 220px',
+            width: 220,
+            paddingTop: 20,
+          }}
+        >
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.intensity}</span>
             <div style={{ display: 'flex', gap: 6 }}>
               {intensityOptions.map((opt) => (
-                <button key={opt.value} onClick={() => setIntensity(opt.value)} style={chip(route.intensity === opt.value)}>
+                <button
+                  key={opt.value}
+                  onClick={() => setIntensity(opt.value)}
+                  style={chip(route.intensity === opt.value)}
+                >
                   {opt.label}
                 </button>
               ))}
@@ -155,22 +231,68 @@ export function RoutePanel() {
           </div>
 
           <label style={{ display: 'flex', flexDirection: 'column', gap: 7, width: '100%' }}>
-            <span style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--muted-2)' }}>
+            <span
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                fontSize: 11,
+                color: 'var(--muted-2)',
+              }}
+            >
               <span>{strings.temp}</span>
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--ink)', fontWeight: 700 }}>{route.temp} °C</span>
+              <span
+                style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  color: 'var(--ink)',
+                  fontWeight: 700,
+                }}
+              >
+                {route.temp} °C
+              </span>
             </span>
-            <input type="range" min={0} max={40} step={1} value={route.temp} onChange={(e) => setTemp(parseFloat(e.target.value))} style={{ width: '100%' }} />
+            <input
+              type="range"
+              min={0}
+              max={40}
+              step={1}
+              value={route.temp}
+              onChange={(e) => setTemp(parseFloat(e.target.value))}
+              style={{ width: '100%' }}
+            />
           </label>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, flex: '0 0 130px', width: 130, paddingTop: 20 }}>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 8,
+            flex: '0 0 130px',
+            width: 130,
+            paddingTop: 20,
+          }}
+        >
           <label style={{ ...labelStyle, gap: 7 }}>
-            <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.preMealCarbs} (g)</span>
-            <NumberInput value={route.preMealCarbs} onChange={setPreMealCarbs} zeroAsEmpty style={inputStyle} />
+            <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>
+              {strings.preMealCarbs} (g)
+            </span>
+            <NumberInput
+              value={route.preMealCarbs}
+              onChange={setPreMealCarbs}
+              zeroAsEmpty
+              style={inputStyle}
+            />
           </label>
           <label style={{ ...labelStyle, gap: 7 }}>
-            <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>{strings.preMealMinutes} (min)</span>
-            <NumberInput value={route.preMealMinutes} onChange={setPreMealMinutes} zeroAsEmpty style={inputStyle} />
+            <span style={{ fontSize: 11, color: 'var(--muted-2)' }}>
+              {strings.preMealMinutes} (min)
+            </span>
+            <NumberInput
+              value={route.preMealMinutes}
+              onChange={setPreMealMinutes}
+              zeroAsEmpty
+              style={inputStyle}
+            />
           </label>
         </div>
       </div>
@@ -189,12 +311,34 @@ export function RoutePanel() {
         }}
       >
         <span style={{ minWidth: 140, flex: '1 1 auto' }}>
-          <span style={{ display: 'block', fontSize: 11, color: 'var(--muted)', whiteSpace: 'nowrap' }}>{strings.gpx}</span>
-          <span style={{ display: 'block', fontFamily: "'JetBrains Mono', monospace", fontSize: 12, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <span
+            style={{ display: 'block', fontSize: 11, color: 'var(--muted)', whiteSpace: 'nowrap' }}
+          >
+            {strings.gpx}
+          </span>
+          <span
+            style={{
+              display: 'block',
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 12,
+              fontWeight: 600,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
             {route.gpxName || strings.gpxFile}
           </span>
         </span>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: 'var(--muted-2)', flex: '0 0 auto', whiteSpace: 'nowrap' }}>
+        <span
+          style={{
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: 12,
+            color: 'var(--muted-2)',
+            flex: '0 0 auto',
+            whiteSpace: 'nowrap',
+          }}
+        >
           +{elevationGain(route)} m
         </span>
         <span style={{ display: 'flex', gap: 6, flex: '0 0 auto' }}>
@@ -243,7 +387,11 @@ export function RoutePanel() {
           </button>
         </span>
       </div>
-      {route.gpxError && <span style={{ fontSize: 11, color: 'var(--food)', flex: '1 1 100%' }}>{strings.gpxBad}</span>}
+      {route.gpxError && (
+        <span style={{ fontSize: 11, color: 'var(--food)', flex: '1 1 100%' }}>
+          {strings.gpxBad}
+        </span>
+      )}
     </div>
   );
 }

@@ -14,7 +14,17 @@ export function GitHubIcon() {
 
 export function CoffeeIcon() {
   return (
-    <svg viewBox="0 0 24 24" width={18} height={18} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg
+      viewBox="0 0 24 24"
+      width={18}
+      height={18}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
       <path d="M4 8h13v5.5A5.5 5.5 0 0 1 11.5 19h-2A5.5 5.5 0 0 1 4 13.5V8Z" />
       <path d="M17 9.5h1.2a2.3 2.3 0 0 1 0 4.6H17" />
       <path d="M8 3.2c0 .85-.95.95-.95 1.9S8 6.05 8 6.9" />
@@ -56,31 +66,98 @@ export function Footer() {
   };
 
   return (
-    <footer style={{ width: '100%', maxWidth: 1420, boxSizing: 'border-box', marginTop: 14, borderTop: '1px solid #DFE2DB', padding: '22px 18px 0', display: 'flex', flexDirection: 'column', gap: 22 }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '3fr 2fr', gap: 64, alignItems: 'start' }}>
+    <footer
+      style={{
+        width: '100%',
+        maxWidth: 1420,
+        boxSizing: 'border-box',
+        marginTop: 14,
+        borderTop: '1px solid #DFE2DB',
+        padding: '22px 18px 0',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 22,
+      }}
+    >
+      <div
+        style={{ display: 'grid', gridTemplateColumns: '3fr 2fr', gap: 64, alignItems: 'start' }}
+      >
         <div style={{ display: 'flex', flexDirection: 'column', gap: 9, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 9 }}>
-            <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '-0.01em' }}>CARB FUELING</span>
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '0.12em', color: 'var(--muted-3)' }}>v{__APP_VERSION__}</span>
+            <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '-0.01em' }}>
+              CARB FUELING
+            </span>
+            <span
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: 10,
+                letterSpacing: '0.12em',
+                color: 'var(--muted-3)',
+              }}
+            >
+              v{__APP_VERSION__}
+            </span>
           </div>
-          <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: 'var(--muted-2)' }}>{strings.ftAboutBody}</p>
+          <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: 'var(--muted-2)' }}>
+            {strings.ftAboutBody}
+          </p>
           <p style={{ margin: 0, fontSize: 11, lineHeight: 1.6, color: 'var(--muted-3)' }}>
             {absorptionNote} {strings.ftSources2}
           </p>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: 'var(--muted-3)' }}>{strings.ftPrivacy}</span>
+          <span
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 10,
+              color: 'var(--muted-3)',
+            }}
+          >
+            {strings.ftPrivacy}
+          </span>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, minWidth: 0 }}>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--muted)' }}>{strings.ftLinks}</span>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14, alignItems: 'flex-start' }}>
+          <span
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 10,
+              fontWeight: 700,
+              letterSpacing: '0.14em',
+              textTransform: 'uppercase',
+              color: 'var(--muted)',
+            }}
+          >
+            {strings.ftLinks}
+          </span>
+          <div
+            style={{ display: 'flex', flexDirection: 'column', gap: 14, alignItems: 'flex-start' }}
+          >
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
               <a
                 href="https://github.com/dzieciol-kamil/carbfueling/issues/new"
                 target="_blank"
                 rel="noopener"
-                style={{ display: 'inline-flex', alignItems: 'center', gap: 8, border: '1px solid var(--chip-border)', background: '#fff', borderRadius: 999, padding: '7px 13px', fontSize: 12, fontWeight: 600, color: 'var(--ink)' }}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  border: '1px solid var(--chip-border)',
+                  background: '#fff',
+                  borderRadius: 999,
+                  padding: '7px 13px',
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: 'var(--ink)',
+                }}
               >
-                <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--carb)', flex: '0 0 8px' }} />
+                <span
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: '50%',
+                    background: 'var(--carb)',
+                    flex: '0 0 8px',
+                  }}
+                />
                 <span>{strings.ftIssues}</span>
               </a>
               <a
@@ -88,7 +165,18 @@ export function Footer() {
                 target="_blank"
                 rel="noopener"
                 title={strings.ftRepo}
-                style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 32, height: 32, boxSizing: 'border-box', border: '1px solid var(--chip-border)', background: '#fff', borderRadius: 999, color: 'var(--ink-soft)' }}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 32,
+                  height: 32,
+                  boxSizing: 'border-box',
+                  border: '1px solid var(--chip-border)',
+                  background: '#fff',
+                  borderRadius: 999,
+                  color: 'var(--ink-soft)',
+                }}
               >
                 <GitHubIcon />
               </a>
@@ -97,13 +185,32 @@ export function Footer() {
               href="https://suppi.pl/kamild"
               target="_blank"
               rel="noopener"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 9, border: '1px solid var(--chip-border)', background: '#fff', borderRadius: 999, padding: '9px 16px', fontSize: 13.5, fontWeight: 600, color: 'var(--gel)' }}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 9,
+                border: '1px solid var(--chip-border)',
+                background: '#fff',
+                borderRadius: 999,
+                padding: '9px 16px',
+                fontSize: 13.5,
+                fontWeight: 600,
+                color: 'var(--gel)',
+              }}
             >
               <CoffeeIcon />
               <span>{strings.ftSupport}</span>
             </a>
             <button onClick={handleReplay} style={replayButtonStyle}>
-              <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--water)', flex: '0 0 8px' }} />
+              <span
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: '50%',
+                  background: 'var(--water)',
+                  flex: '0 0 8px',
+                }}
+              />
               <span>{strings.tourReplayButton}</span>
             </button>
           </div>
@@ -111,12 +218,44 @@ export function Footer() {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--muted)' }}>{strings.ftLegal}</span>
-        <p style={{ margin: 0, fontSize: 11.5, lineHeight: 1.65, color: 'var(--muted)' }}>{strings.ftLegalBody}</p>
+        <span
+          style={{
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: '0.14em',
+            textTransform: 'uppercase',
+            color: 'var(--muted)',
+          }}
+        >
+          {strings.ftLegal}
+        </span>
+        <p style={{ margin: 0, fontSize: 11.5, lineHeight: 1.65, color: 'var(--muted)' }}>
+          {strings.ftLegalBody}
+        </p>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14, flexWrap: 'wrap', borderTop: '1px solid #E6E8E2', paddingTop: 14 }}>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '0.08em', color: 'var(--muted-3)' }}>{strings.ftCopyright}</span>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 14,
+          flexWrap: 'wrap',
+          borderTop: '1px solid #E6E8E2',
+          paddingTop: 14,
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: 10,
+            letterSpacing: '0.08em',
+            color: 'var(--muted-3)',
+          }}
+        >
+          {strings.ftCopyright}
+        </span>
       </div>
 
       {confirmOpen && (

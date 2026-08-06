@@ -8,7 +8,12 @@ import { foodTouchHitbox } from './mobileMath';
 const LABEL_WIDTH = 46;
 const ROW_GAP = 6;
 
-const rowLabelStyle: CSSProperties = { flex: '0 0 46px', fontSize: 10, fontWeight: 600, color: 'var(--muted-2)' };
+const rowLabelStyle: CSSProperties = {
+  flex: '0 0 46px',
+  fontSize: 10,
+  fontWeight: 600,
+  color: 'var(--muted-2)',
+};
 
 function trackStyle(background: string): CSSProperties {
   return { position: 'relative', flex: '1 1 auto', height: 26, borderRadius: 7, background };
@@ -56,13 +61,28 @@ export function MobileLaneStrip() {
                 const leftPct = (fill.from / distanceKm) * 100;
                 const widthPct = ((fill.to - fill.from) / distanceKm) * 100;
                 const parts = fill.content === 'gel' ? partArray(fill, gear) : [];
-                const caption = fill.content === 'gel' ? parts.length + '×' : fill.content === 'water' ? strings.water : strings.izo;
+                const caption =
+                  fill.content === 'gel'
+                    ? parts.length + '×'
+                    : fill.content === 'water'
+                      ? strings.water
+                      : strings.izo;
                 return (
                   <button
                     key={key}
                     type="button"
                     onClick={() => setSelKey(key)}
-                    style={{ position: 'absolute', left: leftPct + '%', width: widthPct + '%', top: 0, bottom: 0, border: 'none', padding: 0, background: 'transparent', cursor: 'pointer' }}
+                    style={{
+                      position: 'absolute',
+                      left: leftPct + '%',
+                      width: widthPct + '%',
+                      top: 0,
+                      bottom: 0,
+                      border: 'none',
+                      padding: 0,
+                      background: 'transparent',
+                      cursor: 'pointer',
+                    }}
                   >
                     <span
                       style={{
@@ -78,13 +98,23 @@ export function MobileLaneStrip() {
                         overflow: 'hidden',
                       }}
                     >
-                      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: '#fff', whiteSpace: 'nowrap' }}>{caption}</span>
+                      <span
+                        style={{
+                          fontFamily: "'JetBrains Mono', monospace",
+                          fontSize: 9,
+                          color: '#fff',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {caption}
+                      </span>
                       {parts.slice(1, -1).map((p, i) => (
                         <span
                           key={i}
                           style={{
                             position: 'absolute',
-                            left: ((p - fill.from) / Math.max(0.01, fill.to - fill.from)) * 100 + '%',
+                            left:
+                              ((p - fill.from) / Math.max(0.01, fill.to - fill.from)) * 100 + '%',
                             top: 2,
                             bottom: 2,
                             width: 2,
@@ -116,7 +146,17 @@ export function MobileLaneStrip() {
                     key={key}
                     type="button"
                     onClick={() => setSelKey(key)}
-                    style={{ position: 'absolute', left: leftPct + '%', width: widthPct + '%', top: 0, bottom: 0, border: 'none', padding: 0, background: 'transparent', cursor: 'pointer' }}
+                    style={{
+                      position: 'absolute',
+                      left: leftPct + '%',
+                      width: widthPct + '%',
+                      top: 0,
+                      bottom: 0,
+                      border: 'none',
+                      padding: 0,
+                      background: 'transparent',
+                      cursor: 'pointer',
+                    }}
                   >
                     <span
                       style={{
@@ -143,7 +183,17 @@ export function MobileLaneStrip() {
                   key={key}
                   type="button"
                   onClick={() => setSelKey(key)}
-                  style={{ position: 'absolute', left, width, top: 0, bottom: 0, border: 'none', padding: 0, background: 'transparent', cursor: 'pointer' }}
+                  style={{
+                    position: 'absolute',
+                    left,
+                    width,
+                    top: 0,
+                    bottom: 0,
+                    border: 'none',
+                    padding: 0,
+                    background: 'transparent',
+                    cursor: 'pointer',
+                  }}
                 >
                   <span
                     style={{

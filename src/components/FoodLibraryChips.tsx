@@ -25,14 +25,42 @@ export function FoodLibraryChips() {
   const strings = t(lang);
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20, marginTop: 14, flexWrap: 'wrap' }}>
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 20,
+        marginTop: 14,
+        flexWrap: 'wrap',
+      }}
+    >
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-        <span style={{ fontSize: 12, color: 'var(--muted-2)', marginRight: 2 }}>{strings.addFuel}</span>
+        <span style={{ fontSize: 12, color: 'var(--muted-2)', marginRight: 2 }}>
+          {strings.addFuel}
+        </span>
         {foodLib.map((entry) => (
           <button key={entry.key} onClick={() => addFoodFromLibrary(entry.key)} style={chipStyle}>
-            <span style={{ width: 9, height: 9, borderRadius: 3, background: CHART_COLORS.food, flexShrink: 0, display: 'inline-block' }} />
+            <span
+              style={{
+                width: 9,
+                height: 9,
+                borderRadius: 3,
+                background: CHART_COLORS.food,
+                flexShrink: 0,
+                display: 'inline-block',
+              }}
+            />
             <span>{entry[lang] || entry.en}</span>
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>{entry.carbs} g</span>
+            <span
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: 11,
+                color: 'var(--muted)',
+              }}
+            >
+              {entry.carbs} g
+            </span>
           </button>
         ))}
       </div>

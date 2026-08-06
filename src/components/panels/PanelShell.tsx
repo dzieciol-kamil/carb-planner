@@ -9,7 +9,10 @@ interface PanelShellProps {
 export function PanelShell({ title, onClose, children }: PanelShellProps) {
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 50 }}>
-      <div onClick={onClose} style={{ position: 'absolute', inset: 0, background: 'rgba(18,20,18,0.34)' }} />
+      <div
+        onClick={onClose}
+        style={{ position: 'absolute', inset: 0, background: 'rgba(18,20,18,0.34)' }}
+      />
       <div
         style={{
           position: 'absolute',
@@ -40,12 +43,23 @@ export function PanelShell({ title, onClose, children }: PanelShellProps) {
           <span style={{ fontSize: 17, fontWeight: 700 }}>{title}</span>
           <button
             onClick={onClose}
-            style={{ border: '1px solid var(--chip-border)', background: '#fff', borderRadius: 8, width: 30, height: 30, cursor: 'pointer', fontSize: 13, color: 'var(--ink-soft)' }}
+            style={{
+              border: '1px solid var(--chip-border)',
+              background: '#fff',
+              borderRadius: 8,
+              width: 30,
+              height: 30,
+              cursor: 'pointer',
+              fontSize: 13,
+              color: 'var(--ink-soft)',
+            }}
           >
             ✕
           </button>
         </div>
-        <div style={{ flex: '1 1 auto', overflowY: 'auto', padding: '22px 26px 26px' }}>{children}</div>
+        <div style={{ flex: '1 1 auto', overflowY: 'auto', padding: '22px 26px 26px' }}>
+          {children}
+        </div>
       </div>
     </div>
   );

@@ -32,7 +32,8 @@ function App() {
   }, [lang]);
 
   useEffect(() => {
-    const update = () => setAutoView(window.innerWidth >= DESKTOP_BREAKPOINT ? 'desktop' : 'mobile');
+    const update = () =>
+      setAutoView(window.innerWidth >= DESKTOP_BREAKPOINT ? 'desktop' : 'mobile');
     update();
     window.addEventListener('resize', update);
     return () => window.removeEventListener('resize', update);
@@ -49,12 +50,26 @@ function App() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', padding: '14px 24px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        padding: '14px 24px 40px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 16,
+      }}
+    >
       <Header />
       {panel === 'settings' && <SettingsPanel />}
       {panel === 'mix' && <MixPanel />}
-      <div style={{ width: '100%', maxWidth: 1420, display: 'flex', flexDirection: 'column', gap: 16 }}>
-        <div data-tour="route-summary" style={{ display: 'flex', gap: 14, alignItems: 'stretch', flexWrap: 'wrap' }}>
+      <div
+        style={{ width: '100%', maxWidth: 1420, display: 'flex', flexDirection: 'column', gap: 16 }}
+      >
+        <div
+          data-tour="route-summary"
+          style={{ display: 'flex', gap: 14, alignItems: 'stretch', flexWrap: 'wrap' }}
+        >
           <RoutePanel />
           <SummaryCards />
         </div>

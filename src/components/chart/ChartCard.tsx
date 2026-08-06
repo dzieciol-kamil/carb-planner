@@ -30,8 +30,20 @@ function segButton(on: boolean, small = false): CSSProperties {
   };
 }
 
-const segGroupStyle: CSSProperties = { display: 'flex', background: 'var(--track)', borderRadius: 8, padding: 3, gap: 2 };
-const legendItemStyle: CSSProperties = { display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, color: 'var(--muted-2)' };
+const segGroupStyle: CSSProperties = {
+  display: 'flex',
+  background: 'var(--track)',
+  borderRadius: 8,
+  padding: 3,
+  gap: 2,
+};
+const legendItemStyle: CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: 7,
+  fontSize: 12,
+  color: 'var(--muted-2)',
+};
 
 export function ChartCard() {
   const route = useAppStore((s) => s.route);
@@ -73,13 +85,47 @@ export function ChartCard() {
     { value: 'h', label: strings.axisTime },
   ];
 
-  const eleTicks = route.gpxTrack ? elevationTicks(prof(route).pts, CHART_HEIGHT, CHART_PB, ELEVATION_SHARE) : [];
+  const eleTicks = route.gpxTrack
+    ? elevationTicks(prof(route).pts, CHART_HEIGHT, CHART_PB, ELEVATION_SHARE)
+    : [];
 
   return (
-    <div style={{ background: '#fff', border: '1px solid var(--border)', borderRadius: 16, padding: '20px 24px 18px' }}>
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, marginBottom: 10 }}>
-        <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>{strings.curve}</div>
-        <div style={{ display: 'flex', gap: 14, flexShrink: 0, alignItems: 'center', flexWrap: 'wrap' }}>
+    <div
+      style={{
+        background: '#fff',
+        border: '1px solid var(--border)',
+        borderRadius: 16,
+        padding: '20px 24px 18px',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+          gap: 16,
+          marginBottom: 10,
+        }}
+      >
+        <div
+          style={{
+            fontSize: 13,
+            fontWeight: 700,
+            letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+          }}
+        >
+          {strings.curve}
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            gap: 14,
+            flexShrink: 0,
+            alignItems: 'center',
+            flexWrap: 'wrap',
+          }}
+        >
           <span style={legendItemStyle}>
             <span style={{ width: 14, height: 3, borderRadius: 2, background: legMainColor }} />
             {legMain}
@@ -96,7 +142,13 @@ export function ChartCard() {
           </span>
           {showCapLeg && (
             <span style={legendItemStyle}>
-              <span style={{ width: 14, height: 0, borderTop: '2px dotted ' + (yMode === 'fluid' ? 'var(--water)' : 'var(--carb)') }} />
+              <span
+                style={{
+                  width: 14,
+                  height: 0,
+                  borderTop: '2px dotted ' + (yMode === 'fluid' ? 'var(--water)' : 'var(--carb)'),
+                }}
+              />
               {strings.legCap}
             </span>
           )}
@@ -108,7 +160,11 @@ export function ChartCard() {
           )}
           <div style={segGroupStyle}>
             {yModeOptions.map((opt) => (
-              <button key={opt.value} onClick={() => setYMode(opt.value)} style={segButton(yMode === opt.value)}>
+              <button
+                key={opt.value}
+                onClick={() => setYMode(opt.value)}
+                style={segButton(yMode === opt.value)}
+              >
                 {opt.label}
               </button>
             ))}
@@ -116,7 +172,11 @@ export function ChartCard() {
           {showUnits && (
             <div style={segGroupStyle}>
               {xUnitOptions.map((opt) => (
-                <button key={opt.value} onClick={() => setXUnit(opt.value)} style={segButton(xUnit === opt.value)}>
+                <button
+                  key={opt.value}
+                  onClick={() => setXUnit(opt.value)}
+                  style={segButton(xUnit === opt.value)}
+                >
                   {opt.label}
                 </button>
               ))}
@@ -128,10 +188,26 @@ export function ChartCard() {
       <div style={{ display: 'flex', alignItems: 'stretch', gap: 12 }}>
         <div style={{ width: 168, flex: '0 0 168px', position: 'relative' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 44 }}>
-            {showGutLane && <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{strings.gutHint}</span>}
-            {yMode === 'sum' && <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{strings.curveHintSum}</span>}
-            {yMode === 'rate' && <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{strings.curveHint}</span>}
-            {yMode === 'fluid' && <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>{strings.capNoteFluid}</span>}
+            {showGutLane && (
+              <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>
+                {strings.gutHint}
+              </span>
+            )}
+            {yMode === 'sum' && (
+              <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>
+                {strings.curveHintSum}
+              </span>
+            )}
+            {yMode === 'rate' && (
+              <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>
+                {strings.curveHint}
+              </span>
+            )}
+            {yMode === 'fluid' && (
+              <span style={{ fontSize: 11, lineHeight: 1.45, color: '#8A918C' }}>
+                {strings.capNoteFluid}
+              </span>
+            )}
           </div>
           <button
             type="button"
@@ -166,7 +242,13 @@ export function ChartCard() {
         </div>
         <div data-tour="chart" style={{ flex: 1, minWidth: 0, position: 'relative' }}>
           <Chart height={CHART_HEIGHT} showAxis />
-          <ShopMarkers distanceKm={dist(route)} height={CHART_HEIGHT} bottomPadding={CHART_PB} route={route} xUnit={xUnit} />
+          <ShopMarkers
+            distanceKm={dist(route)}
+            height={CHART_HEIGHT}
+            bottomPadding={CHART_PB}
+            route={route}
+            xUnit={xUnit}
+          />
         </div>
         <div style={{ width: 40, flex: '0 0 40px', position: 'relative', height: CHART_HEIGHT }}>
           <button
@@ -197,7 +279,14 @@ export function ChartCard() {
           {eleTicks.map((tick) => (
             <span
               key={tick.value}
-              style={{ position: 'absolute', left: 4, top: tick.y - 6, fontSize: 10, color: 'var(--muted-2)', whiteSpace: 'nowrap' }}
+              style={{
+                position: 'absolute',
+                left: 4,
+                top: tick.y - 6,
+                fontSize: 10,
+                color: 'var(--muted-2)',
+                whiteSpace: 'nowrap',
+              }}
             >
               {tick.value} m
             </span>

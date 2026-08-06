@@ -20,8 +20,15 @@ function valueAt(S: Sample[], D: number, x: number, key: RateKey): number {
   return a + (b - a) * (f - i);
 }
 
-function polyline(arr: Sample[], key: RateKey, px: (x: number) => number, py: (y: number) => number): string {
-  return arr.map((p, i) => (i ? 'L' : 'M') + px(p.x).toFixed(1) + ' ' + py(p[key]).toFixed(1)).join(' ');
+function polyline(
+  arr: Sample[],
+  key: RateKey,
+  px: (x: number) => number,
+  py: (y: number) => number,
+): string {
+  return arr
+    .map((p, i) => (i ? 'L' : 'M') + px(p.x).toFixed(1) + ' ' + py(p[key]).toFixed(1))
+    .join(' ');
 }
 
 export function MobileChart() {
@@ -124,7 +131,11 @@ export function MobileChart() {
     } else {
       const val = valueAt(S, D, scrubX, yk);
       const target = valueAt(S, D, scrubX, nk);
-      badgeLines = [topLine, Math.round(val) + unit, strings.legendGpx + ' ' + Math.round(target) + unit];
+      badgeLines = [
+        topLine,
+        Math.round(val) + unit,
+        strings.legendGpx + ' ' + Math.round(target) + unit,
+      ];
     }
   }
 
@@ -136,21 +147,59 @@ export function MobileChart() {
       onPointerDown={handlePointerDown}
       style={{ position: 'relative', touchAction: 'none', userSelect: 'none' }}
     >
-      <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} preserveAspectRatio="none" style={{ width: '100%', height: HEIGHT, display: 'block' }}>
+      <svg
+        viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+        preserveAspectRatio="none"
+        style={{ width: '100%', height: HEIGHT, display: 'block' }}
+      >
         {showProfile ? (
-          <ElevationLayer pts={P.pts} distanceKm={D} width={WIDTH} height={HEIGHT} bottomPadding={0} share={1} visible />
+          <ElevationLayer
+            pts={P.pts}
+            distanceKm={D}
+            width={WIDTH}
+            height={HEIGHT}
+            bottomPadding={0}
+            share={1}
+            visible
+          />
         ) : (
           <>
             {!fluidMode && (
               <>
                 <path
-                  d={polyline(S, 'gut', px, gy) + ' L' + WIDTH + ' ' + gBase + ' L0 ' + gBase + ' Z'}
+                  d={
+                    polyline(S, 'gut', px, gy) + ' L' + WIDTH + ' ' + gBase + ' L0 ' + gBase + ' Z'
+                  }
                   fill={gutOver ? CHART_COLORS.climb : '#C9A227'}
                   opacity={0.16}
                 />
-                <path d={polyline(S, 'gut', px, gy)} fill="none" stroke={gutOver ? '#C0562C' : '#B08E1E'} strokeWidth={1.6} vectorEffect="non-scaling-stroke" />
-                <line x1={0} x2={WIDTH} y1={gy(GUT_LIMIT)} y2={gy(GUT_LIMIT)} stroke={CHART_COLORS.climb} strokeWidth={1} strokeDasharray="4 4" opacity={0.7} vectorEffect="non-scaling-stroke" />
-                <line x1={0} x2={WIDTH} y1={gBase} y2={gBase} stroke="#E3E5E0" strokeWidth={1} vectorEffect="non-scaling-stroke" />
+                <path
+                  d={polyline(S, 'gut', px, gy)}
+                  fill="none"
+                  stroke={gutOver ? '#C0562C' : '#B08E1E'}
+                  strokeWidth={1.6}
+                  vectorEffect="non-scaling-stroke"
+                />
+                <line
+                  x1={0}
+                  x2={WIDTH}
+                  y1={gy(GUT_LIMIT)}
+                  y2={gy(GUT_LIMIT)}
+                  stroke={CHART_COLORS.climb}
+                  strokeWidth={1}
+                  strokeDasharray="4 4"
+                  opacity={0.7}
+                  vectorEffect="non-scaling-stroke"
+                />
+                <line
+                  x1={0}
+                  x2={WIDTH}
+                  y1={gBase}
+                  y2={gBase}
+                  stroke="#E3E5E0"
+                  strokeWidth={1}
+                  vectorEffect="non-scaling-stroke"
+                />
               </>
             )}
 
@@ -167,16 +216,46 @@ export function MobileChart() {
             ))}
 
             {[0.25, 0.5, 0.75].map((frac) => (
-              <line key={'hg' + frac} x1={0} x2={WIDTH} y1={HEIGHT * frac} y2={HEIGHT * frac} stroke="#EDEFEA" strokeWidth={1} vectorEffect="non-scaling-stroke" />
+              <line
+                key={'hg' + frac}
+                x1={0}
+                x2={WIDTH}
+                y1={HEIGHT * frac}
+                y2={HEIGHT * frac}
+                stroke="#EDEFEA"
+                strokeWidth={1}
+                vectorEffect="non-scaling-stroke"
+              />
             ))}
 
-            <path d={polyline(S, yk, px, py) + ' L' + WIDTH + ' ' + HEIGHT + ' L0 ' + HEIGHT + ' Z'} fill={sourceColor(fluidMode ? 'water' : 'izo')} opacity={0.18} />
+            <path
+              d={polyline(S, yk, px, py) + ' L' + WIDTH + ' ' + HEIGHT + ' L0 ' + HEIGHT + ' Z'}
+              fill={sourceColor(fluidMode ? 'water' : 'izo')}
+              opacity={0.18}
+            />
 
             {rateMode && (
-              <line x1={0} x2={WIDTH} y1={py(capY)} y2={py(capY)} stroke={sourceColor(fluidMode ? 'water' : 'izo')} strokeWidth={1} strokeDasharray="3 5" opacity={0.8} vectorEffect="non-scaling-stroke" />
+              <line
+                x1={0}
+                x2={WIDTH}
+                y1={py(capY)}
+                y2={py(capY)}
+                stroke={sourceColor(fluidMode ? 'water' : 'izo')}
+                strokeWidth={1}
+                strokeDasharray="3 5"
+                opacity={0.8}
+                vectorEffect="non-scaling-stroke"
+              />
             )}
 
-            <path d={polyline(S, nk, px, py)} fill="none" stroke="#A8AEA9" strokeWidth={2} strokeDasharray="6 5" vectorEffect="non-scaling-stroke" />
+            <path
+              d={polyline(S, nk, px, py)}
+              fill="none"
+              stroke="#A8AEA9"
+              strokeWidth={2}
+              strokeDasharray="6 5"
+              vectorEffect="non-scaling-stroke"
+            />
 
             {runs.map((run, i) => (
               <path
@@ -185,7 +264,9 @@ export function MobileChart() {
                 stroke={fluidMode ? CHART_COLORS.water : run.color}
                 strokeWidth={2.8}
                 vectorEffect="non-scaling-stroke"
-                d={run.pts.map((p, j) => (j ? 'L' : 'M') + px(p.x).toFixed(1) + ' ' + py(p[yk]).toFixed(1)).join(' ')}
+                d={run.pts
+                  .map((p, j) => (j ? 'L' : 'M') + px(p.x).toFixed(1) + ' ' + py(p[yk]).toFixed(1))
+                  .join(' ')}
               />
             ))}
           </>
@@ -195,8 +276,21 @@ export function MobileChart() {
           const flip = D > 0 && shop.at / D > 0.78;
           return (
             <g key={'sh' + shop.id}>
-              <line x1={px(shop.at)} x2={px(shop.at)} y1={0} y2={HEIGHT} stroke="#9AA09B" strokeWidth={1} vectorEffect="non-scaling-stroke" />
-              <foreignObject x={flip ? px(shop.at) - 90 : px(shop.at) + 4} y={2} width={90} height={18}>
+              <line
+                x1={px(shop.at)}
+                x2={px(shop.at)}
+                y1={0}
+                y2={HEIGHT}
+                stroke="#9AA09B"
+                strokeWidth={1}
+                vectorEffect="non-scaling-stroke"
+              />
+              <foreignObject
+                x={flip ? px(shop.at) - 90 : px(shop.at) + 4}
+                y={2}
+                width={90}
+                height={18}
+              >
                 <div
                   style={{
                     display: 'inline-flex',
@@ -218,9 +312,27 @@ export function MobileChart() {
           );
         })}
 
-        <line x1={0} x2={WIDTH} y1={HEIGHT - 1} y2={HEIGHT - 1} stroke="#DDE0DA" strokeWidth={1} vectorEffect="non-scaling-stroke" />
+        <line
+          x1={0}
+          x2={WIDTH}
+          y1={HEIGHT - 1}
+          y2={HEIGHT - 1}
+          stroke="#DDE0DA"
+          strokeWidth={1}
+          vectorEffect="non-scaling-stroke"
+        />
 
-        {scrubX != null && <line x1={px(scrubX)} x2={px(scrubX)} y1={0} y2={HEIGHT} stroke="var(--ink)" strokeWidth={2} vectorEffect="non-scaling-stroke" />}
+        {scrubX != null && (
+          <line
+            x1={px(scrubX)}
+            x2={px(scrubX)}
+            y1={0}
+            y2={HEIGHT}
+            stroke="var(--ink)"
+            strokeWidth={2}
+            vectorEffect="non-scaling-stroke"
+          />
+        )}
       </svg>
 
       {badgeLines && scrubFrac != null && (
@@ -241,15 +353,25 @@ export function MobileChart() {
             pointerEvents: 'none',
           }}
         >
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#A8AEA9' }}>{badgeLines[0]}</span>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, fontWeight: 700 }}>{badgeLines[1]}</span>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#A8AEA9' }}>{badgeLines[2]}</span>
+          <span
+            style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#A8AEA9' }}
+          >
+            {badgeLines[0]}
+          </span>
+          <span
+            style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 15, fontWeight: 700 }}
+          >
+            {badgeLines[1]}
+          </span>
+          <span
+            style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#A8AEA9' }}
+          >
+            {badgeLines[2]}
+          </span>
         </div>
       )}
 
-      {scrubX == null && (
-        <span style={hintStyle}>{strings.scrubHint}</span>
-      )}
+      {scrubX == null && <span style={hintStyle}>{strings.scrubHint}</span>}
     </div>
   );
 }

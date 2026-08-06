@@ -1,4 +1,13 @@
-import type { Content, Fill, FoodItem, MixSettings, PlanState, RouteInput, Vessel, XUnit } from './types';
+import type {
+  Content,
+  Fill,
+  FoodItem,
+  MixSettings,
+  PlanState,
+  RouteInput,
+  Vessel,
+  XUnit,
+} from './types';
 
 const FLUID_ABSORPTION_CAP_ML_H = 750;
 const PROFILE_SAMPLES = 160;
@@ -128,7 +137,9 @@ export function prof(route: RouteInput): Profile {
     const b = pts[Math.min(N, i + 1)];
     const dx = (b.x - a.x) * 1000;
     pts[i].grad = dx > 0 ? ((b.ele - a.ele) / dx) * 100 : 0;
-    pts[i].effort = route.useGpx ? Math.max(0.32, Math.min(2.3, 1 + pts[i].grad * (pts[i].grad > 0 ? 0.19 : 0.11))) : 1;
+    pts[i].effort = route.useGpx
+      ? Math.max(0.32, Math.min(2.3, 1 + pts[i].grad * (pts[i].grad > 0 ? 0.19 : 0.11)))
+      : 1;
   }
 
   const cum = [0];
@@ -157,7 +168,8 @@ export function timeAtDistance(route: RouteInput, km: number): number {
   const total = P.cumTime[P.N] || 1;
   const f = Math.max(0, Math.min(1, km / P.D)) * P.N;
   const i = Math.floor(f);
-  const raw = i >= P.N ? P.cumTime[P.N] : P.cumTime[i] + (P.cumTime[i + 1] - P.cumTime[i]) * (f - i);
+  const raw =
+    i >= P.N ? P.cumTime[P.N] : P.cumTime[i] + (P.cumTime[i + 1] - P.cumTime[i]) * (f - i);
   return (raw / total) * totalHours(route);
 }
 
@@ -389,7 +401,13 @@ export function fmtX(km: number, withUnit: boolean, route: RouteInput, xUnit: XU
   return fmtHM(timeAtDistance(route, km)) + (withUnit ? ' h' : '');
 }
 
-export function rangeLabel(a: number, b: number, point: boolean, route: RouteInput, xUnit: XUnit): string {
+export function rangeLabel(
+  a: number,
+  b: number,
+  point: boolean,
+  route: RouteInput,
+  xUnit: XUnit,
+): string {
   if (point) return fmtX(a, true, route, xUnit);
   return fmtX(a, false, route, xUnit) + '–' + fmtX(b, true, route, xUnit);
 }
@@ -412,8 +430,12 @@ export function planSummary(state: PlanState): PlanSummary {
   const hrs = totalHours(route);
   const target = hrs * cph(route);
 
-  const izoCarbs = fills.filter((f) => f.content === 'izo').reduce((a, f) => a + carbsFill(f, gear, mix), 0);
-  const gelCarbs = fills.filter((f) => f.content === 'gel').reduce((a, f) => a + carbsFill(f, gear, mix), 0);
+  const izoCarbs = fills
+    .filter((f) => f.content === 'izo')
+    .reduce((a, f) => a + carbsFill(f, gear, mix), 0);
+  const gelCarbs = fills
+    .filter((f) => f.content === 'gel')
+    .reduce((a, f) => a + carbsFill(f, gear, mix), 0);
   const foodCarbs = foods.reduce((a, f) => a + f.carbs, 0);
   const totalCarbs = izoCarbs + gelCarbs + foodCarbs;
 
@@ -454,8 +476,13 @@ export function planExtras(state: PlanState): PlanExtras {
     if (p.gut > gutPeak.g) gutPeak = { g: p.gut, x: p.x };
   });
 
-  const refillTotal = gear.reduce((a, g) => a + Math.max(0, fills.filter((f) => f.gid === g.gid).length - 1), 0);
-  const gelPortions = fills.filter((f) => f.content === 'gel').reduce((a, f) => a + partsOf(f, gear), 0);
+  const refillTotal = gear.reduce(
+    (a, g) => a + Math.max(0, fills.filter((f) => f.gid === g.gid).length - 1),
+    0,
+  );
+  const gelPortions = fills
+    .filter((f) => f.content === 'gel')
+    .reduce((a, f) => a + partsOf(f, gear), 0);
 
   return { gutPeak, refillTotal, gelPortions };
 }

@@ -19,12 +19,28 @@ export function MobileMix() {
   const strings = t(lang);
 
   const cap = absCap(mix);
-  const presetCaption = (r: number) => (r === 2 ? strings.izo : r === 1 ? strings.ratioLabelSugar : r === 0.8 ? strings.ratioLabelHoney : null);
+  const presetCaption = (r: number) =>
+    r === 2
+      ? strings.izo
+      : r === 1
+        ? strings.ratioLabelSugar
+        : r === 0.8
+          ? strings.ratioLabelHoney
+          : null;
 
   return (
     <div style={{ padding: '12px 14px 16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', color: 'var(--muted)' }}>{strings.mixSection}</div>
+        <div
+          style={{
+            fontSize: 11,
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            color: 'var(--muted)',
+          }}
+        >
+          {strings.mixSection}
+        </div>
         <p style={{ margin: 0, fontSize: 11, lineHeight: 1.5, color: 'var(--muted-2)' }}>
           {strings.mixHintMobile} {strings.absCapNoteMobile.replace('{cap}', String(cap))}
         </p>
@@ -58,23 +74,102 @@ export function MobileMix() {
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', color: 'var(--muted)' }}>{strings.mixIzo}</div>
-        <MobileStepper label={strings.concLabel + ' (' + strings.per100 + ')'} value={mix.conc} min={2} max={20} smallStep={1} bigStep={1} onChange={setConc} />
-        <MobileStepper label={strings.saltLabel + ' (g/l)'} value={mix.salt} min={0} max={4} smallStep={0.2} bigStep={0.2} format={(v) => v.toFixed(1)} onChange={setSalt} />
-        <MobileStepper label={strings.citricLabel + ' (g/l)'} value={mix.citric} min={0} max={6} smallStep={0.2} bigStep={0.2} format={(v) => v.toFixed(1)} onChange={setCitric} />
+        <div
+          style={{
+            fontSize: 11,
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            color: 'var(--muted)',
+          }}
+        >
+          {strings.mixIzo}
+        </div>
+        <MobileStepper
+          label={strings.concLabel + ' (' + strings.per100 + ')'}
+          value={mix.conc}
+          min={2}
+          max={20}
+          smallStep={1}
+          bigStep={1}
+          onChange={setConc}
+        />
+        <MobileStepper
+          label={strings.saltLabel + ' (g/l)'}
+          value={mix.salt}
+          min={0}
+          max={4}
+          smallStep={0.2}
+          bigStep={0.2}
+          format={(v) => v.toFixed(1)}
+          onChange={setSalt}
+        />
+        <MobileStepper
+          label={strings.citricLabel + ' (g/l)'}
+          value={mix.citric}
+          min={0}
+          max={6}
+          smallStep={0.2}
+          bigStep={0.2}
+          format={(v) => v.toFixed(1)}
+          onChange={setCitric}
+        />
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', color: 'var(--muted)' }}>{strings.mixGel}</div>
-        <MobileStepper label={strings.gelConcLabel + ' (' + strings.per100 + ')'} value={mix.gelConc} min={20} max={90} smallStep={1} bigStep={5} onChange={setGelConc} />
-        <MobileStepper label={strings.saltLabel + ' (g/l)'} value={mix.gelSalt} min={0} max={6} smallStep={0.2} bigStep={0.2} format={(v) => v.toFixed(1)} onChange={setGelSalt} />
-        <MobileStepper label={strings.citricLabel + ' (g/l)'} value={mix.gelCitric} min={0} max={8} smallStep={0.2} bigStep={0.2} format={(v) => v.toFixed(1)} onChange={setGelCitric} />
+        <div
+          style={{
+            fontSize: 11,
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            color: 'var(--muted)',
+          }}
+        >
+          {strings.mixGel}
+        </div>
+        <MobileStepper
+          label={strings.gelConcLabel + ' (' + strings.per100 + ')'}
+          value={mix.gelConc}
+          min={20}
+          max={90}
+          smallStep={1}
+          bigStep={5}
+          onChange={setGelConc}
+        />
+        <MobileStepper
+          label={strings.saltLabel + ' (g/l)'}
+          value={mix.gelSalt}
+          min={0}
+          max={6}
+          smallStep={0.2}
+          bigStep={0.2}
+          format={(v) => v.toFixed(1)}
+          onChange={setGelSalt}
+        />
+        <MobileStepper
+          label={strings.citricLabel + ' (g/l)'}
+          value={mix.gelCitric}
+          min={0}
+          max={8}
+          smallStep={0.2}
+          bigStep={0.2}
+          format={(v) => v.toFixed(1)}
+          onChange={setGelCitric}
+        />
       </div>
 
       <button
         type="button"
         onClick={openMixSheet}
-        style={{ border: '1px solid var(--chip-border)', borderRadius: 11, padding: '13px', background: '#fff', fontSize: 13, fontWeight: 600, color: 'var(--ink-soft)', cursor: 'pointer' }}
+        style={{
+          border: '1px solid var(--chip-border)',
+          borderRadius: 11,
+          padding: '13px',
+          background: '#fff',
+          fontSize: 13,
+          fontWeight: 600,
+          color: 'var(--ink-soft)',
+          cursor: 'pointer',
+        }}
       >
         {strings.bidonComposition}
       </button>

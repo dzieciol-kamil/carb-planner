@@ -24,7 +24,19 @@ function display(value: number, zeroAsEmpty: boolean): string {
   return zeroAsEmpty && value === 0 ? '' : String(value);
 }
 
-export function NumberInput({ value, onChange, fallback = 0, parser = 'float', zeroAsEmpty = false, min, max, step, style, className, onCommit }: NumberInputProps) {
+export function NumberInput({
+  value,
+  onChange,
+  fallback = 0,
+  parser = 'float',
+  zeroAsEmpty = false,
+  min,
+  max,
+  step,
+  style,
+  className,
+  onCommit,
+}: NumberInputProps) {
   const [text, setText] = useState(display(value, zeroAsEmpty));
   const focused = useRef(false);
 

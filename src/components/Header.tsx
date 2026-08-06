@@ -23,7 +23,9 @@ export function Header() {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
-        <span style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.02em' }}>CARB FUELING</span>
+        <span style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.02em' }}>
+          CARB FUELING
+        </span>
         <span
           style={{
             fontFamily: "'JetBrains Mono', monospace",
@@ -54,7 +56,14 @@ export function Header() {
               color: 'var(--ink)',
             }}
           >
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: 700, letterSpacing: '0.06em' }}>
+            <span
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: '0.06em',
+              }}
+            >
               {strings.langShort}
             </span>
             <span style={{ fontSize: 12, color: 'var(--muted)' }}>{strings.langName}</span>
@@ -102,11 +111,28 @@ export function Header() {
                     fontFamily: 'Archivo, sans-serif',
                   }}
                 >
-                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: 700, width: 22, flex: '0 0 22px' }}>
+                  <span
+                    style={{
+                      fontFamily: "'JetBrains Mono', monospace",
+                      fontSize: 11,
+                      fontWeight: 700,
+                      width: 22,
+                      flex: '0 0 22px',
+                    }}
+                  >
                     {label.langShort}
                   </span>
                   <span style={{ fontSize: 12.5, fontWeight: 500 }}>{label.langName}</span>
-                  <span style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--carb)', visibility: on ? 'visible' : 'hidden' }}>✓</span>
+                  <span
+                    style={{
+                      marginLeft: 'auto',
+                      fontSize: 11,
+                      color: 'var(--carb)',
+                      visibility: on ? 'visible' : 'hidden',
+                    }}
+                  >
+                    ✓
+                  </span>
                 </button>
               );
             })}
@@ -114,11 +140,27 @@ export function Header() {
         </div>
 
         <button onClick={() => openPanel('settings')} style={panelBtnStyle(panel === 'settings')}>
-          <span style={{ width: 9, height: 9, borderRadius: '50%', border: '2px solid var(--carb)', display: 'block' }} />
+          <span
+            style={{
+              width: 9,
+              height: 9,
+              borderRadius: '50%',
+              border: '2px solid var(--carb)',
+              display: 'block',
+            }}
+          />
           <span>{strings.settings}</span>
         </button>
         <button onClick={() => openPanel('mix')} style={panelBtnStyle(panel === 'mix')}>
-          <span style={{ width: 9, height: 9, borderRadius: 2, border: '2px solid var(--gel)', display: 'block' }} />
+          <span
+            style={{
+              width: 9,
+              height: 9,
+              borderRadius: 2,
+              border: '2px solid var(--gel)',
+              display: 'block',
+            }}
+          />
           <span>{strings.gearMix}</span>
         </button>
       </div>

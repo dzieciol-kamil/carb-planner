@@ -48,10 +48,40 @@ export const TOUR_STEPS: TourStep[] = [
       useAppStore.getState().loadTourDemoData();
     },
   },
-  { target: 'route-summary', titleKey: 'tourRouteTitle', bodyKey: 'tourRouteBody', mobileBodyKey: 'tourRouteBodyMobile' },
-  { target: 'chart', titleKey: 'tourChartTitle', bodyKey: 'tourChartBody', mobileBodyKey: 'tourChartBodyMobile' },
-  { target: 'demo-fill', titleKey: 'tourFillTitle', bodyKey: 'tourFillBody', mobileBodyKey: 'tourFillBodyMobile' },
-  { target: 'demo-add-fill', titleKey: 'tourAddFillTitle', bodyKey: 'tourAddFillBody', mobileBodyKey: 'tourAddFillBodyMobile' },
-  { target: 'add-shop', titleKey: 'tourAddShopTitle', bodyKey: 'tourAddShopBody', mobileBodyKey: 'tourAddShopBodyMobile' },
-  { target: null, titleKey: 'tourClosingTitle', bodyKey: 'tourClosingBody', mobileBodyKey: 'tourClosingBodyMobile' },
+  {
+    target: 'route-summary',
+    titleKey: 'tourRouteTitle',
+    bodyKey: 'tourRouteBody',
+    mobileBodyKey: 'tourRouteBodyMobile',
+  },
+  {
+    target: 'chart',
+    titleKey: 'tourChartTitle',
+    bodyKey: 'tourChartBody',
+    mobileBodyKey: 'tourChartBodyMobile',
+  },
+  {
+    target: 'demo-fill',
+    titleKey: 'tourFillTitle',
+    bodyKey: 'tourFillBody',
+    mobileBodyKey: 'tourFillBodyMobile',
+  },
+  {
+    target: 'demo-add-fill',
+    titleKey: 'tourAddFillTitle',
+    bodyKey: 'tourAddFillBody',
+    mobileBodyKey: 'tourAddFillBodyMobile',
+  },
+  {
+    target: 'add-shop',
+    titleKey: 'tourAddShopTitle',
+    bodyKey: 'tourAddShopBody',
+    mobileBodyKey: 'tourAddShopBodyMobile',
+  },
+  {
+    target: null,
+    titleKey: 'tourClosingTitle',
+    bodyKey: 'tourClosingBody',
+    mobileBodyKey: 'tourClosingBodyMobile',
+  },
 ];
