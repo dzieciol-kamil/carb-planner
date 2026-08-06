@@ -6,12 +6,7 @@ import {
   settingsExportFileName,
 } from '../../domain/settingsExport';
 import { t } from '../../i18n/strings';
-import {
-  hasPlanData,
-  shouldConfirmViewModeChange,
-  useAppStore,
-  type ViewMode,
-} from '../../store/appStore';
+import { shouldConfirmViewModeChange, useAppStore, type ViewMode } from '../../store/appStore';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { NumberInput } from '../ui/NumberInput';
 import { PanelShell } from './PanelShell';
@@ -108,10 +103,14 @@ export function SettingsPanel() {
 
   const handleImportPick = () => fileInputRef.current?.click();
 
+  // Always confirm before import: it silently overwrites gear, mix and the
+  // food library too, not just the plan (route/fills/foods/shops) that
+  // hasPlanData checks — a rare, deliberate action, so there's no real UX
+  // cost to asking every time rather than trying to detect "is there
+  // anything worth losing".
   const handleFileChosen = (file: File | null) => {
     if (!file) return;
-    if (hasPlanData(useAppStore.getState())) setPendingImportFile(file);
-    else void applyImportedFile(file);
+    setPendingImportFile(file);
   };
 
   const applyImportedFile = async (file: File) => {
