@@ -137,6 +137,10 @@ export interface StringTable {
   viewLabel: string;
   viewAuto: string;
   autoDetected: string;
+  viewModeConfirmTitle: string;
+  viewModeConfirmBody: string;
+  viewModeConfirmCancel: string;
+  viewModeConfirmConfirm: string;
   mixSection: string;
   editInSettings: string;
   ratioCustom: string;
@@ -406,6 +410,11 @@ export const STR: Record<Lang, StringTable> = {
     viewLabel: 'Widok',
     viewAuto: 'Auto',
     autoDetected: 'wykryte automatycznie: ',
+    viewModeConfirmTitle: 'Wymusić ten widok?',
+    viewModeConfirmBody:
+      'Ekran przestanie się automatycznie dopasowywać do rozmiaru urządzenia. Możesz to zmienić w dowolnej chwili w tym samym miejscu.',
+    viewModeConfirmCancel: 'Anuluj',
+    viewModeConfirmConfirm: 'Wymuś',
     mixSection: 'Mieszanka',
     editInSettings: 'ustawienia mieszanki',
     ratioCustom: 'własna',
@@ -718,6 +727,11 @@ export const STR: Record<Lang, StringTable> = {
     viewLabel: 'View',
     viewAuto: 'Auto',
     autoDetected: 'auto-detected: ',
+    viewModeConfirmTitle: 'Force this view?',
+    viewModeConfirmBody:
+      'The layout will stop adapting automatically to your device. You can change this again anytime from the same place.',
+    viewModeConfirmCancel: 'Cancel',
+    viewModeConfirmConfirm: 'Force',
     mixSection: 'Drink mix',
     editInSettings: 'mix settings',
     ratioCustom: 'custom',

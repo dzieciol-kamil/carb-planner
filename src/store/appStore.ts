@@ -552,6 +552,10 @@ export function isDesktopView(viewMode: ViewMode, autoView: 'desktop' | 'mobile'
   return viewMode === 'auto' ? autoView === 'desktop' : viewMode === 'desktop';
 }
 
+export function shouldConfirmViewModeChange(next: ViewMode, current: ViewMode): boolean {
+  return next !== 'auto' && next !== current;
+}
+
 export function hasPlanData(state: Pick<AppState, 'route' | 'fills' | 'foods' | 'shops'>): boolean {
   const r = state.route;
   return (

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from 'vitest';
-import { hasPlanData, useAppStore } from './appStore';
+import { hasPlanData, shouldConfirmViewModeChange, useAppStore } from './appStore';
 import type { RouteInput } from '../domain/types';
 
 function route(overrides: Partial<RouteInput> = {}): RouteInput {
@@ -237,5 +237,23 @@ describe('chart help modal', () => {
     useAppStore.getState().openChartHelp();
     useAppStore.getState().closeChartHelp();
     expect(useAppStore.getState().ui.chartHelp).toBe(false);
+  });
+});
+
+describe('shouldConfirmViewModeChange', () => {
+  test('never confirms switching back to auto', () => {
+    expect(shouldConfirmViewModeChange('auto', 'desktop')).toBe(false);
+    expect(shouldConfirmViewModeChange('auto', 'mobile')).toBe(false);
+  });
+
+  test('confirms picking a different forced layout', () => {
+    expect(shouldConfirmViewModeChange('desktop', 'auto')).toBe(true);
+    expect(shouldConfirmViewModeChange('mobile', 'auto')).toBe(true);
+    expect(shouldConfirmViewModeChange('mobile', 'desktop')).toBe(true);
+  });
+
+  test('does not confirm re-picking the already-active forced layout', () => {
+    expect(shouldConfirmViewModeChange('desktop', 'desktop')).toBe(false);
+    expect(shouldConfirmViewModeChange('mobile', 'mobile')).toBe(false);
   });
 });

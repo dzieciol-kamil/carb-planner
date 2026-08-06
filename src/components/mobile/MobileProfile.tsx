@@ -1,9 +1,15 @@
 import { useState } from 'react';
 import { absCap } from '../../domain/fuel';
 import { LANGS, t } from '../../i18n/strings';
-import { hasPlanData, useAppStore } from '../../store/appStore';
+import {
+  hasPlanData,
+  shouldConfirmViewModeChange,
+  useAppStore,
+  type ViewMode,
+} from '../../store/appStore';
 import { CoffeeIcon, GitHubIcon } from '../Footer';
 import { TourReplayConfirm } from '../tour/TourReplayConfirm';
+import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { MobileStepper } from './MobileStepper';
 
 export function MobileProfile() {
@@ -20,6 +26,7 @@ export function MobileProfile() {
   const cap = absCap(mix);
   const absorptionNote = strings.capNote + cap + ' g/h' + strings.capNote2;
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [pendingViewMode, setPendingViewMode] = useState<ViewMode | null>(null);
 
   const handleReplay = () => {
     if (hasPlanData(useAppStore.getState())) {
@@ -27,6 +34,11 @@ export function MobileProfile() {
     } else {
       startTour();
     }
+  };
+
+  const handleViewModePick = (v: ViewMode) => {
+    if (shouldConfirmViewModeChange(v, viewMode)) setPendingViewMode(v);
+    else setViewMode(v);
   };
 
   return (
@@ -117,7 +129,7 @@ export function MobileProfile() {
               <button
                 key={v}
                 type="button"
-                onClick={() => setViewMode(v)}
+                onClick={() => handleViewModePick(v)}
                 style={{
                   flex: 1,
                   padding: '11px 4px',
@@ -310,6 +322,20 @@ export function MobileProfile() {
           onConfirm={() => {
             setConfirmOpen(false);
             startTour();
+          }}
+        />
+      )}
+
+      {pendingViewMode && (
+        <ConfirmDialog
+          title={strings.viewModeConfirmTitle}
+          body={strings.viewModeConfirmBody}
+          cancelLabel={strings.viewModeConfirmCancel}
+          confirmLabel={strings.viewModeConfirmConfirm}
+          onCancel={() => setPendingViewMode(null)}
+          onConfirm={() => {
+            setViewMode(pendingViewMode);
+            setPendingViewMode(null);
           }}
         />
       )}
