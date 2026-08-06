@@ -1,6 +1,8 @@
 import type { CSSProperties } from 'react';
+import { combinedMixGroups, startFillOf, type CombinedMixGroup } from '../../domain/combinedRefill';
 import { carbsFill, partsOf } from '../../domain/fuel';
-import { t } from '../../i18n/strings';
+import type { Fill } from '../../domain/types';
+import { t, type Lang } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
 
 function mixSplit(carbs: number, ratio: number): { malto: number; fructose: number } {
@@ -22,10 +24,21 @@ export function MobileMixSheet() {
   const lang = useAppStore((s) => s.ui.lang);
   const gear = useAppStore((s) => s.gear);
   const fills = useAppStore((s) => s.fills);
+  const combineStartGids = useAppStore((s) => s.combineStartGids);
+  const toggleCombineStart = useAppStore((s) => s.toggleCombineStart);
   const mix = useAppStore((s) => s.mix);
   const strings = t(lang);
 
   if (!open) return null;
+
+  const contentLabel = (content: 'water' | 'izo' | 'gel') =>
+    content === 'water' ? strings.water : content === 'gel' ? strings.gel : strings.izo;
+
+  const selectedStartFills = combineStartGids
+    .map((gid) => startFillOf(gid, fills))
+    .filter((f): f is Fill => f != null);
+  const showCombined = selectedStartFills.length > 1;
+  const combinedGroups = showCombined ? combinedMixGroups(selectedStartFills, gear, mix) : [];
 
   const groups = gear
     .map((vessel) => ({ vessel, vesselFills: fills.filter((f) => f.gid === vessel.gid) }))
@@ -86,6 +99,34 @@ export function MobileMixSheet() {
           <p style={{ margin: 0, fontSize: 13, color: 'var(--muted)' }}>{strings.mixSheetEmpty}</p>
         )}
 
+        {showCombined && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <div>
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  color: 'var(--muted)',
+                }}
+              >
+                {strings.combineStartSectionTitle}
+              </div>
+              <div style={{ fontSize: 11, color: 'var(--muted-2)', marginTop: 2 }}>
+                {strings.combineStartSectionHint}
+              </div>
+            </div>
+            {combinedGroups.map((group) => (
+              <CombinedGroupRows
+                key={group.content}
+                group={group}
+                lang={lang}
+                contentLabel={contentLabel}
+              />
+            ))}
+          </div>
+        )}
+
         {groups.map(({ vessel, vesselFills }) => (
           <div key={vessel.gid}>
             {vesselFills.map((fill, i) => {
@@ -95,6 +136,8 @@ export function MobileMixSheet() {
               const salt = (vessel.vol / 100) * (fill.content === 'gel' ? mix.gelSalt : mix.salt);
               const citric =
                 (vessel.vol / 100) * (fill.content === 'gel' ? mix.gelCitric : mix.citric);
+              const isStart = i === 0;
+              const selected = isStart && combineStartGids.includes(vessel.gid);
 
               const lines: { k: string; v: string }[] =
                 fill.content === 'water'
@@ -110,7 +153,23 @@ export function MobileMixSheet() {
 
               return (
                 <div key={fill.fid} style={{ marginBottom: 14 }}>
-                  <div style={{ fontSize: 13, fontWeight: 700 }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 6,
+                      fontSize: 13,
+                      fontWeight: 700,
+                    }}
+                  >
+                    {isStart && (
+                      <input
+                        type="checkbox"
+                        checked={selected}
+                        onChange={() => toggleCombineStart(vessel.gid)}
+                        title={strings.combineStartCheckbox}
+                      />
+                    )}
                     {vessel.name} · napełnienie {i + 1}
                   </div>
                   <div
@@ -123,26 +182,86 @@ export function MobileMixSheet() {
                   >
                     {vessel.vol} ml{fill.content === 'gel' ? ' · ' + n + '×' : ''}
                   </div>
-                  {lines.map((line) => (
-                    <div key={line.k} style={rowStyle}>
-                      <span style={{ fontSize: 13, color: 'var(--muted-2)' }}>{line.k}</span>
-                      <span
-                        style={{
-                          fontFamily: "'JetBrains Mono', monospace",
-                          fontSize: 14,
-                          fontWeight: 600,
-                        }}
-                      >
-                        {line.v}
-                      </span>
-                    </div>
-                  ))}
+                  {selected && showCombined ? (
+                    <p style={{ margin: '4px 0 0', fontSize: 12, color: 'var(--muted-2)' }}>
+                      {strings.combineStartNote}
+                    </p>
+                  ) : (
+                    lines.map((line) => (
+                      <div key={line.k} style={rowStyle}>
+                        <span style={{ fontSize: 13, color: 'var(--muted-2)' }}>{line.k}</span>
+                        <span
+                          style={{
+                            fontFamily: "'JetBrains Mono', monospace",
+                            fontSize: 14,
+                            fontWeight: 600,
+                          }}
+                        >
+                          {line.v}
+                        </span>
+                      </div>
+                    ))
+                  )}
                 </div>
               );
             })}
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+function CombinedGroupRows({
+  group,
+  lang,
+  contentLabel,
+}: {
+  group: CombinedMixGroup;
+  lang: Lang;
+  contentLabel: (content: 'water' | 'izo' | 'gel') => string;
+}) {
+  const strings = t(lang);
+  const lines: { k: string; v: string }[] =
+    group.content === 'water'
+      ? [{ k: strings.mixRowWater, v: group.volumeMl + ' ml' }]
+      : [
+          { k: strings.mixRowSugar, v: group.carbsG.toFixed(0) + ' g' },
+          { k: strings.mixRowMalto, v: group.maltoG.toFixed(1) + ' g' },
+          { k: strings.mixRowFructose, v: group.fructoseG.toFixed(1) + ' g' },
+          { k: strings.mixRowSalt, v: group.saltG.toFixed(2) + ' g' },
+          { k: strings.mixRowCitric, v: group.citricG.toFixed(2) + ' g' },
+          { k: strings.mixRowWater, v: group.volumeMl + ' ml' },
+        ];
+
+  return (
+    <div style={{ marginBottom: 14 }}>
+      <div
+        style={{
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: 10,
+          color: 'var(--muted-3)',
+          marginBottom: 4,
+        }}
+      >
+        {contentLabel(group.content)}
+        {group.content === 'gel' ? ' · ' + group.parts + '×' : ''} · {strings.combineStartBottles}:{' '}
+        {group.vesselNames.join(', ')}
+      </div>
+      {lines.map((line) => (
+        <div key={line.k} style={rowStyle}>
+          <span style={{ fontSize: 13, color: 'var(--muted-2)' }}>{line.k}</span>
+          <span
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 14,
+              fontWeight: 600,
+            }}
+          >
+            {line.v}
+          </span>
+        </div>
+      ))}
     </div>
   );
 }

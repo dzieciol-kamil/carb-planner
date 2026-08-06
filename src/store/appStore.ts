@@ -106,6 +106,9 @@ interface AppState {
   foods: FoodItem[];
   shops: ShopStop[];
   foodLib: FoodLibEntry[];
+  // Vessel ids whose start fill the rider has picked to prepare together as one
+  // batch (see RecipesSection / MobileMixSheet) — unrelated to shop stops.
+  combineStartGids: string[];
   ui: UiState;
   nextGid: number;
   nextFid: number;
@@ -169,6 +172,8 @@ interface AppState {
   updateShop: (id: number, patch: Partial<ShopStop>) => void;
   removeShop: (id: number) => void;
 
+  toggleCombineStart: (gid: string) => void;
+
   setRatio: (n: number) => void;
   setConc: (n: number) => void;
   setSalt: (n: number) => void;
@@ -228,6 +233,8 @@ const defaultFoods: FoodItem[] = [];
 
 const defaultShops: ShopStop[] = [];
 
+const defaultCombineStartGids: string[] = [];
+
 const defaultFoodLib: FoodLibEntry[] = [
   { key: 'gel', pl: 'Żel energetyczny', en: 'Energy gel', carbs: 22 },
   { key: 'chew', pl: 'Żelki', en: 'Chews', carbs: 30, cont: true, span: 18 },
@@ -245,6 +252,7 @@ export const useAppStore = create<AppState>()(
       foods: defaultFoods,
       shops: defaultShops,
       foodLib: defaultFoodLib,
+      combineStartGids: defaultCombineStartGids,
       ui: {
         lang: defaultLang(),
         viewMode: 'auto',
@@ -466,6 +474,13 @@ export const useAppStore = create<AppState>()(
           ui: { ...s.ui, hoverKey: null, dragKey: null },
         })),
 
+      toggleCombineStart: (gid) =>
+        set((s) => ({
+          combineStartGids: s.combineStartGids.includes(gid)
+            ? s.combineStartGids.filter((g) => g !== gid)
+            : [...s.combineStartGids, gid],
+        })),
+
       setRatio: (n) => set((s) => ({ mix: { ...s.mix, ratio: clamp(n, 0.2, 10) } })),
       setConc: (n) => set((s) => ({ mix: { ...s.mix, conc: clamp(n, 0, 100) } })),
       setSalt: (n) => set((s) => ({ mix: { ...s.mix, salt: clamp(n, 0, 10) } })),
@@ -481,6 +496,7 @@ export const useAppStore = create<AppState>()(
         set((s) => ({
           gear: s.gear.filter((g) => g.gid !== gid),
           fills: s.fills.filter((f) => f.gid !== gid),
+          combineStartGids: s.combineStartGids.filter((g) => g !== gid),
         })),
       addVessel: () =>
         set((s) => ({
