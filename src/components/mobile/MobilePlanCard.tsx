@@ -1,6 +1,5 @@
 import { useRef, useState, type CSSProperties } from 'react';
 import { carbsFill, dist, partArray, rangeLabel } from '../../domain/fuel';
-import { rescalePositions } from '../../domain/dragMath';
 import type { Content } from '../../domain/types';
 import { t } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
@@ -204,7 +203,12 @@ export function MobilePlanCard({ item }: { item: PlanCardItem }) {
                           flashNoRoomHint();
                           return;
                         }
-                        updateFill(fill.fid, { to, pos: rescalePositions(fill.pos, fill.from, fill.to, fill.from, to) });
+                        // Freeze the other portions at their current (possibly still
+                        // default-even) positions so moving only the last boundary
+                        // doesn't reflow points the user hasn't touched.
+                        const pos = partArray(fill, gear);
+                        pos[n - 1] = to;
+                        updateFill(fill.fid, { to, pos });
                       }}
                     />
                   );
