@@ -272,6 +272,9 @@ export interface StringTable {
   importSettingsConfirmConfirm: string;
   importSettingsError: string;
   importSettingsSuccess: string;
+  recoveryTitle: string;
+  recoveryHint: string;
+  recoveryNote: string;
 }
 
 export const STR: Record<Lang, StringTable> = {
@@ -605,6 +608,9 @@ export const STR: Record<Lang, StringTable> = {
     importSettingsError:
       'Nie udało się wczytać pliku — sprawdź, czy to poprawny eksport ustawień z Carb Fueling.',
     importSettingsSuccess: 'Ustawienia zaimportowane.',
+    recoveryTitle: 'Regeneracja',
+    recoveryHint: 'Zjedz tyle w ciągu pierwszych 30 minut po zakończeniu jazdy.',
+    recoveryNote: 'Uzupełnia plan tankowania na trasie — nie zastępuje go.',
   },
   en: {
     tagline: 'carbohydrate & hydration planner',
@@ -934,6 +940,9 @@ export const STR: Record<Lang, StringTable> = {
     importSettingsError:
       "Could not read that file — check it's a valid Carb Fueling settings export.",
     importSettingsSuccess: 'Settings imported.',
+    recoveryTitle: 'Recovery',
+    recoveryHint: 'Aim to eat this much within the first 30 minutes after finishing.',
+    recoveryNote: "Complements your fueling plan — it doesn't replace it.",
   },
 };
 

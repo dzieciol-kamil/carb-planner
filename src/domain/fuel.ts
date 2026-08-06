@@ -461,6 +461,27 @@ export function planSummary(state: PlanState): PlanSummary {
   };
 }
 
+export interface RecoveryCarbs {
+  min: number;
+  max: number;
+}
+
+const RECOVERY_CARBS_MIN_G_PER_KG = 1.0;
+const RECOVERY_CARBS_MAX_G_PER_KG = 1.2;
+
+/**
+ * Recommended carbs to eat in the first ~30 min after finishing a ride, per
+ * common sports-nutrition guidance of 1.0–1.2 g/kg body weight. Shown as a
+ * range (not a single midpoint) since the source guidance itself is a range
+ * and rounding to one number would imply false precision.
+ */
+export function recoveryCarbs(weightKg: number): RecoveryCarbs {
+  return {
+    min: Math.round(weightKg * RECOVERY_CARBS_MIN_G_PER_KG),
+    max: Math.round(weightKg * RECOVERY_CARBS_MAX_G_PER_KG),
+  };
+}
+
 export interface PlanExtras {
   gutPeak: { g: number; x: number };
   refillTotal: number;
