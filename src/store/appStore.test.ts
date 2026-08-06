@@ -257,3 +257,34 @@ describe('shouldConfirmViewModeChange', () => {
     expect(shouldConfirmViewModeChange('mobile', 'mobile')).toBe(false);
   });
 });
+
+describe('citric source setters', () => {
+  beforeEach(() => {
+    useAppStore.setState(initialState, true);
+  });
+
+  test('defaults to citric acid for both izo and gel', () => {
+    expect(useAppStore.getState().mix.citricSource).toBe('citric');
+    expect(useAppStore.getState().mix.gelCitricSource).toBe('citric');
+  });
+
+  test('setCitricSource only changes the izo source', () => {
+    useAppStore.getState().setCitricSource('lemon');
+    expect(useAppStore.getState().mix.citricSource).toBe('lemon');
+    expect(useAppStore.getState().mix.gelCitricSource).toBe('citric');
+  });
+
+  test('setGelCitricSource only changes the gel source', () => {
+    useAppStore.getState().setGelCitricSource('lime');
+    expect(useAppStore.getState().mix.gelCitricSource).toBe('lime');
+    expect(useAppStore.getState().mix.citricSource).toBe('citric');
+  });
+
+  test('resetMix restores both sources to citric acid', () => {
+    useAppStore.getState().setCitricSource('lemon');
+    useAppStore.getState().setGelCitricSource('lime');
+    useAppStore.getState().resetMix();
+    expect(useAppStore.getState().mix.citricSource).toBe('citric');
+    expect(useAppStore.getState().mix.gelCitricSource).toBe('citric');
+  });
+});

@@ -1,6 +1,13 @@
 import type { CSSProperties } from 'react';
-import { carbsFill, fmtX, partsOf, rangeLabel } from '../../domain/fuel';
-import type { Fill, MixSettings, RouteInput, Vessel, XUnit } from '../../domain/types';
+import { carbsFill, citricAmount, fmtX, partsOf, rangeLabel } from '../../domain/fuel';
+import type {
+  CitricSource,
+  Fill,
+  MixSettings,
+  RouteInput,
+  Vessel,
+  XUnit,
+} from '../../domain/types';
 import { t, type Lang } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
 import { sourceColor } from '../chart/theme';
@@ -8,6 +15,14 @@ import { sourceColor } from '../chart/theme';
 function contentLabel(content: Fill['content'], lang: Lang): string {
   const strings = t(lang);
   return content === 'water' ? strings.water : content === 'gel' ? strings.gel : strings.izo;
+}
+
+function citricSourceLineLabel(source: CitricSource, strings: ReturnType<typeof t>): string {
+  return source === 'lemon'
+    ? strings.citricSourceLemonJuice
+    : source === 'lime'
+      ? strings.citricSourceLimeJuice
+      : strings.citric;
 }
 
 function mixSplit(carbs: number, ratio: number): { malto: number; fructose: number } {
@@ -172,6 +187,9 @@ function FillRecipe({ fill, index, vessel, route, mix, xUnit, lang }: FillRecipe
   const carbs = carbsFill(fill, [vessel], mix);
   const n = partsOf(fill, [vessel]);
   const split = mixSplit(carbs, mix.ratio || 2);
+  const citricSource = fill.content === 'gel' ? mix.gelCitricSource : mix.citricSource;
+  const citricGrams = (vessel.vol / 100) * (fill.content === 'gel' ? mix.gelCitric : mix.citric);
+  const citric = citricAmount(citricGrams, citricSource);
 
   const lines: { k: string; v: string }[] =
     fill.content === 'water'
@@ -185,8 +203,8 @@ function FillRecipe({ fill, index, vessel, route, mix, xUnit, lang }: FillRecipe
             v: `${((vessel.vol / 100) * (fill.content === 'gel' ? mix.gelSalt : mix.salt)).toFixed(2)} g`,
           },
           {
-            k: strings.citric,
-            v: `${((vessel.vol / 100) * (fill.content === 'gel' ? mix.gelCitric : mix.citric)).toFixed(2)} g`,
+            k: citricSourceLineLabel(citricSource, strings),
+            v: `${citric.amount.toFixed(citric.unit === 'ml' ? 1 : 2)} ${citric.unit}`,
           },
           { k: strings.waterFill, v: `${vessel.vol} ml` },
         ];
