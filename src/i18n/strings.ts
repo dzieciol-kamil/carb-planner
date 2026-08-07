@@ -607,7 +607,7 @@ export const STR: Record<Lang, StringTable> = {
     combineFillCheckbox: 'Przygotuj razem',
     combineSectionTitle: 'Wspólna porcja',
     combineSectionHint:
-      'Zaznacz napełnienia, które mieszasz razem w jednym słoiku — obojętnie których bidonów i obojętnie czy to start, czy kolejne napełnienie — żeby zobaczyć jedną łączną porcję zamiast składu na każde z osobna.',
+      'Zaznacz napełnienia mieszane w jednym słoiku (dowolne bidony, dowolny moment), żeby zobaczyć jedną wspólną porcję zamiast osobnych składów.',
     combineBottles: 'Bidony',
     combineNote: 'Uwzględnione we wspólnej porcji powyżej.',
     combineMixedLabel: 'Izo + żel',
@@ -955,7 +955,7 @@ export const STR: Record<Lang, StringTable> = {
     combineFillCheckbox: 'Prepare together',
     combineSectionTitle: 'Combined batch',
     combineSectionHint:
-      'Pick the fills you mix together in one jar — any bottle, any fill, not just the start — to see one combined batch instead of a recipe per fill.',
+      'Pick the fills mixed in one jar (any bottle, any time) to see one combined batch instead of separate recipes.',
     combineBottles: 'Bottles',
     combineNote: 'Included in the combined batch above.',
     combineMixedLabel: 'Izo + gel',
