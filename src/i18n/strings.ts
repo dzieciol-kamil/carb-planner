@@ -86,6 +86,8 @@ export interface StringTable {
   citricSourceLimeJuice: string;
   gelConcLabel: string;
   per100: string;
+  per100Ml: string;
+  per100Fruit: string;
   mixIzo: string;
   mixGel: string;
   target: string;
@@ -388,6 +390,8 @@ export const STR: Record<Lang, StringTable> = {
     citricSourceLimeJuice: 'Sok z limonki',
     gelConcLabel: 'cukry',
     per100: 'g/100 ml',
+    per100Ml: 'ml/100 ml',
+    per100Fruit: '/100 ml',
     mixIzo: 'Izotonik',
     mixGel: 'Żel',
     target: 'Cel',
@@ -739,6 +743,8 @@ export const STR: Record<Lang, StringTable> = {
     citricSourceLimeJuice: 'Lime juice',
     gelConcLabel: 'carbs',
     per100: 'g/100 ml',
+    per100Ml: 'ml/100 ml',
+    per100Fruit: '/100 ml',
     mixIzo: 'Isotonic',
     mixGel: 'Gel',
     target: 'Target',

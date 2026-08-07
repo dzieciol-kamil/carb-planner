@@ -3,6 +3,7 @@ import {
   absCap,
   carbsFill,
   citricAmount,
+  citricGramsFromAmount,
   cph,
   dist,
   distanceAtTime,
@@ -438,6 +439,62 @@ describe('fmtFruitFraction', () => {
     expect(fmtFruitFraction(1)).toBe('1');
     expect(fmtFruitFraction(1.25)).toBe('1¼');
     expect(fmtFruitFraction(2)).toBe('2');
+  });
+});
+
+describe('citricGramsFromAmount', () => {
+  test('citric source passes the gram amount through unchanged', () => {
+    expect(citricGramsFromAmount(1.2, 'citric')).toBe(1.2);
+  });
+
+  test('is the exact inverse of citricAmount for the juice sources (linear ratio)', () => {
+    for (const source of ['lemonJuice', 'limeJuice'] as const) {
+      for (const grams of [0, 0.4, 1, 3.7, 10]) {
+        const ml = citricAmount(grams, source).amount;
+        expect(citricGramsFromAmount(ml, source)).toBeCloseTo(grams, 9);
+      }
+    }
+  });
+
+  test('round-trips grams -> ml -> grams for lemonJuice using the ~5% w/v yield', () => {
+    // 1g -> 20ml (per citricAmount test above) -> back to 1g.
+    expect(citricGramsFromAmount(20, 'lemonJuice')).toBeCloseTo(1, 9);
+  });
+
+  test('round-trips grams -> ml -> grams for limeJuice using the ~6% w/v yield', () => {
+    expect(citricGramsFromAmount(16.6667, 'limeJuice')).toBeCloseTo(1, 3);
+  });
+
+  test('round-trips grams -> fruit-fraction -> grams for whole-fruit sources when the fraction is already a quarter increment', () => {
+    // citricAmount rounds to the nearest quarter, so re-quantized inputs (0.25 steps) come back exactly.
+    for (const source of ['lemon', 'lime'] as const) {
+      for (const fraction of [0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 2]) {
+        const grams = citricGramsFromAmount(fraction, source);
+        // Feeding those grams back through citricAmount should reproduce the same quarter-fraction.
+        expect(citricAmount(grams, source).amount).toBeCloseTo(fraction, 6);
+      }
+    }
+  });
+
+  test('a small citric-acid amount converted to lemon fraction and back stays within the quarter-fruit rounding tolerance', () => {
+    // 0.4g citric-equivalent -> citricAmount rounds to the nearest quarter fruit -> converting
+    // that fraction back to grams won't reproduce 0.4g exactly (the display value is
+    // intentionally a rounded practical figure), but it can't be off by more than half a
+    // quarter-fruit's worth of grams (yieldPerMl * mlPerFruit * 0.125 = 0.05 * 45 * 0.125).
+    const original = 0.4;
+    const displayed = citricAmount(original, 'lemon');
+    expect(displayed.unit).toBe('fruit');
+    const roundTripped = citricGramsFromAmount(displayed.amount, 'lemon');
+    const maxError = 0.05 * 45 * 0.125;
+    expect(Math.abs(roundTripped - original)).toBeLessThanOrEqual(maxError);
+  });
+
+  test('zero amount converts to zero grams regardless of source', () => {
+    expect(citricGramsFromAmount(0, 'citric')).toBe(0);
+    expect(citricGramsFromAmount(0, 'lemon')).toBe(0);
+    expect(citricGramsFromAmount(0, 'lemonJuice')).toBe(0);
+    expect(citricGramsFromAmount(0, 'lime')).toBe(0);
+    expect(citricGramsFromAmount(0, 'limeJuice')).toBe(0);
   });
 });
 
