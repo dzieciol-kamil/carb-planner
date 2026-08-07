@@ -260,8 +260,14 @@ export interface CitricAmount {
 
 /**
  * Converts a citric-acid-equivalent gram amount into the practical amount/unit for the given
- * source: grams for plain citric acid, ml of juice for the juice sources, or a fraction of one
- * whole fruit (rounded to the nearest quarter, e.g. 0.25/0.5/0.75/1) for the whole-fruit sources.
+ * source: grams for plain citric acid, ml of juice for the juice sources, or a raw (unrounded)
+ * fraction of one whole fruit for the whole-fruit sources — e.g. 0.0889, not "rounded to the
+ * nearest quarter". This is the single source of truth for "how much fruit this grams value
+ * represents"; callers that want a clean kitchen-friendly quarter fraction for display (recipe
+ * cards) should round via `fmtFruitFraction`/`fmtFruitFractionPct` at the point they format it,
+ * not here — baking that rounding in here previously meant small, perfectly real settings (e.g.
+ * the default 0.2g/100ml citric, which is ~8.9% of a lemon) collapsed to 0 before ever reaching
+ * the editable settings-panel percentage display.
  */
 export function citricAmount(gramsCitricAcid: number, source: CitricSource): CitricAmount {
   if (source === 'citric') return { amount: gramsCitricAcid, unit: 'g' };
@@ -270,7 +276,7 @@ export function citricAmount(gramsCitricAcid: number, source: CitricSource): Cit
   const ml = yieldPerMl > 0 ? gramsCitricAcid / yieldPerMl : 0;
   if (source === 'lemonJuice' || source === 'limeJuice') return { amount: ml, unit: 'ml' };
   const mlPerFruit = JUICE_ML_PER_WHOLE_FRUIT[species];
-  const fraction = mlPerFruit > 0 ? Math.round((ml / mlPerFruit) * 4) / 4 : 0;
+  const fraction = mlPerFruit > 0 ? ml / mlPerFruit : 0;
   return { amount: fraction, unit: 'fruit' };
 }
 
@@ -279,11 +285,9 @@ export function citricAmount(gramsCitricAcid: number, source: CitricSource): Cit
  * fraction of one whole fruit) for the given source back into the citric-acid-equivalent grams
  * that `MixSettings.citric`/`gelCitric` store internally. Used by the mix-settings editor so the
  * input can be shown/edited in whichever unit matches the selected source while the underlying
- * stored value stays grams. Exact for `citric` and the juice sources (fixed linear ratio); for
- * the whole-fruit sources it's the exact inverse of the *unrounded* ml figure, so round-tripping
- * a value that `citricAmount` already rounded to the nearest quarter reproduces it exactly, but
- * an arbitrary (non-quarter) fraction typed in directly won't exactly reproduce the original
- * grams if that in turn gets re-rounded by `citricAmount`.
+ * stored value stays grams. Exact for all sources including the whole-fruit ones now that
+ * `citricAmount` returns the raw unrounded fraction — round-tripping any fraction (quarter-aligned
+ * or not) through `citricAmount`/`citricGramsFromAmount` reproduces the original grams exactly.
  */
 export function citricGramsFromAmount(amount: number, source: CitricSource): number {
   if (source === 'citric') return amount;
@@ -297,8 +301,10 @@ export function citricGramsFromAmount(amount: number, source: CitricSource): num
 const FRACTION_TEXT: Record<number, string> = { 0.25: '1/4', 0.5: '1/2', 0.75: '3/4' };
 
 /**
- * Formats a fraction-of-a-fruit amount (already rounded to the nearest quarter by
- * `citricAmount`) as a compact numeral, e.g. 0 → "0", 0.25 → "1/4", 1 → "1", 1.25 → "1 1/4".
+ * Formats a fraction-of-a-fruit amount as a compact numeral, rounding to the nearest quarter
+ * itself (0 → "0", 0.25 → "1/4", 1 → "1", 1.25 → "1 1/4") — `citricAmount` now hands back the raw,
+ * unrounded fraction (e.g. 0.089), so this is the only place that quantizes it to a clean
+ * kitchen-friendly quarter for display; a raw fraction under 1/8 (e.g. 0.089) rounds down to "0".
  *
  * This used to render fractional amounts with unicode fraction glyphs (¼ ½ ¾), but those glyphs
  * render nearly invisible/thin in several fonts used by the app, so they're spelled out as plain

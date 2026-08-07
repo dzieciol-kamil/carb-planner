@@ -103,10 +103,13 @@ function citricStep(unit: CitricAmount['unit']): number {
 // 0.44999999999999996) that would otherwise overflow the narrow 1/3-width grid cell — including
 // when the user types/pastes such a value directly, not just when it arrives via conversion.
 // Operates on the same displayed scale as `citricDisplayAmount` (already ×100 for 'fruit'), so the
-// fruit case rounds to the nearest quarter-fruit equivalent, 25, rather than the old 0.25.
-function roundCitricDisplay(amount: number, unit: CitricAmount['unit']): number {
+// fruit case rounds to the nearest whole percentage point (this field shows a fine-grained 0-100+
+// percentage, not a quarter-fruit picker — rounding to the nearest 25 here would silently zero out
+// any real setting under 12.5%, e.g. the default 0.2g/100ml citric setting, which is ~8.9% of a
+// lemon and must round to 9, not 0).
+export function roundCitricDisplay(amount: number, unit: CitricAmount['unit']): number {
   if (unit === 'ml') return Math.round(amount * 10) / 10;
-  if (unit === 'fruit') return Math.round(amount / 25) * 25;
+  if (unit === 'fruit') return Math.round(amount);
   return Math.round(amount * 100) / 100;
 }
 
