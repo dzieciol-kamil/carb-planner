@@ -239,7 +239,7 @@ const JUICE_CITRIC_YIELD_G_PER_ML: Record<FruitSpecies, number> = {
 
 // Roughly how much juice one whole average fruit yields — again a kitchen-table ballpark
 // (fruit size varies a lot), not a lab figure, just enough to turn "you need ~20ml of lemon
-// juice" into "that's about ½ a lemon" for the whole-fruit sources.
+// juice" into "that's about 1/2 a lemon" for the whole-fruit sources.
 const JUICE_ML_PER_WHOLE_FRUIT: Record<FruitSpecies, number> = {
   lemon: 45,
   lime: 30,
@@ -294,19 +294,38 @@ export function citricGramsFromAmount(amount: number, source: CitricSource): num
   return amount * mlPerFruit * yieldPerMl;
 }
 
-const FRACTION_GLYPHS: Record<number, string> = { 0.25: '¼', 0.5: '½', 0.75: '¾' };
+const FRACTION_TEXT: Record<number, string> = { 0.25: '1/4', 0.5: '1/2', 0.75: '3/4' };
 
 /**
  * Formats a fraction-of-a-fruit amount (already rounded to the nearest quarter by
- * `citricAmount`) as a compact numeral, e.g. 0 → "0", 0.25 → "¼", 1 → "1", 1.25 → "1¼".
+ * `citricAmount`) as a compact numeral, e.g. 0 → "0", 0.25 → "1/4", 1 → "1", 1.25 → "1 1/4".
+ *
+ * This used to render fractional amounts with unicode fraction glyphs (¼ ½ ¾), but those glyphs
+ * render nearly invisible/thin in several fonts used by the app, so they're spelled out as plain
+ * ASCII text instead. Kept deliberately compact (no percentage) so it still fits the narrow
+ * mobile stepper slot (`MobileMix.tsx`) — see `fmtFruitFractionPct` for the recipe-card display
+ * that adds a percentage alongside this numeral.
  */
 export function fmtFruitFraction(n: number): string {
   if (n <= 0) return '0';
   const whole = Math.floor(n + 1e-9);
   const frac = Math.round((n - whole) * 4) / 4;
-  const glyph = FRACTION_GLYPHS[frac];
-  if (whole === 0) return glyph || String(n);
-  return glyph ? `${whole}${glyph}` : String(whole);
+  const fracText = FRACTION_TEXT[frac];
+  if (!fracText) return String(whole);
+  return whole === 0 ? fracText : `${whole} ${fracText}`;
+}
+
+/**
+ * Recipe-card display for a whole-fruit citric amount: `fmtFruitFraction`'s ASCII numeral plus a
+ * percentage of a whole fruit in parentheses, e.g. 0.75 → "3/4 (75%)", 1.25 → "1 1/4 (125%)".
+ * Whole amounts (no remainder) skip the percentage since they were never ambiguous to read, e.g.
+ * 1 → "1", not "1 (100%)".
+ */
+export function fmtFruitFractionPct(n: number): string {
+  const numeral = fmtFruitFraction(n);
+  const whole = Math.floor(n + 1e-9);
+  const hasFraction = n > 0 && Math.abs(n - whole) > 1e-9;
+  return hasFraction ? `${numeral} (${Math.round(n * 100)}%)` : numeral;
 }
 
 export function partsOf(fill: Fill, gear: Vessel[]): number {
