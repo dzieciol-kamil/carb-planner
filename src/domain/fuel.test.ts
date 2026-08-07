@@ -14,9 +14,11 @@ import {
   fmtX,
   fracFill,
   fracFood,
+  mixSplit,
   planExtras,
   planSummary,
   preRideGut,
+  presetTagFor,
   prof,
   rangeLabel,
   rateStats,
@@ -55,6 +57,8 @@ function makeMix(overrides: Partial<MixSettings> = {}): MixSettings {
     gelConc: 60,
     ratio: 2,
     gelRatio: 2,
+    ratioPreset: 'iso',
+    gelRatioPreset: 'iso',
     salt: 0.16,
     citric: 0.2,
     gelSalt: 0.4,
@@ -900,5 +904,37 @@ describe('recoveryCarbs', () => {
 
   test('zero weight yields zero range', () => {
     expect(recoveryCarbs(0)).toEqual({ min: 0, max: 0 });
+  });
+});
+
+describe('mixSplit', () => {
+  test('splits carbs proportional to the malto:fructose ratio', () => {
+    const split = mixSplit(90, 2);
+    expect(split.malto).toBeCloseTo(60, 5);
+    expect(split.fructose).toBeCloseTo(30, 5);
+  });
+
+  test('malto + fructose always sums back to the input carbs', () => {
+    const split = mixSplit(73, 0.8);
+    expect(split.malto + split.fructose).toBeCloseTo(73, 5);
+  });
+
+  test('falls back to a 2:1 ratio when given 0 (falsy)', () => {
+    const split = mixSplit(90, 0);
+    expect(split.malto).toBeCloseTo(60, 5);
+    expect(split.fructose).toBeCloseTo(30, 5);
+  });
+});
+
+describe('presetTagFor', () => {
+  test('maps the three named presets to their tag', () => {
+    expect(presetTagFor(2)).toBe('iso');
+    expect(presetTagFor(1)).toBe('sugar');
+    expect(presetTagFor(0.8)).toBe('honey');
+  });
+
+  test('maps any other ratio (including the untagged 1.5 preset button) to custom', () => {
+    expect(presetTagFor(1.5)).toBe('custom');
+    expect(presetTagFor(3)).toBe('custom');
   });
 });

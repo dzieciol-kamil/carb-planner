@@ -12,6 +12,8 @@ const mix: MixSettings = {
   gelConc: 60,
   ratio: 2,
   gelRatio: 2,
+  ratioPreset: 'iso',
+  gelRatioPreset: 'iso',
   salt: 0.4,
   citric: 0.4,
   gelSalt: 0.4,

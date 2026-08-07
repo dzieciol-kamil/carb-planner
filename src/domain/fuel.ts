@@ -5,6 +5,7 @@ import type {
   FoodItem,
   MixSettings,
   PlanState,
+  RatioPreset,
   RouteInput,
   Vessel,
   XUnit,
@@ -223,6 +224,18 @@ export function volOf(fill: Fill, gear: Vessel[]): number {
 export function carbsFill(fill: Fill, gear: Vessel[], mix: MixSettings): number {
   if (fill.content === 'water') return 0;
   return (volOf(fill, gear) / 100) * (fill.content === 'gel' ? mix.gelConc : mix.conc);
+}
+
+export function mixSplit(carbsG: number, ratio: number): { malto: number; fructose: number } {
+  const r = ratio || 2;
+  return { malto: (carbsG * r) / (r + 1), fructose: carbsG / (r + 1) };
+}
+
+export function presetTagFor(r: number): RatioPreset {
+  if (r === 2) return 'iso';
+  if (r === 1) return 'sugar';
+  if (r === 0.8) return 'honey';
+  return 'custom';
 }
 
 export type FruitSpecies = 'lemon' | 'lime';
