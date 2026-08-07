@@ -71,6 +71,28 @@ function nameInputStyle(show: boolean): CSSProperties {
   };
 }
 
+// While dragging, the current km/time reading is shown beside the pin's round head, not above
+// it — an above position would sit right on top of the chart's legend row (Wchłonięte /
+// Zapotrzebowanie / Limit wchłaniania), obscuring it. Flips to the left near the end of the
+// route so the label doesn't run off the chart's right edge, mirroring MobileChart.tsx's shop
+// label, which already does the same beside-not-above placement.
+function dragLabelStyle(flip: boolean): CSSProperties {
+  return {
+    position: 'absolute',
+    top: 7,
+    ...(flip ? { right: PIN_W / 2 + 6 } : { left: PIN_W / 2 + 6 }),
+    transform: 'translateY(-50%)',
+    background: CHART_COLORS.ink,
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: 700,
+    fontFamily: "'JetBrains Mono', monospace",
+    padding: '2px 5px',
+    borderRadius: 4,
+    whiteSpace: 'nowrap',
+  };
+}
+
 function removeButtonStyle(show: boolean): CSSProperties {
   return {
     position: 'absolute',
@@ -111,6 +133,7 @@ export function ShopMarkers({ distanceKm, height, bottomPadding, route, xUnit }:
         const on = hoverKey === key;
         const dragging = dragKey === key;
         const leftPct = (shop.at / distanceKm) * 100;
+        const flip = leftPct > 82;
         return (
           <div key={shop.id} style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
             <div style={lineStyle(leftPct, height, bottomPadding, on || dragging)} />
@@ -154,24 +177,7 @@ export function ShopMarkers({ distanceKm, height, bottomPadding, route, xUnit }:
                 style={nameInputStyle(on && !dragging)}
               />
               {dragging && (
-                <span
-                  style={{
-                    position: 'absolute',
-                    top: -16,
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    background: CHART_COLORS.ink,
-                    color: '#fff',
-                    fontSize: 10,
-                    fontWeight: 700,
-                    fontFamily: "'JetBrains Mono', monospace",
-                    padding: '2px 5px',
-                    borderRadius: 4,
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {fmtX(shop.at, true, route, xUnit)}
-                </span>
+                <span style={dragLabelStyle(flip)}>{fmtX(shop.at, true, route, xUnit)}</span>
               )}
             </div>
           </div>
