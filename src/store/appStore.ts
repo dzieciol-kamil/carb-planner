@@ -616,7 +616,24 @@ export const useAppStore = create<AppState>()(
         })),
 
       updateFoodLibEntry: (key, patch) =>
-        set((s) => ({ foodLib: s.foodLib.map((f) => (f.key === key ? { ...f, ...patch } : f)) })),
+        set((s) => {
+          const foodLib = s.foodLib.map((f) => (f.key === key ? { ...f, ...patch } : f));
+          // Existing chart items were seeded from the library's `cont` at creation time and
+          // never re-read it afterward — without this, editing a product's shot/steady default
+          // in Settings silently stops applying to instances already placed on the chart.
+          if (patch.cont === undefined) return { foodLib };
+          const cont = patch.cont;
+          const distanceKm = dist(s.route);
+          const span = foodLib.find((f) => f.key === key)?.span || 18;
+          return {
+            foodLib,
+            foods: s.foods.map((f) =>
+              f.key === key
+                ? { ...f, cont, to: cont ? Math.min(distanceKm, f.from + span) : f.from }
+                : f,
+            ),
+          };
+        }),
       removeFoodLibEntry: (key) =>
         set((s) => ({ foodLib: s.foodLib.filter((f) => f.key !== key) })),
       addFoodLibEntry: () =>
