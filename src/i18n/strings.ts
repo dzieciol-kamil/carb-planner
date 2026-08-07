@@ -259,11 +259,17 @@ export interface StringTable {
   shopSheetName: string;
   shopSheetAdd: string;
   shopDefaultName: string;
-  combineStartCheckbox: string;
-  combineStartSectionTitle: string;
-  combineStartSectionHint: string;
-  combineStartBottles: string;
-  combineStartNote: string;
+  combineFillCheckbox: string;
+  combineSectionTitle: string;
+  combineSectionHint: string;
+  combineBottles: string;
+  combineNote: string;
+  combineMixedLabel: string;
+  combinePourLabel: string;
+  combineCrossTypeConfirmTitle: string;
+  combineCrossTypeConfirmBody: string;
+  combineCrossTypeConfirmCancel: string;
+  combineCrossTypeConfirmConfirm: string;
   bidonComposition: string;
   perFillGrams: string;
   addLandmark: string;
@@ -602,12 +608,19 @@ export const STR: Record<Lang, StringTable> = {
     shopSheetName: 'Nazwa',
     shopSheetAdd: 'Dodaj',
     shopDefaultName: 'Sklep',
-    combineStartCheckbox: 'Przygotuj razem',
-    combineStartSectionTitle: 'Wspólna porcja na start',
-    combineStartSectionHint:
-      'Zaznacz bidony, które mieszasz razem w jednym słoiku przed startem, żeby zobaczyć jedną łączną porcję zamiast składu na każdy z osobna.',
-    combineStartBottles: 'Bidony',
-    combineStartNote: 'Uwzględnione we wspólnej porcji na start powyżej.',
+    combineFillCheckbox: 'Przygotuj razem',
+    combineSectionTitle: 'Wspólna porcja',
+    combineSectionHint:
+      'Zaznacz napełnienia, które mieszasz razem w jednym słoiku — obojętnie których bidonów i obojętnie czy to start, czy kolejne napełnienie — żeby zobaczyć jedną łączną porcję zamiast składu na każde z osobna.',
+    combineBottles: 'Bidony',
+    combineNote: 'Uwzględnione we wspólnej porcji powyżej.',
+    combineMixedLabel: 'Izo + żel',
+    combinePourLabel: 'Ile do którego bidonu',
+    combineCrossTypeConfirmTitle: 'Połączyć izo i żel w jedną porcję?',
+    combineCrossTypeConfirmBody:
+      'Łączenie izo i żelu w jednym słoiku wymaga wspólnych ustawień mieszanki. Proporcję malto:fruktoza, sól i kwasek dla tej łączonej porcji dopasujemy do Twoich ustawień izo — ustawienia żelu same w sobie się nie zmienią.',
+    combineCrossTypeConfirmCancel: 'Anuluj',
+    combineCrossTypeConfirmConfirm: 'Połącz',
     bidonComposition: 'SKŁAD BIDONÓW',
     perFillGrams: 'gramatura na napełnienie ›',
     addLandmark: 'Dodaj punkt orientacyjny',
@@ -945,12 +958,19 @@ export const STR: Record<Lang, StringTable> = {
     shopSheetName: 'Name',
     shopSheetAdd: 'Add',
     shopDefaultName: 'Shop',
-    combineStartCheckbox: 'Prepare together',
-    combineStartSectionTitle: 'Combined start batch',
-    combineStartSectionHint:
-      'Pick the bottles you mix together in one jar before the start to see one combined batch instead of a recipe per bottle.',
-    combineStartBottles: 'Bottles',
-    combineStartNote: 'Included in the combined start batch above.',
+    combineFillCheckbox: 'Prepare together',
+    combineSectionTitle: 'Combined batch',
+    combineSectionHint:
+      'Pick the fills you mix together in one jar — any bottle, any fill, not just the start — to see one combined batch instead of a recipe per fill.',
+    combineBottles: 'Bottles',
+    combineNote: 'Included in the combined batch above.',
+    combineMixedLabel: 'Izo + gel',
+    combinePourLabel: 'How much goes in each bottle',
+    combineCrossTypeConfirmTitle: 'Combine izo and gel into one batch?',
+    combineCrossTypeConfirmBody:
+      'Combining izo and gel in one jar needs one shared recipe. The malto:fructose ratio, salt, and citric for this combined batch will be aligned to your izo settings — your gel settings themselves won’t change.',
+    combineCrossTypeConfirmCancel: 'Cancel',
+    combineCrossTypeConfirmConfirm: 'Combine',
     bidonComposition: 'BOTTLE RECIPES',
     perFillGrams: 'grams per fill ›',
     addLandmark: 'Add landmark',

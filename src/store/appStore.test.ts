@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from 'vitest';
 import { hasPlanData, shouldConfirmViewModeChange, useAppStore } from './appStore';
-import type { RouteInput } from '../domain/types';
+import type { Fill, RouteInput } from '../domain/types';
 
 function route(overrides: Partial<RouteInput> = {}): RouteInput {
   return {
@@ -258,27 +258,50 @@ describe('shouldConfirmViewModeChange', () => {
   });
 });
 
-describe('combineStartGids', () => {
-  test('toggleCombineStart adds then removes a vessel id', () => {
-    const gid = useAppStore.getState().gear[0].gid;
-    useAppStore.getState().toggleCombineStart(gid);
-    expect(useAppStore.getState().combineStartGids).toEqual([gid]);
-    useAppStore.getState().toggleCombineStart(gid);
-    expect(useAppStore.getState().combineStartGids).toEqual([]);
+describe('combinedFillIds', () => {
+  test('toggleCombinedFill adds then removes a fill id', () => {
+    useAppStore.getState().toggleCombinedFill(1);
+    expect(useAppStore.getState().combinedFillIds).toEqual([1]);
+    useAppStore.getState().toggleCombinedFill(1);
+    expect(useAppStore.getState().combinedFillIds).toEqual([]);
   });
 
-  test('toggleCombineStart can hold multiple selected vessels', () => {
-    const [g1, g2] = useAppStore.getState().gear.map((g) => g.gid);
-    useAppStore.getState().toggleCombineStart(g1);
-    useAppStore.getState().toggleCombineStart(g2);
-    expect(useAppStore.getState().combineStartGids).toEqual([g1, g2]);
+  test('toggleCombinedFill can hold multiple selected fills', () => {
+    useAppStore.getState().toggleCombinedFill(1);
+    useAppStore.getState().toggleCombinedFill(2);
+    expect(useAppStore.getState().combinedFillIds).toEqual([1, 2]);
   });
 
-  test('removeVessel drops the vessel from the selection', () => {
+  test("removeVessel drops that vessel's fill ids from the selection", () => {
     const gid = useAppStore.getState().gear[0].gid;
-    useAppStore.getState().toggleCombineStart(gid);
+    const otherGid = useAppStore.getState().gear[1].gid;
+    const fills: Fill[] = [
+      { fid: 1, gid, content: 'izo', from: 0, to: 10 },
+      { fid: 2, gid: otherGid, content: 'izo', from: 0, to: 10 },
+    ];
+    useAppStore.setState({ fills, combinedFillIds: [1, 2] });
     useAppStore.getState().removeVessel(gid);
-    expect(useAppStore.getState().combineStartGids).toEqual([]);
+    expect(useAppStore.getState().combinedFillIds).toEqual([2]);
+  });
+
+  test('removeFill drops just that fill id from the selection', () => {
+    const gid = useAppStore.getState().gear[0].gid;
+    const fills: Fill[] = [
+      { fid: 1, gid, content: 'izo', from: 0, to: 10 },
+      { fid: 2, gid, content: 'izo', from: 20, to: 30 },
+    ];
+    useAppStore.setState({ fills, combinedFillIds: [1, 2] });
+    useAppStore.getState().removeFill(1);
+    expect(useAppStore.getState().combinedFillIds).toEqual([2]);
+  });
+
+  test('toggleVesselAllowed drops fill ids it removes along with the disallowed content', () => {
+    const gid = useAppStore.getState().gear[0].gid; // Bidon, allowed water+izo by default
+    const fills: Fill[] = [{ fid: 1, gid, content: 'izo', from: 0, to: 10 }];
+    useAppStore.setState({ fills, combinedFillIds: [1] });
+    useAppStore.getState().toggleVesselAllowed(gid, 'izo'); // turning izo off removes the izo fill
+    expect(useAppStore.getState().fills).toEqual([]);
+    expect(useAppStore.getState().combinedFillIds).toEqual([]);
   });
 });
 
