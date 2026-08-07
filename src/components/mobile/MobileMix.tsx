@@ -4,9 +4,10 @@ import {
   citricAmount,
   citricGramsFromAmount,
   fmtFruitFraction,
+  presetTagFor,
   type CitricAmount,
 } from '../../domain/fuel';
-import type { CitricSource } from '../../domain/types';
+import type { CitricSource, RatioPreset } from '../../domain/types';
 import { t } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
 import { MobileStepper } from './MobileStepper';
@@ -146,7 +147,7 @@ export function MobileMix() {
 
   const ratioButtons = (
     value: number,
-    onChange: (n: number) => void,
+    onChange: (n: number, preset: RatioPreset) => void,
     forGel: boolean,
     disabled = false,
   ) => (
@@ -158,7 +159,7 @@ export function MobileMix() {
           <button
             key={r}
             type="button"
-            onClick={() => onChange(r)}
+            onClick={() => onChange(r, presetTagFor(r))}
             disabled={disabled}
             style={{
               flex: '1 1 76px',
