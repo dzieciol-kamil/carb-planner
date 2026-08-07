@@ -259,6 +259,11 @@ export interface StringTable {
   shopSheetName: string;
   shopSheetAdd: string;
   shopDefaultName: string;
+  combineStartCheckbox: string;
+  combineStartSectionTitle: string;
+  combineStartSectionHint: string;
+  combineStartBottles: string;
+  combineStartNote: string;
   bidonComposition: string;
   perFillGrams: string;
   addLandmark: string;
@@ -597,6 +602,12 @@ export const STR: Record<Lang, StringTable> = {
     shopSheetName: 'Nazwa',
     shopSheetAdd: 'Dodaj',
     shopDefaultName: 'Sklep',
+    combineStartCheckbox: 'Przygotuj razem',
+    combineStartSectionTitle: 'Wspólna porcja na start',
+    combineStartSectionHint:
+      'Zaznacz bidony, które mieszasz razem w jednym słoiku przed startem, żeby zobaczyć jedną łączną porcję zamiast składu na każdy z osobna.',
+    combineStartBottles: 'Bidony',
+    combineStartNote: 'Uwzględnione we wspólnej porcji na start powyżej.',
     bidonComposition: 'SKŁAD BIDONÓW',
     perFillGrams: 'gramatura na napełnienie ›',
     addLandmark: 'Dodaj punkt orientacyjny',
@@ -934,6 +945,12 @@ export const STR: Record<Lang, StringTable> = {
     shopSheetName: 'Name',
     shopSheetAdd: 'Add',
     shopDefaultName: 'Shop',
+    combineStartCheckbox: 'Prepare together',
+    combineStartSectionTitle: 'Combined start batch',
+    combineStartSectionHint:
+      'Pick the bottles you mix together in one jar before the start to see one combined batch instead of a recipe per bottle.',
+    combineStartBottles: 'Bottles',
+    combineStartNote: 'Included in the combined start batch above.',
     bidonComposition: 'BOTTLE RECIPES',
     perFillGrams: 'grams per fill ›',
     addLandmark: 'Add landmark',

@@ -258,6 +258,30 @@ describe('shouldConfirmViewModeChange', () => {
   });
 });
 
+describe('combineStartGids', () => {
+  test('toggleCombineStart adds then removes a vessel id', () => {
+    const gid = useAppStore.getState().gear[0].gid;
+    useAppStore.getState().toggleCombineStart(gid);
+    expect(useAppStore.getState().combineStartGids).toEqual([gid]);
+    useAppStore.getState().toggleCombineStart(gid);
+    expect(useAppStore.getState().combineStartGids).toEqual([]);
+  });
+
+  test('toggleCombineStart can hold multiple selected vessels', () => {
+    const [g1, g2] = useAppStore.getState().gear.map((g) => g.gid);
+    useAppStore.getState().toggleCombineStart(g1);
+    useAppStore.getState().toggleCombineStart(g2);
+    expect(useAppStore.getState().combineStartGids).toEqual([g1, g2]);
+  });
+
+  test('removeVessel drops the vessel from the selection', () => {
+    const gid = useAppStore.getState().gear[0].gid;
+    useAppStore.getState().toggleCombineStart(gid);
+    useAppStore.getState().removeVessel(gid);
+    expect(useAppStore.getState().combineStartGids).toEqual([]);
+  });
+});
+
 describe('citric source setters', () => {
   beforeEach(() => {
     useAppStore.setState(initialState, true);

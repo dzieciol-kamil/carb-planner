@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import { combinedMixGroups, startFillOf, type CombinedMixGroup } from '../../domain/combinedRefill';
 import { carbsFill, citricAmount, fmtX, partsOf, rangeLabel } from '../../domain/fuel';
 import type {
   CitricSource,
@@ -50,10 +51,18 @@ export function RecipesSection() {
   const mix = useAppStore((s) => s.mix);
   const gear = useAppStore((s) => s.gear);
   const fills = useAppStore((s) => s.fills);
+  const combineStartGids = useAppStore((s) => s.combineStartGids);
+  const toggleCombineStart = useAppStore((s) => s.toggleCombineStart);
   const lang = useAppStore((s) => s.ui.lang);
   const xUnit = useAppStore((s) => s.ui.xUnit);
   const openPanel = useAppStore((s) => s.openPanel);
   const strings = t(lang);
+
+  const selectedStartFills = combineStartGids
+    .map((gid) => startFillOf(gid, fills))
+    .filter((f): f is Fill => f != null);
+  const showCombined = selectedStartFills.length > 1;
+  const combinedGroups = showCombined ? combinedMixGroups(selectedStartFills, gear, mix) : [];
 
   return (
     <div
@@ -111,6 +120,33 @@ export function RecipesSection() {
         </button>
       </div>
 
+      {showCombined && (
+        <div style={{ marginBottom: 18, display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div>
+            <div
+              style={{
+                fontSize: 13,
+                fontWeight: 700,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+              }}
+            >
+              {strings.combineStartSectionTitle}
+            </div>
+            <div style={{ fontSize: 12, color: 'var(--muted-2)', marginTop: 4 }}>
+              {strings.combineStartSectionHint}
+            </div>
+          </div>
+          <div style={cardStyle}>
+            <div style={{ padding: '10px 14px 12px' }}>
+              {combinedGroups.map((group) => (
+                <CombinedGroupBlock key={group.content} group={group} lang={lang} />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       <div
         style={{
           display: 'grid',
@@ -127,7 +163,67 @@ export function RecipesSection() {
             mix={mix}
             xUnit={xUnit}
             lang={lang}
+            selected={combineStartGids.includes(vessel.gid)}
+            showCombined={showCombined}
+            onToggleCombineStart={() => toggleCombineStart(vessel.gid)}
           />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CombinedGroupBlock({ group, lang }: { group: CombinedMixGroup; lang: Lang }) {
+  const strings = t(lang);
+  const lines: { k: string; v: string }[] =
+    group.content === 'water'
+      ? [{ k: strings.waterFill, v: `${group.volumeMl} ml` }]
+      : [
+          { k: strings.carbsIn, v: `${group.carbsG.toFixed(0)} g` },
+          { k: strings.malto, v: `${group.maltoG.toFixed(1)} g` },
+          { k: strings.fructose, v: `${group.fructoseG.toFixed(1)} g` },
+          { k: strings.salt, v: `${group.saltG.toFixed(2)} g` },
+          { k: strings.citric, v: `${group.citricG.toFixed(2)} g` },
+          { k: strings.waterFill, v: `${group.volumeMl} ml` },
+        ];
+
+  return (
+    <div style={fillBlockStyle}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 10,
+          marginBottom: 6,
+        }}
+      >
+        <span style={{ fontSize: 12, fontWeight: 600 }}>
+          {contentLabel(group.content, lang)}
+          {group.content === 'gel' ? ` ${group.parts}×` : ''}
+        </span>
+        <span style={{ fontSize: 11, color: 'var(--muted-3)' }}>
+          {strings.combineStartBottles}: {group.vesselNames.join(', ')}
+        </span>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        {lines.map((line) => (
+          <div
+            key={line.k}
+            style={{
+              display: 'flex',
+              alignItems: 'baseline',
+              justifyContent: 'space-between',
+              gap: 10,
+            }}
+          >
+            <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{line.k}</span>
+            <span
+              style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, fontWeight: 600 }}
+            >
+              {line.v}
+            </span>
+          </div>
         ))}
       </div>
     </div>
@@ -141,9 +237,22 @@ interface VesselRecipeCardProps {
   mix: MixSettings;
   xUnit: XUnit;
   lang: Lang;
+  selected: boolean;
+  showCombined: boolean;
+  onToggleCombineStart: () => void;
 }
 
-function VesselRecipeCard({ vessel, fills, route, mix, xUnit, lang }: VesselRecipeCardProps) {
+function VesselRecipeCard({
+  vessel,
+  fills,
+  route,
+  mix,
+  xUnit,
+  lang,
+  selected,
+  showCombined,
+  onToggleCombineStart,
+}: VesselRecipeCardProps) {
   const strings = t(lang);
 
   return (
@@ -165,6 +274,9 @@ function VesselRecipeCard({ vessel, fills, route, mix, xUnit, lang }: VesselReci
             mix={mix}
             xUnit={xUnit}
             lang={lang}
+            selected={i === 0 && selected}
+            showCombinedNote={i === 0 && selected && showCombined}
+            onToggleCombineStart={i === 0 ? onToggleCombineStart : undefined}
           />
         ))}
       </div>
@@ -180,9 +292,23 @@ interface FillRecipeProps {
   mix: MixSettings;
   xUnit: XUnit;
   lang: Lang;
+  selected: boolean;
+  showCombinedNote: boolean;
+  onToggleCombineStart: (() => void) | undefined;
 }
 
-function FillRecipe({ fill, index, vessel, route, mix, xUnit, lang }: FillRecipeProps) {
+function FillRecipe({
+  fill,
+  index,
+  vessel,
+  route,
+  mix,
+  xUnit,
+  lang,
+  selected,
+  showCombinedNote,
+  onToggleCombineStart,
+}: FillRecipeProps) {
   const strings = t(lang);
   const carbs = carbsFill(fill, [vessel], mix);
   const n = partsOf(fill, [vessel]);
@@ -227,7 +353,17 @@ function FillRecipe({ fill, index, vessel, route, mix, xUnit, lang }: FillRecipe
           marginBottom: 6,
         }}
       >
-        <span style={{ fontSize: 12, fontWeight: 600 }}>
+        <span
+          style={{ fontSize: 12, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}
+        >
+          {onToggleCombineStart && (
+            <input
+              type="checkbox"
+              checked={selected}
+              onChange={onToggleCombineStart}
+              title={strings.combineStartCheckbox}
+            />
+          )}
           {strings.fill} {index + 1} · {rangeLabel(fill.from, fill.to, false, route, xUnit)}
         </span>
         <span
@@ -246,26 +382,36 @@ function FillRecipe({ fill, index, vessel, route, mix, xUnit, lang }: FillRecipe
           {fill.content === 'gel' ? ` ${n}×` : ''}
         </span>
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-        {lines.map((line) => (
-          <div
-            key={line.k}
-            style={{
-              display: 'flex',
-              alignItems: 'baseline',
-              justifyContent: 'space-between',
-              gap: 10,
-            }}
-          >
-            <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{line.k}</span>
-            <span
-              style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, fontWeight: 600 }}
+      {showCombinedNote ? (
+        <p style={{ margin: 0, fontSize: 12, color: 'var(--muted-2)' }}>
+          {strings.combineStartNote}
+        </p>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          {lines.map((line) => (
+            <div
+              key={line.k}
+              style={{
+                display: 'flex',
+                alignItems: 'baseline',
+                justifyContent: 'space-between',
+                gap: 10,
+              }}
             >
-              {line.v}
-            </span>
-          </div>
-        ))}
-      </div>
+              <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{line.k}</span>
+              <span
+                style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: 12,
+                  fontWeight: 600,
+                }}
+              >
+                {line.v}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
