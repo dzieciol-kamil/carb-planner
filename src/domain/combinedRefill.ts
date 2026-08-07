@@ -1,5 +1,5 @@
 import { carbsFill, partsOf, volOf } from './fuel';
-import type { CitricSource, Content, Fill, MixSettings, Vessel } from './types';
+import type { CitricSource, Content, Fill, MixSettings, RatioPreset, Vessel } from './types';
 
 // A vessel's "start fill" is the one it's filled with before departure — the
 // earliest fill on that vessel by position. A vessel with no fills yet
@@ -58,6 +58,9 @@ export interface CombinedGroup {
   carbsG: number;
   maltoG: number;
   fructoseG: number;
+  /** Which preset produced this group's malto:fructose split — drives whether the bottle-
+   *  composition card shows a single Miód/Cukier line or the Malto/Frukto split. */
+  ratioPreset: RatioPreset;
   saltG: number;
   /** Citric-acid-equivalent grams — feed this into `citricAmount()` along with `citricSource`
    *  to get the practical amount (g / ml / fraction of a fruit) for the group's actual source. */
@@ -153,6 +156,7 @@ export function combinedGroups(fills: Fill[], gear: Vessel[], mix: MixSettings):
       fillIds: water.map((f) => f.fid),
       vesselNames: vesselNamesOf(water, gear),
       ...totals,
+      ratioPreset: mix.ratioPreset,
       citricSource: mix.citricSource,
       pours: pourFor(water, gear, totals),
     });
@@ -174,6 +178,7 @@ export function combinedGroups(fills: Fill[], gear: Vessel[], mix: MixSettings):
       fillIds: group.map((f) => f.fid),
       vesselNames: vesselNamesOf(group, gear),
       ...totals,
+      ratioPreset: mix.ratioPreset,
       citricSource: mix.citricSource,
       settingsMismatched: !mixSettingsMatch(mix),
       pours: pourFor(group, gear, totals),
@@ -186,6 +191,7 @@ export function combinedGroups(fills: Fill[], gear: Vessel[], mix: MixSettings):
         fillIds: izo.map((f) => f.fid),
         vesselNames: vesselNamesOf(izo, gear),
         ...totals,
+        ratioPreset: mix.ratioPreset,
         citricSource: mix.citricSource,
         pours: pourFor(izo, gear, totals),
       });
@@ -197,6 +203,7 @@ export function combinedGroups(fills: Fill[], gear: Vessel[], mix: MixSettings):
         fillIds: gel.map((f) => f.fid),
         vesselNames: vesselNamesOf(gel, gear),
         ...totals,
+        ratioPreset: mix.gelRatioPreset,
         citricSource: mix.gelCitricSource,
         parts: gel.reduce((a, f) => a + partsOf(f, gear), 0),
         pours: pourFor(gel, gear, totals),

@@ -241,6 +241,41 @@ describe('combinedGroups', () => {
     });
   });
 
+  test('mixed/izo/water groups take ratioPreset from mix.ratioPreset, gel groups from mix.gelRatioPreset', () => {
+    const honeyMix: MixSettings = { ...mix, ratioPreset: 'honey', gelRatioPreset: 'sugar' };
+
+    const [izo] = combinedGroups(
+      [{ fid: 1, gid: 'g1', content: 'izo', from: 0, to: 25 }],
+      gear,
+      honeyMix,
+    );
+    expect(izo.ratioPreset).toBe('honey');
+
+    const [gel] = combinedGroups(
+      [{ fid: 2, gid: 'g2', content: 'gel', from: 0, to: 10 }],
+      gear,
+      honeyMix,
+    );
+    expect(gel.ratioPreset).toBe('sugar');
+
+    const [mixed] = combinedGroups(
+      [
+        { fid: 1, gid: 'g1', content: 'izo', from: 0, to: 25 },
+        { fid: 2, gid: 'g2', content: 'gel', from: 0, to: 10 },
+      ],
+      gear,
+      honeyMix,
+    );
+    expect(mixed.ratioPreset).toBe('honey');
+
+    const [water] = combinedGroups(
+      [{ fid: 3, gid: 'g3', content: 'water', from: 0, to: 5 }],
+      gear,
+      honeyMix,
+    );
+    expect(water.ratioPreset).toBe('honey');
+  });
+
   describe('proportional pour split per container', () => {
     test('even split across equal-volume vessels', () => {
       const equalGear: Vessel[] = [
