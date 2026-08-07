@@ -1,7 +1,12 @@
 import type { CSSProperties } from 'react';
 import { combinedGroups } from '../../domain/combinedRefill';
-import { citricAmount, citricGramsFromAmount, type CitricAmount } from '../../domain/fuel';
-import type { CitricSource, Content } from '../../domain/types';
+import {
+  citricAmount,
+  citricGramsFromAmount,
+  presetTagFor,
+  type CitricAmount,
+} from '../../domain/fuel';
+import type { CitricSource, Content, RatioPreset } from '../../domain/types';
 import { t } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
 import { sourceColor } from '../chart/theme';
@@ -153,7 +158,7 @@ function cOpt(on: boolean, color: string, disabled = false): CSSProperties {
 
 interface RatioRowProps {
   value: number;
-  onChange: (n: number) => void;
+  onChange: (n: number, preset: RatioPreset) => void;
   strings: ReturnType<typeof t>;
   forGel: boolean;
   disabled?: boolean;
@@ -188,7 +193,7 @@ function RatioRow({ value, onChange, strings, forGel, disabled = false }: RatioR
           return (
             <button
               key={r}
-              onClick={() => onChange(r)}
+              onClick={() => onChange(r, presetTagFor(r))}
               disabled={disabled}
               style={{
                 ...cOpt(value === r, 'var(--ink)', disabled),
@@ -223,7 +228,7 @@ function RatioRow({ value, onChange, strings, forGel, disabled = false }: RatioR
             max={10}
             step={0.1}
             value={value}
-            onChange={onChange}
+            onChange={(n) => onChange(n, 'custom')}
             fallback={2}
             disabled={disabled}
             style={{
