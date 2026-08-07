@@ -1,4 +1,10 @@
-import { absCap } from '../../domain/fuel';
+import {
+  absCap,
+  citricAmount,
+  citricGramsFromAmount,
+  fmtFruitFraction,
+  type CitricAmount,
+} from '../../domain/fuel';
 import type { CitricSource } from '../../domain/types';
 import { t } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
@@ -51,6 +57,73 @@ export function MobileMix() {
       default:
         return strings.citricSourceCitric;
     }
+  };
+
+  // Same field-label swap as MixPanel.tsx's citricFieldLabel: the powder source keeps the short
+  // "kwasek" label, whole-fruit/juice sources show their own name since the stepper is no longer
+  // showing grams of powder but a practical amount of that ingredient. A parenthetical unit is
+  // appended for the grams/ml units (mirroring the "(g/l)" suffix the salt stepper already uses);
+  // the fruit-fraction unit is dimensionless so the fruit name alone is enough.
+  const citricFieldLabel = (src: CitricSource, unit: CitricAmount['unit']) => {
+    const name = src === 'citric' ? strings.citricLabel : citricSourceCaption(src);
+    if (unit === 'ml') return name + ' (ml)';
+    if (unit === 'fruit') return name;
+    return name + ' (g/l)';
+  };
+
+  const izoCitric = citricAmount(mix.citric, mix.citricSource);
+  const gelCitricAmt = citricAmount(mix.gelCitric, mix.gelCitricSource);
+
+  const citricSourceButtons = (active: CitricSource, onChange: (src: CitricSource) => void) => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+      {CITRIC_SOURCES.map((src) => {
+        const isActive = active === src;
+        return (
+          <button
+            key={src}
+            type="button"
+            onClick={() => onChange(src)}
+            style={{
+              flex: '1 1 76px',
+              padding: '10px 4px',
+              borderRadius: 9,
+              border: '1px solid ' + (isActive ? 'var(--ink)' : 'var(--chip-border)'),
+              background: isActive ? 'var(--ink)' : '#fff',
+              color: isActive ? '#fff' : 'var(--muted-2)',
+              fontSize: 11,
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            {citricSourceCaption(src)}
+          </button>
+        );
+      })}
+    </div>
+  );
+
+  // Stepper bounds/step/format tuned per displayed unit: fine grams for powder, coarser ml for
+  // juice, quarter-fruit increments (formatted with the ¼/½/¾ glyphs) for whole fruit.
+  const citricStepperProps = (unit: CitricAmount['unit'], gramsMax: number) => {
+    if (unit === 'ml') {
+      return { min: 0, max: gramsMax * 20, smallStep: 1, bigStep: 5, format: undefined };
+    }
+    if (unit === 'fruit') {
+      return {
+        min: 0,
+        max: Math.max(2, Math.ceil(gramsMax / 10)),
+        smallStep: 0.25,
+        bigStep: 1,
+        format: fmtFruitFraction,
+      };
+    }
+    return {
+      min: 0,
+      max: gramsMax,
+      smallStep: 0.2,
+      bigStep: 0.2,
+      format: (v: number) => v.toFixed(1),
+    };
   };
 
   const ratioButtons = (value: number, onChange: (n: number) => void, forGel: boolean) => (
@@ -113,6 +186,7 @@ export function MobileMix() {
           {strings.mixIzo}
         </div>
         {ratioButtons(mix.ratio, setRatio, false)}
+        {citricSourceButtons(mix.citricSource, setCitricSource)}
         <MobileStepper
           label={strings.concLabel + ' (' + strings.per100 + ')'}
           value={mix.conc}
@@ -133,40 +207,11 @@ export function MobileMix() {
           onChange={setSalt}
         />
         <MobileStepper
-          label={strings.citricLabel + ' (g/l)'}
-          value={mix.citric}
-          min={0}
-          max={6}
-          smallStep={0.2}
-          bigStep={0.2}
-          format={(v) => v.toFixed(1)}
-          onChange={setCitric}
+          label={citricFieldLabel(mix.citricSource, izoCitric.unit)}
+          value={izoCitric.amount}
+          {...citricStepperProps(izoCitric.unit, 6)}
+          onChange={(v) => setCitric(citricGramsFromAmount(v, mix.citricSource))}
         />
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-          {CITRIC_SOURCES.map((src) => {
-            const active = mix.citricSource === src;
-            return (
-              <button
-                key={src}
-                type="button"
-                onClick={() => setCitricSource(src)}
-                style={{
-                  flex: '1 1 76px',
-                  padding: '10px 4px',
-                  borderRadius: 9,
-                  border: '1px solid ' + (active ? 'var(--ink)' : 'var(--chip-border)'),
-                  background: active ? 'var(--ink)' : '#fff',
-                  color: active ? '#fff' : 'var(--muted-2)',
-                  fontSize: 11,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                }}
-              >
-                {citricSourceCaption(src)}
-              </button>
-            );
-          })}
-        </div>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -181,6 +226,7 @@ export function MobileMix() {
           {strings.mixGel}
         </div>
         {ratioButtons(mix.gelRatio, setGelRatio, true)}
+        {citricSourceButtons(mix.gelCitricSource, setGelCitricSource)}
         <MobileStepper
           label={strings.gelConcLabel + ' (' + strings.per100 + ')'}
           value={mix.gelConc}
@@ -201,40 +247,11 @@ export function MobileMix() {
           onChange={setGelSalt}
         />
         <MobileStepper
-          label={strings.citricLabel + ' (g/l)'}
-          value={mix.gelCitric}
-          min={0}
-          max={8}
-          smallStep={0.2}
-          bigStep={0.2}
-          format={(v) => v.toFixed(1)}
-          onChange={setGelCitric}
+          label={citricFieldLabel(mix.gelCitricSource, gelCitricAmt.unit)}
+          value={gelCitricAmt.amount}
+          {...citricStepperProps(gelCitricAmt.unit, 8)}
+          onChange={(v) => setGelCitric(citricGramsFromAmount(v, mix.gelCitricSource))}
         />
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-          {CITRIC_SOURCES.map((src) => {
-            const active = mix.gelCitricSource === src;
-            return (
-              <button
-                key={src}
-                type="button"
-                onClick={() => setGelCitricSource(src)}
-                style={{
-                  flex: '1 1 76px',
-                  padding: '10px 4px',
-                  borderRadius: 9,
-                  border: '1px solid ' + (active ? 'var(--ink)' : 'var(--chip-border)'),
-                  background: active ? 'var(--ink)' : '#fff',
-                  color: active ? '#fff' : 'var(--muted-2)',
-                  fontSize: 11,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                }}
-              >
-                {citricSourceCaption(src)}
-              </button>
-            );
-          })}
-        </div>
       </div>
 
       <button

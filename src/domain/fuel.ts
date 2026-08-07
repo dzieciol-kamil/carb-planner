@@ -274,6 +274,26 @@ export function citricAmount(gramsCitricAcid: number, source: CitricSource): Cit
   return { amount: fraction, unit: 'fruit' };
 }
 
+/**
+ * Inverse of `citricAmount`: converts a practical amount (grams of powder, ml of juice, or a
+ * fraction of one whole fruit) for the given source back into the citric-acid-equivalent grams
+ * that `MixSettings.citric`/`gelCitric` store internally. Used by the mix-settings editor so the
+ * input can be shown/edited in whichever unit matches the selected source while the underlying
+ * stored value stays grams. Exact for `citric` and the juice sources (fixed linear ratio); for
+ * the whole-fruit sources it's the exact inverse of the *unrounded* ml figure, so round-tripping
+ * a value that `citricAmount` already rounded to the nearest quarter reproduces it exactly, but
+ * an arbitrary (non-quarter) fraction typed in directly won't exactly reproduce the original
+ * grams if that in turn gets re-rounded by `citricAmount`.
+ */
+export function citricGramsFromAmount(amount: number, source: CitricSource): number {
+  if (source === 'citric') return amount;
+  const species = FRUIT_SPECIES_OF[source];
+  const yieldPerMl = JUICE_CITRIC_YIELD_G_PER_ML[species];
+  if (source === 'lemonJuice' || source === 'limeJuice') return amount * yieldPerMl;
+  const mlPerFruit = JUICE_ML_PER_WHOLE_FRUIT[species];
+  return amount * mlPerFruit * yieldPerMl;
+}
+
 const FRACTION_GLYPHS: Record<number, string> = { 0.25: '¼', 0.5: '½', 0.75: '¾' };
 
 /**

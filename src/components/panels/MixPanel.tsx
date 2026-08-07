@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import { citricAmount, citricGramsFromAmount, type CitricAmount } from '../../domain/fuel';
 import type { CitricSource, Content } from '../../domain/types';
 import { t } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
@@ -69,6 +70,40 @@ function citricSourceLabel(source: CitricSource, strings: ReturnType<typeof t>):
     default:
       return strings.citricSourceCitric;
   }
+}
+
+// The citric-amount grid field is unit-aware: plain citric-acid powder keeps its own short
+// "Kwasek" label, but the whole-fruit/juice sources swap in the source's own name (e.g. "Cytryna",
+// "Sok z cytryny") since the field is no longer showing grams of powder but a practical amount of
+// that ingredient.
+function citricFieldLabel(source: CitricSource, strings: ReturnType<typeof t>): string {
+  return source === 'citric' ? strings.citricLabel : citricSourceLabel(source, strings);
+}
+
+function citricSubLabel(unit: CitricAmount['unit'], strings: ReturnType<typeof t>): string {
+  if (unit === 'ml') return strings.per100Ml;
+  if (unit === 'fruit') return strings.per100Fruit;
+  return strings.per100;
+}
+
+// Step size for the citric-amount input, tuned per displayed unit: fine-grained grams for powder,
+// coarser ml for juice, and quarter-fruit increments for whole fruit (matching the quarter
+// rounding `citricAmount`/`fmtFruitFraction` already use elsewhere).
+function citricStep(unit: CitricAmount['unit']): number {
+  if (unit === 'ml') return 0.5;
+  if (unit === 'fruit') return 0.25;
+  return 0.05;
+}
+
+// Passed as `NumberInput`'s `round` option for the citric fields below. Both `citricAmount`'s ml
+// conversion (division by a yield constant like 0.06) and `citricGramsFromAmount`'s fruit->grams
+// conversion (e.g. 0.25 * 30 * 0.06) can produce long floating-point tails (3.3333333333333335,
+// 0.44999999999999996) that would otherwise overflow the narrow 1/3-width grid cell — including
+// when the user types/pastes such a value directly, not just when it arrives via conversion.
+function roundCitricDisplay(amount: number, unit: CitricAmount['unit']): number {
+  if (unit === 'ml') return Math.round(amount * 10) / 10;
+  if (unit === 'fruit') return Math.round(amount * 4) / 4;
+  return Math.round(amount * 100) / 100;
 }
 
 // The "Izo" caption on the 2:1 preset flags it as this app's default isotonic ratio — showing
@@ -197,6 +232,8 @@ export function MixPanel() {
   const setVesselGelParts = useAppStore((s) => s.setVesselGelParts);
   const dragKey = useAppStore((s) => s.ui.dragKey);
   const strings = t(lang);
+  const izoCitric = citricAmount(mix.citric, mix.citricSource);
+  const gelCitricAmt = citricAmount(mix.gelCitric, mix.gelCitricSource);
 
   return (
     <PanelShell title={strings.gearMix} onClose={closePanel}>
@@ -244,6 +281,26 @@ export function MixPanel() {
       <div style={sectionCardStyle}>
         <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 10 }}>{strings.mixIzo}</div>
         <RatioRow value={mix.ratio} onChange={setRatio} strings={strings} forGel={false} />
+        <div
+          style={{
+            marginBottom: 8,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            flexWrap: 'wrap',
+          }}
+        >
+          <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{strings.citricSourceLabel}</span>
+          {CITRIC_SOURCES.map((src) => (
+            <button
+              key={src}
+              onClick={() => setCitricSource(src)}
+              style={cOpt(mix.citricSource === src, 'var(--ink)')}
+            >
+              {citricSourceLabel(src, strings)}
+            </button>
+          ))}
+        </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
           <label style={miniLabelStyle}>
             <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
@@ -266,39 +323,46 @@ export function MixPanel() {
           <label style={miniLabelStyle}>
             <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
               <span style={{ fontSize: 11, color: 'var(--ink-soft)', fontWeight: 600 }}>
-                {strings.citricLabel}
+                {citricFieldLabel(mix.citricSource, strings)}
               </span>
-              <span style={{ fontSize: 10, color: 'var(--muted-3)' }}>{strings.per100}</span>
+              <span style={{ fontSize: 10, color: 'var(--muted-3)' }}>
+                {citricSubLabel(izoCitric.unit, strings)}
+              </span>
             </span>
             <NumberInput
-              step={0.05}
-              value={mix.citric}
-              onChange={setCitric}
+              step={citricStep(izoCitric.unit)}
+              value={izoCitric.amount}
+              onChange={(v) => setCitric(citricGramsFromAmount(v, mix.citricSource))}
+              round={(v) => roundCitricDisplay(v, izoCitric.unit)}
               style={miniInputStyle}
             />
           </label>
-        </div>
-        <div
-          style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}
-        >
-          <span style={{ fontSize: 10.5, color: 'var(--muted-3)' }}>
-            {strings.citricSourceLabel}
-          </span>
-          {CITRIC_SOURCES.map((src) => (
-            <button
-              key={src}
-              onClick={() => setCitricSource(src)}
-              style={cOpt(mix.citricSource === src, 'var(--ink)')}
-            >
-              {citricSourceLabel(src, strings)}
-            </button>
-          ))}
         </div>
       </div>
 
       <div style={sectionCardStyle}>
         <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 10 }}>{strings.mixGel}</div>
         <RatioRow value={mix.gelRatio} onChange={setGelRatio} strings={strings} forGel={true} />
+        <div
+          style={{
+            marginBottom: 8,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            flexWrap: 'wrap',
+          }}
+        >
+          <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{strings.citricSourceLabel}</span>
+          {CITRIC_SOURCES.map((src) => (
+            <button
+              key={src}
+              onClick={() => setGelCitricSource(src)}
+              style={cOpt(mix.gelCitricSource === src, 'var(--ink)')}
+            >
+              {citricSourceLabel(src, strings)}
+            </button>
+          ))}
+        </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
           <label style={miniLabelStyle}>
             <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
@@ -331,33 +395,20 @@ export function MixPanel() {
           <label style={miniLabelStyle}>
             <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
               <span style={{ fontSize: 11, color: 'var(--ink-soft)', fontWeight: 600 }}>
-                {strings.citricLabel}
+                {citricFieldLabel(mix.gelCitricSource, strings)}
               </span>
-              <span style={{ fontSize: 10, color: 'var(--muted-3)' }}>{strings.per100}</span>
+              <span style={{ fontSize: 10, color: 'var(--muted-3)' }}>
+                {citricSubLabel(gelCitricAmt.unit, strings)}
+              </span>
             </span>
             <NumberInput
-              step={0.05}
-              value={mix.gelCitric}
-              onChange={setGelCitric}
+              step={citricStep(gelCitricAmt.unit)}
+              value={gelCitricAmt.amount}
+              onChange={(v) => setGelCitric(citricGramsFromAmount(v, mix.gelCitricSource))}
+              round={(v) => roundCitricDisplay(v, gelCitricAmt.unit)}
               style={miniInputStyle}
             />
           </label>
-        </div>
-        <div
-          style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}
-        >
-          <span style={{ fontSize: 10.5, color: 'var(--muted-3)' }}>
-            {strings.citricSourceLabel}
-          </span>
-          {CITRIC_SOURCES.map((src) => (
-            <button
-              key={src}
-              onClick={() => setGelCitricSource(src)}
-              style={cOpt(mix.gelCitricSource === src, 'var(--ink)')}
-            >
-              {citricSourceLabel(src, strings)}
-            </button>
-          ))}
         </div>
       </div>
 
