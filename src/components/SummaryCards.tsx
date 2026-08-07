@@ -65,9 +65,11 @@ const recoveryHintStyle: CSSProperties = {
   fontSize: 12,
   color: 'var(--muted-2)',
 };
-const recoveryNoteStyle: CSSProperties = {
-  fontSize: 11,
-  color: 'var(--muted-3)',
+const recoveryRowStyle: CSSProperties = {
+  display: 'flex',
+  alignItems: 'flex-end',
+  justifyContent: 'space-between',
+  gap: 10,
 };
 
 export function SummaryCards() {
@@ -181,11 +183,12 @@ export function SummaryCards() {
             1.0–1.2 g/kg
           </span>
         </div>
-        <div style={recoveryValueStyle}>
-          ~{recovery.min}–{recovery.max} g
+        <div style={recoveryRowStyle}>
+          <div style={recoveryHintStyle}>{strings.recoveryHint}</div>
+          <div style={recoveryValueStyle}>
+            ~{recovery.min}–{recovery.max} g
+          </div>
         </div>
-        <div style={recoveryHintStyle}>{strings.recoveryHint}</div>
-        <div style={recoveryNoteStyle}>{strings.recoveryNote}</div>
       </div>
     </div>
   );

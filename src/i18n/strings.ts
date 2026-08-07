@@ -259,6 +259,11 @@ export interface StringTable {
   shopSheetName: string;
   shopSheetAdd: string;
   shopDefaultName: string;
+  combineStartCheckbox: string;
+  combineStartSectionTitle: string;
+  combineStartSectionHint: string;
+  combineStartBottles: string;
+  combineStartNote: string;
   bidonComposition: string;
   perFillGrams: string;
   addLandmark: string;
@@ -280,7 +285,6 @@ export interface StringTable {
   importPlanSuccess: string;
   recoveryTitle: string;
   recoveryHint: string;
-  recoveryNote: string;
 }
 
 export const STR: Record<Lang, StringTable> = {
@@ -432,7 +436,7 @@ export const STR: Record<Lang, StringTable> = {
     langShort: 'PL',
     itemsSuffix: 'elementów',
     newVessel: 'Nowy bidon',
-    viewLabel: 'Widok',
+    viewLabel: 'Tryb wyświetlania',
     viewAuto: 'Auto',
     autoDetected: 'wykryte automatycznie: ',
     viewModeConfirmTitle: 'Wymusić ten widok?',
@@ -598,6 +602,12 @@ export const STR: Record<Lang, StringTable> = {
     shopSheetName: 'Nazwa',
     shopSheetAdd: 'Dodaj',
     shopDefaultName: 'Sklep',
+    combineStartCheckbox: 'Przygotuj razem',
+    combineStartSectionTitle: 'Wspólna porcja na start',
+    combineStartSectionHint:
+      'Zaznacz bidony, które mieszasz razem w jednym słoiku przed startem, żeby zobaczyć jedną łączną porcję zamiast składu na każdy z osobna.',
+    combineStartBottles: 'Bidony',
+    combineStartNote: 'Uwzględnione we wspólnej porcji na start powyżej.',
     bidonComposition: 'SKŁAD BIDONÓW',
     perFillGrams: 'gramatura na napełnienie ›',
     addLandmark: 'Dodaj punkt orientacyjny',
@@ -622,7 +632,6 @@ export const STR: Record<Lang, StringTable> = {
     importPlanSuccess: 'Plan zaimportowany.',
     recoveryTitle: 'Regeneracja',
     recoveryHint: 'Zjedz tyle w ciągu pierwszych 30 minut po zakończeniu jazdy.',
-    recoveryNote: 'Uzupełnia plan tankowania na trasie — nie zastępuje go.',
   },
   en: {
     tagline: 'carbohydrate & hydration planner',
@@ -771,7 +780,7 @@ export const STR: Record<Lang, StringTable> = {
     langShort: 'EN',
     itemsSuffix: 'items',
     newVessel: 'New bottle',
-    viewLabel: 'View',
+    viewLabel: 'Display mode',
     viewAuto: 'Auto',
     autoDetected: 'auto-detected: ',
     viewModeConfirmTitle: 'Force this view?',
@@ -936,6 +945,12 @@ export const STR: Record<Lang, StringTable> = {
     shopSheetName: 'Name',
     shopSheetAdd: 'Add',
     shopDefaultName: 'Shop',
+    combineStartCheckbox: 'Prepare together',
+    combineStartSectionTitle: 'Combined start batch',
+    combineStartSectionHint:
+      'Pick the bottles you mix together in one jar before the start to see one combined batch instead of a recipe per bottle.',
+    combineStartBottles: 'Bottles',
+    combineStartNote: 'Included in the combined start batch above.',
     bidonComposition: 'BOTTLE RECIPES',
     perFillGrams: 'grams per fill ›',
     addLandmark: 'Add landmark',
@@ -959,7 +974,6 @@ export const STR: Record<Lang, StringTable> = {
     importPlanSuccess: 'Plan imported.',
     recoveryTitle: 'Recovery',
     recoveryHint: 'Aim to eat this much within the first 30 minutes after finishing.',
-    recoveryNote: "Complements your fueling plan — it doesn't replace it.",
   },
 };
 

@@ -82,21 +82,23 @@ export function SettingsPanel() {
       <PanelShell title={strings.settings} onClose={closePanel}>
         <div style={sectionTitleStyle}>{strings.profile}</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 7, marginBottom: 20 }}>
-          <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{strings.viewLabel}</span>
-          <div style={{ display: 'flex', gap: 6 }}>
-            {VIEW_MODES.map((v) => (
-              <button
-                key={v}
-                onClick={() => handleViewModePick(v)}
-                style={{ ...contStyle(viewMode === v), width: 'auto', flex: 1 }}
-              >
-                {v === 'auto'
-                  ? strings.viewAuto
-                  : v === 'desktop'
-                    ? strings.desktop
-                    : strings.mobile}
-              </button>
-            ))}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+            <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{strings.viewLabel}</span>
+            <div style={{ display: 'flex', gap: 6, flex: 1, minWidth: 160 }}>
+              {VIEW_MODES.map((v) => (
+                <button
+                  key={v}
+                  onClick={() => handleViewModePick(v)}
+                  style={{ ...contStyle(viewMode === v), width: 'auto', flex: 1 }}
+                >
+                  {v === 'auto'
+                    ? strings.viewAuto
+                    : v === 'desktop'
+                      ? strings.desktop
+                      : strings.mobile}
+                </button>
+              ))}
+            </div>
           </div>
           {viewMode === 'auto' && (
             <span style={{ fontSize: 11, color: 'var(--muted-3)' }}>
