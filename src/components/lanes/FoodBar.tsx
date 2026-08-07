@@ -33,22 +33,6 @@ function delButtonStyle(show: boolean): CSSProperties {
   };
 }
 
-function popoverChipStyle(active: boolean): CSSProperties {
-  return {
-    border: '1px solid ' + (active ? CHART_COLORS.food : 'var(--chip-border)'),
-    background: active ? CHART_COLORS.food : '#fff',
-    color: active ? '#fff' : 'var(--ink-soft)',
-    borderRadius: 6,
-    padding: '3px 8px',
-    fontSize: 10,
-    fontWeight: 700,
-    fontFamily: 'Archivo, sans-serif',
-    cursor: 'pointer',
-    whiteSpace: 'nowrap',
-    boxShadow: '0 2px 6px rgba(0,0,0,0.14)',
-  };
-}
-
 interface FoodBarProps {
   food: FoodItem;
   distanceKm: number;
@@ -61,7 +45,6 @@ export function FoodBar({ food, distanceKm }: FoodBarProps) {
   const dragKey = useAppStore((s) => s.ui.dragKey);
   const setHoverKey = useAppStore((s) => s.setHoverKey);
   const removeFood = useAppStore((s) => s.removeFood);
-  const setFoodContinuous = useAppStore((s) => s.setFoodContinuous);
   const strings = t(lang);
 
   const key = 'x' + food.id;
@@ -105,14 +88,6 @@ export function FoodBar({ food, distanceKm }: FoodBarProps) {
         paddingRight: 0,
         borderRadius: 4,
       };
-
-  const popoverAnchor = point
-    ? leftPct > 80
-      ? { right: 0 }
-      : { left: `${leftPct}%` }
-    : leftPct > 62
-      ? { right: `${Math.max(0, 100 - (food.to / distanceKm) * 100)}%` }
-      : { left: `${leftPct}%` };
 
   return (
     <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
@@ -171,36 +146,6 @@ export function FoodBar({ food, distanceKm }: FoodBarProps) {
             />
           </>
         )}
-      </div>
-
-      <div
-        onPointerEnter={() => setHoverKey(key)}
-        onPointerLeave={() => setHoverKey(null)}
-        style={{
-          position: 'absolute',
-          bottom: '100%',
-          paddingBottom: 7,
-          zIndex: 20,
-          gap: 3,
-          ...popoverAnchor,
-          pointerEvents: 'auto',
-          display: on ? 'flex' : 'none',
-        }}
-      >
-        <button
-          onClick={() => setFoodContinuous(food.id, false)}
-          onPointerDown={stopPointerDown}
-          style={popoverChipStyle(point)}
-        >
-          {strings.shotMode}
-        </button>
-        <button
-          onClick={() => setFoodContinuous(food.id, true)}
-          onPointerDown={stopPointerDown}
-          style={popoverChipStyle(!point)}
-        >
-          {strings.contMode}
-        </button>
       </div>
     </div>
   );
