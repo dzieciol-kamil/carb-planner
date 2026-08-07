@@ -1,4 +1,4 @@
-import { useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import {
   buildSettingsExport,
   parseSettingsImport,
@@ -21,6 +21,12 @@ export function Header() {
   const [importFeedback, setImportFeedback] = useState<'error' | 'success' | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const strings = t(lang);
+
+  useEffect(() => {
+    if (!importFeedback) return;
+    const timer = setTimeout(() => setImportFeedback(null), 4000);
+    return () => clearTimeout(timer);
+  }, [importFeedback]);
 
   const handleExport = () => {
     const file = buildSettingsExport(getSettingsExportData());
