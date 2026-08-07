@@ -48,6 +48,29 @@ function lineStyle(
   };
 }
 
+function nameInputStyle(show: boolean): CSSProperties {
+  return {
+    position: 'absolute',
+    left: '50%',
+    top: -38,
+    transform: 'translateX(-50%)',
+    width: 76,
+    boxSizing: 'border-box',
+    padding: '3px 5px',
+    border: '1px solid rgba(0,0,0,0.18)',
+    borderRadius: 5,
+    background: '#fff',
+    color: CHART_COLORS.ink,
+    fontSize: 10,
+    fontWeight: 600,
+    fontFamily: 'Archivo, sans-serif',
+    textAlign: 'center',
+    cursor: 'text',
+    zIndex: 3,
+    display: show ? 'block' : 'none',
+  };
+}
+
 // While dragging, the current km/time reading is shown beside the pin's round head, not above
 // it — an above position would sit right on top of the chart's legend row (Wchłonięte /
 // Zapotrzebowanie / Limit wchłaniania), obscuring it. Flips to the left near the end of the
@@ -100,6 +123,7 @@ export function ShopMarkers({ distanceKm, height, bottomPadding, route, xUnit }:
   const lang = useAppStore((s) => s.ui.lang);
   const setHoverKey = useAppStore((s) => s.setHoverKey);
   const removeShop = useAppStore((s) => s.removeShop);
+  const updateShop = useAppStore((s) => s.updateShop);
   const strings = t(lang);
 
   return (
@@ -139,6 +163,19 @@ export function ShopMarkers({ distanceKm, height, bottomPadding, route, xUnit }:
               >
                 ✕
               </button>
+              <input
+                type="text"
+                value={shop.name}
+                maxLength={10}
+                aria-label={strings.shopSheetName}
+                placeholder={strings.shopDefaultName}
+                onChange={(e) => updateShop(shop.id, { name: e.target.value })}
+                onPointerDown={(e) => e.stopPropagation()}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') (e.currentTarget as HTMLInputElement).blur();
+                }}
+                style={nameInputStyle(on && !dragging)}
+              />
               {dragging && (
                 <span style={dragLabelStyle(flip)}>{fmtX(shop.at, true, route, xUnit)}</span>
               )}
