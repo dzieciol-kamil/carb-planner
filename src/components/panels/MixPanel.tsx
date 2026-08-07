@@ -95,12 +95,11 @@ function citricStep(unit: CitricAmount['unit']): number {
   return 0.05;
 }
 
-// `NumberInput` renders its value with a bare `String(value)` — unlike `MobileStepper`, it has no
-// `format` option to round for display. Both `citricAmount`'s ml conversion (division by a yield
-// constant like 0.06) and `citricGramsFromAmount`'s fruit->grams conversion (e.g. 0.25 * 30 * 0.06)
-// can produce long floating-point tails (3.3333333333333335, 0.44999999999999996) that overflow
-// the narrow 1/3-width grid cell. Round for display only — the value the user actually typed still
-// flows through `onChange` unrounded, so this doesn't affect what gets stored.
+// Passed as `NumberInput`'s `round` option for the citric fields below. Both `citricAmount`'s ml
+// conversion (division by a yield constant like 0.06) and `citricGramsFromAmount`'s fruit->grams
+// conversion (e.g. 0.25 * 30 * 0.06) can produce long floating-point tails (3.3333333333333335,
+// 0.44999999999999996) that would otherwise overflow the narrow 1/3-width grid cell — including
+// when the user types/pastes such a value directly, not just when it arrives via conversion.
 function roundCitricDisplay(amount: number, unit: CitricAmount['unit']): number {
   if (unit === 'ml') return Math.round(amount * 10) / 10;
   if (unit === 'fruit') return Math.round(amount * 4) / 4;
@@ -332,8 +331,9 @@ export function MixPanel() {
             </span>
             <NumberInput
               step={citricStep(izoCitric.unit)}
-              value={roundCitricDisplay(izoCitric.amount, izoCitric.unit)}
+              value={izoCitric.amount}
               onChange={(v) => setCitric(citricGramsFromAmount(v, mix.citricSource))}
+              round={(v) => roundCitricDisplay(v, izoCitric.unit)}
               style={miniInputStyle}
             />
           </label>
@@ -403,8 +403,9 @@ export function MixPanel() {
             </span>
             <NumberInput
               step={citricStep(gelCitricAmt.unit)}
-              value={roundCitricDisplay(gelCitricAmt.amount, gelCitricAmt.unit)}
+              value={gelCitricAmt.amount}
               onChange={(v) => setGelCitric(citricGramsFromAmount(v, mix.gelCitricSource))}
+              round={(v) => roundCitricDisplay(v, gelCitricAmt.unit)}
               style={miniInputStyle}
             />
           </label>
