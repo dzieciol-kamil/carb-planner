@@ -8,7 +8,7 @@ import {
 import {
   carbsFill,
   citricAmount,
-  fmtFruitFraction,
+  fmtFruitFractionPct,
   partsOf,
   type CitricAmount,
 } from '../../domain/fuel';
@@ -40,7 +40,7 @@ function citricValueLabel(citric: CitricAmount, source: CitricSource, lang: Lang
   if (citric.unit === 'g') return citric.amount.toFixed(2) + ' g';
   if (citric.unit === 'ml') return citric.amount.toFixed(1) + ' ml';
   const species = source === 'lime' ? 'lime' : 'lemon';
-  return fmtFruitFraction(citric.amount) + ' ' + fruitNoun(species, citric.amount, lang);
+  return fmtFruitFractionPct(citric.amount) + ' ' + fruitNoun(species, citric.amount, lang);
 }
 
 function pourLine(pour: ContainerPour, content: CombinedGroup['content']): string {

@@ -103,7 +103,9 @@ export function MobileMix() {
   );
 
   // Stepper bounds/step/format tuned per displayed unit: fine grams for powder, coarser ml for
-  // juice, quarter-fruit increments (formatted with the ¼/½/¾ glyphs) for whole fruit.
+  // juice, quarter-fruit increments (formatted as a compact ASCII fraction, e.g. "3/4") for whole
+  // fruit — deliberately without the percentage `fmtFruitFractionPct` adds for the recipe card,
+  // since this narrow stepper slot doesn't have room for it.
   const citricStepperProps = (unit: CitricAmount['unit'], gramsMax: number) => {
     if (unit === 'ml') {
       return { min: 0, max: gramsMax * 20, smallStep: 1, bigStep: 5, format: undefined };
