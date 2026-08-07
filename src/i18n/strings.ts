@@ -270,6 +270,7 @@ export interface StringTable {
   combineCrossTypeConfirmBody: string;
   combineCrossTypeConfirmCancel: string;
   gelLockedNote: string;
+  unlockGelButton: string;
   combineCrossTypeConfirmConfirm: string;
   bidonComposition: string;
   perFillGrams: string;
@@ -381,7 +382,7 @@ export const STR: Record<Lang, StringTable> = {
     concLabel: 'cukry',
     saltLabel: 'sól',
     citricLabel: 'kwasek',
-    citricSourceLabel: 'kwasek',
+    citricSourceLabel: 'Kwasek',
     citricSourceCitric: 'Kwasek cytrynowy',
     citricSourceLemon: 'Cytryna',
     citricSourceLime: 'Limonka',
@@ -390,7 +391,7 @@ export const STR: Record<Lang, StringTable> = {
     gelConcLabel: 'cukry',
     per100: 'g/100 ml',
     per100Ml: 'ml/100 ml',
-    per100Fruit: '/100 ml',
+    per100Fruit: '%/100 ml',
     mixIzo: 'Izotonik',
     mixGel: 'Żel',
     target: 'Cel',
@@ -624,6 +625,7 @@ export const STR: Record<Lang, StringTable> = {
     combineCrossTypeConfirmConfirm: 'Połącz',
     gelLockedNote:
       'Masz połączone porcje — proporcja, sól i kwasek żelu są przejęte z ustawień izo, edytuj je tam.',
+    unlockGelButton: 'Odblokuj',
     bidonComposition: 'SKŁAD BIDONÓW',
     perFillGrams: 'gramatura na napełnienie ›',
     addLandmark: 'Dodaj punkt orientacyjny',
@@ -734,7 +736,7 @@ export const STR: Record<Lang, StringTable> = {
     concLabel: 'carbs',
     saltLabel: 'salt',
     citricLabel: 'citric',
-    citricSourceLabel: 'acid',
+    citricSourceLabel: 'Acid',
     citricSourceCitric: 'Citric acid',
     citricSourceLemon: 'Lemon',
     citricSourceLime: 'Lime',
@@ -743,7 +745,7 @@ export const STR: Record<Lang, StringTable> = {
     gelConcLabel: 'carbs',
     per100: 'g/100 ml',
     per100Ml: 'ml/100 ml',
-    per100Fruit: '/100 ml',
+    per100Fruit: '%/100 ml',
     mixIzo: 'Isotonic',
     mixGel: 'Gel',
     target: 'Target',
@@ -976,6 +978,7 @@ export const STR: Record<Lang, StringTable> = {
     combineCrossTypeConfirmConfirm: 'Combine',
     gelLockedNote:
       "You have a combined batch — gel's ratio, salt, and citric are inherited from izo, edit them there.",
+    unlockGelButton: 'Unlock',
     bidonComposition: 'BOTTLE RECIPES',
     perFillGrams: 'grams per fill ›',
     addLandmark: 'Add landmark',
