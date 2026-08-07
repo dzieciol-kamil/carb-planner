@@ -10,7 +10,7 @@ import {
   nextShopAt,
 } from '../domain/dragMath';
 import { startFillOf } from '../domain/combinedRefill';
-import { dist } from '../domain/fuel';
+import { dist, presetTagFor } from '../domain/fuel';
 import { loadGpxFile } from '../domain/gpx';
 import type { SettingsExportData } from '../domain/settingsExport';
 import { t, type Lang } from '../i18n/strings';
@@ -22,6 +22,7 @@ import type {
   Intensity,
   Mode,
   MixSettings,
+  RatioPreset,
   RouteInput,
   Vessel,
   Fill,
@@ -181,8 +182,8 @@ interface AppState {
   toggleCombinedFill: (fid: number) => void;
   clearCombinedFills: () => void;
 
-  setRatio: (n: number) => void;
-  setGelRatio: (n: number) => void;
+  setRatio: (n: number, preset: RatioPreset) => void;
+  setGelRatio: (n: number, preset: RatioPreset) => void;
   setConc: (n: number) => void;
   setSalt: (n: number) => void;
   setCitric: (n: number) => void;
@@ -548,8 +549,10 @@ export const useAppStore = create<AppState>()(
         })),
       clearCombinedFills: () => set({ combinedFillIds: [] }),
 
-      setRatio: (n) => set((s) => ({ mix: { ...s.mix, ratio: clamp(n, 0.2, 10) } })),
-      setGelRatio: (n) => set((s) => ({ mix: { ...s.mix, gelRatio: clamp(n, 0.2, 10) } })),
+      setRatio: (n, preset) =>
+        set((s) => ({ mix: { ...s.mix, ratio: clamp(n, 0.2, 10), ratioPreset: preset } })),
+      setGelRatio: (n, preset) =>
+        set((s) => ({ mix: { ...s.mix, gelRatio: clamp(n, 0.2, 10), gelRatioPreset: preset } })),
       setConc: (n) => set((s) => ({ mix: { ...s.mix, conc: clamp(n, 0, 100) } })),
       setSalt: (n) => set((s) => ({ mix: { ...s.mix, salt: clamp(n, 0, 10) } })),
       setCitric: (n) => set((s) => ({ mix: { ...s.mix, citric: clamp(n, 0, 10) } })),
@@ -651,12 +654,16 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: 'carbfueling',
-      version: 2,
+      version: 3,
       storage: createJSONStorage(() => createDebouncedLocalStorage(400)),
       // v1 -> v2: the combine-bottles feature moved from a per-vessel "start fill only"
       // checkbox (combineStartGids: vessel ids) to a per-fill one (combinedFillIds: fill
       // ids). Map each previously-selected vessel to its own start fill's id so an
       // existing selection survives the upgrade instead of silently vanishing.
+      // v2 -> v3: ratioPreset/gelRatioPreset are new required MixSettings fields. Infer them
+      // once from the persisted numeric ratio/gelRatio (same mapping as presetTagFor) so a
+      // rider who already had Miód/Cukier selected doesn't silently lose that label after the
+      // upgrade — going forward, the tag is only ever set by an explicit preset-button click.
       migrate: (persistedState, version) => {
         const s = persistedState as
           (Partial<AppState> & { combineStartGids?: string[] }) | undefined;
@@ -668,6 +675,15 @@ export const useAppStore = create<AppState>()(
             .map((gid) => startFillOf(gid, fills)?.fid)
             .filter((fid): fid is number => fid != null);
           delete s.combineStartGids;
+        }
+        if (version < 3 && s.mix) {
+          const mix = s.mix as Partial<MixSettings>;
+          if (mix.ratioPreset == null && typeof mix.ratio === 'number') {
+            mix.ratioPreset = presetTagFor(mix.ratio);
+          }
+          if (mix.gelRatioPreset == null && typeof mix.gelRatio === 'number') {
+            mix.gelRatioPreset = presetTagFor(mix.gelRatio);
+          }
         }
         return s;
       },
