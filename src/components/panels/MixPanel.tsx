@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import type { Content } from '../../domain/types';
+import type { CitricSource, Content } from '../../domain/types';
 import { t } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
 import { sourceColor } from '../chart/theme';
@@ -9,6 +9,7 @@ import { PanelShell } from './PanelShell';
 
 const RATIO_PRESETS = [2, 1.5, 1, 0.8];
 const CONTENT_OPTIONS: Content[] = ['water', 'izo', 'gel'];
+const CITRIC_SOURCES: CitricSource[] = ['citric', 'lemon', 'lime'];
 
 const sectionCardStyle: CSSProperties = {
   border: '1px solid #E9EBE5',
@@ -55,6 +56,14 @@ function contentLabel(content: Content, lang: 'pl' | 'en'): string {
   return content === 'water' ? strings.water : content === 'gel' ? strings.gel : strings.izo;
 }
 
+function citricSourceLabel(source: CitricSource, strings: ReturnType<typeof t>): string {
+  return source === 'lemon'
+    ? strings.citricSourceLemon
+    : source === 'lime'
+      ? strings.citricSourceLime
+      : strings.citricSourceCitric;
+}
+
 function presetCaption(r: number, strings: ReturnType<typeof t>): string | null {
   if (r === 2) return strings.izo;
   if (r === 1) return strings.ratioLabelSugar;
@@ -85,9 +94,11 @@ export function MixPanel() {
   const setConc = useAppStore((s) => s.setConc);
   const setSalt = useAppStore((s) => s.setSalt);
   const setCitric = useAppStore((s) => s.setCitric);
+  const setCitricSource = useAppStore((s) => s.setCitricSource);
   const setGelConc = useAppStore((s) => s.setGelConc);
   const setGelSalt = useAppStore((s) => s.setGelSalt);
   const setGelCitric = useAppStore((s) => s.setGelCitric);
+  const setGelCitricSource = useAppStore((s) => s.setGelCitricSource);
   const resetMix = useAppStore((s) => s.resetMix);
   const updateVessel = useAppStore((s) => s.updateVessel);
   const removeVessel = useAppStore((s) => s.removeVessel);
@@ -245,6 +256,22 @@ export function MixPanel() {
             />
           </label>
         </div>
+        <div
+          style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}
+        >
+          <span style={{ fontSize: 10.5, color: 'var(--muted-3)' }}>
+            {strings.citricSourceLabel}
+          </span>
+          {CITRIC_SOURCES.map((src) => (
+            <button
+              key={src}
+              onClick={() => setCitricSource(src)}
+              style={cOpt(mix.citricSource === src, 'var(--ink)')}
+            >
+              {citricSourceLabel(src, strings)}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div style={sectionCardStyle}>
@@ -292,6 +319,22 @@ export function MixPanel() {
               style={miniInputStyle}
             />
           </label>
+        </div>
+        <div
+          style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}
+        >
+          <span style={{ fontSize: 10.5, color: 'var(--muted-3)' }}>
+            {strings.citricSourceLabel}
+          </span>
+          {CITRIC_SOURCES.map((src) => (
+            <button
+              key={src}
+              onClick={() => setGelCitricSource(src)}
+              style={cOpt(mix.gelCitricSource === src, 'var(--ink)')}
+            >
+              {citricSourceLabel(src, strings)}
+            </button>
+          ))}
         </div>
       </div>
 

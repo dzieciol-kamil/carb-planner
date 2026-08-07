@@ -2,6 +2,7 @@ import { describe, expect, test } from 'vitest';
 import {
   absCap,
   carbsFill,
+  citricAmount,
   cph,
   dist,
   distanceAtTime,
@@ -16,6 +17,7 @@ import {
   prof,
   rangeLabel,
   rateStats,
+  recoveryCarbs,
   samples,
   sweat,
   timeAtDistance,
@@ -53,6 +55,8 @@ function makeMix(overrides: Partial<MixSettings> = {}): MixSettings {
     citric: 0.2,
     gelSalt: 0.4,
     gelCitric: 0.5,
+    citricSource: 'citric',
+    gelCitricSource: 'citric',
     ...overrides,
   };
 }
@@ -331,6 +335,34 @@ describe('carbsFill', () => {
   test('gel scales with vessel volume and gel concentration', () => {
     const f: Fill = { fid: 3, gid: 'g2', content: 'gel', from: 0, to: 50 };
     expect(carbsFill(f, gear, mix)).toBe(150);
+  });
+});
+
+describe('citricAmount', () => {
+  test('citric source passes the gram amount through unchanged', () => {
+    expect(citricAmount(1.2, 'citric')).toEqual({ amount: 1.2, unit: 'g' });
+  });
+
+  test('lemon converts citric-acid grams into juice ml using ~5% w/v yield', () => {
+    const result = citricAmount(1, 'lemon');
+    expect(result.unit).toBe('ml');
+    expect(result.amount).toBeCloseTo(20, 6);
+  });
+
+  test('lime converts citric-acid grams into juice ml using ~6% w/v yield', () => {
+    const result = citricAmount(1, 'lime');
+    expect(result.unit).toBe('ml');
+    expect(result.amount).toBeCloseTo(16.6667, 3);
+  });
+
+  test('lime yields less ml than lemon for the same citric-acid target (lime is more concentrated)', () => {
+    expect(citricAmount(1, 'lime').amount).toBeLessThan(citricAmount(1, 'lemon').amount);
+  });
+
+  test('zero grams converts to zero regardless of source', () => {
+    expect(citricAmount(0, 'citric').amount).toBe(0);
+    expect(citricAmount(0, 'lemon').amount).toBe(0);
+    expect(citricAmount(0, 'lime').amount).toBe(0);
   });
 });
 
@@ -619,5 +651,23 @@ describe('planExtras', () => {
 
     expect(extras.refillTotal).toBe(2); // g1: 3 fills -> 2 refills, g2: 1 fill -> 0 refills
     expect(extras.gelPortions).toBe(3); // single gel fill on g2, gelParts: 3
+  });
+});
+
+describe('recoveryCarbs', () => {
+  test('70 kg rider: 1.0-1.2 g/kg range', () => {
+    expect(recoveryCarbs(70)).toEqual({ min: 70, max: 84 });
+  });
+
+  test('default 78 kg rider', () => {
+    expect(recoveryCarbs(78)).toEqual({ min: 78, max: 94 });
+  });
+
+  test('rounds each bound to the nearest gram', () => {
+    expect(recoveryCarbs(65)).toEqual({ min: 65, max: 78 });
+  });
+
+  test('zero weight yields zero range', () => {
+    expect(recoveryCarbs(0)).toEqual({ min: 0, max: 0 });
   });
 });

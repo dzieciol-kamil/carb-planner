@@ -1,9 +1,11 @@
 import { absCap } from '../../domain/fuel';
+import type { CitricSource } from '../../domain/types';
 import { t } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
 import { MobileStepper } from './MobileStepper';
 
 const RATIO_PRESETS = [2, 1.5, 1, 0.8];
+const CITRIC_SOURCES: CitricSource[] = ['citric', 'lemon', 'lime'];
 
 export function MobileMix() {
   const lang = useAppStore((s) => s.ui.lang);
@@ -12,9 +14,11 @@ export function MobileMix() {
   const setConc = useAppStore((s) => s.setConc);
   const setSalt = useAppStore((s) => s.setSalt);
   const setCitric = useAppStore((s) => s.setCitric);
+  const setCitricSource = useAppStore((s) => s.setCitricSource);
   const setGelConc = useAppStore((s) => s.setGelConc);
   const setGelSalt = useAppStore((s) => s.setGelSalt);
   const setGelCitric = useAppStore((s) => s.setGelCitric);
+  const setGelCitricSource = useAppStore((s) => s.setGelCitricSource);
   const openMixSheet = useAppStore((s) => s.openMixSheet);
   const strings = t(lang);
 
@@ -27,6 +31,13 @@ export function MobileMix() {
         : r === 0.8
           ? strings.ratioLabelHoney
           : null;
+
+  const citricSourceCaption = (src: CitricSource) =>
+    src === 'lemon'
+      ? strings.citricSourceLemon
+      : src === 'lime'
+        ? strings.citricSourceLime
+        : strings.citricSourceCitric;
 
   return (
     <div style={{ padding: '12px 14px 16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -113,6 +124,31 @@ export function MobileMix() {
           format={(v) => v.toFixed(1)}
           onChange={setCitric}
         />
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+          {CITRIC_SOURCES.map((src) => {
+            const active = mix.citricSource === src;
+            return (
+              <button
+                key={src}
+                type="button"
+                onClick={() => setCitricSource(src)}
+                style={{
+                  flex: '1 1 76px',
+                  padding: '10px 4px',
+                  borderRadius: 9,
+                  border: '1px solid ' + (active ? 'var(--ink)' : 'var(--chip-border)'),
+                  background: active ? 'var(--ink)' : '#fff',
+                  color: active ? '#fff' : 'var(--muted-2)',
+                  fontSize: 11,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                }}
+              >
+                {citricSourceCaption(src)}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -155,6 +191,31 @@ export function MobileMix() {
           format={(v) => v.toFixed(1)}
           onChange={setGelCitric}
         />
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+          {CITRIC_SOURCES.map((src) => {
+            const active = mix.gelCitricSource === src;
+            return (
+              <button
+                key={src}
+                type="button"
+                onClick={() => setGelCitricSource(src)}
+                style={{
+                  flex: '1 1 76px',
+                  padding: '10px 4px',
+                  borderRadius: 9,
+                  border: '1px solid ' + (active ? 'var(--ink)' : 'var(--chip-border)'),
+                  background: active ? 'var(--ink)' : '#fff',
+                  color: active ? '#fff' : 'var(--muted-2)',
+                  fontSize: 11,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                }}
+              >
+                {citricSourceCaption(src)}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <button

@@ -10,6 +10,8 @@ const mix: MixSettings = {
   citric: 0.4,
   gelSalt: 0.4,
   gelCitric: 0.4,
+  citricSource: 'citric',
+  gelCitricSource: 'citric',
 };
 
 const gear: Vessel[] = [

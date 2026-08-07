@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, type CSSProperties } from 'react';
 import { gaps } from '../../domain/dragMath';
-import { dist, planSummary } from '../../domain/fuel';
+import { dist, planSummary, recoveryCarbs } from '../../domain/fuel';
 import { t } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
 import { sourceColor } from '../chart/theme';
@@ -53,6 +53,7 @@ export function MobilePlanList() {
   const carbInNorm = carbPct >= 90 && carbPct <= 115;
   const hydPct = summary.hydrationPct;
   const hydInNorm = hydPct >= 70;
+  const recovery = recoveryCarbs(route.weight);
   const demoVesselGid = fills.find((f) => f.fid === tourDemoFid)?.gid;
 
   const items: PlanCardItem[] = [
@@ -209,6 +210,45 @@ export function MobilePlanList() {
             {summary.fluidPlanned} / {summary.sweatLoss} ml
           </div>
         </div>
+      </div>
+
+      <div
+        style={{
+          borderRadius: 13,
+          padding: '11px 12px',
+          background: '#F9FAF7',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: 10,
+        }}
+      >
+        <div>
+          <div
+            style={{
+              fontSize: 10,
+              fontWeight: 600,
+              textTransform: 'uppercase',
+              color: 'var(--ink-soft)',
+            }}
+          >
+            {strings.recoveryTitle}
+          </div>
+          <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 2 }}>
+            {strings.recoveryHint}
+          </div>
+        </div>
+        <span
+          style={{
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: 16,
+            fontWeight: 700,
+            color: 'var(--ink)',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          ~{recovery.min}–{recovery.max} g
+        </span>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

@@ -1,12 +1,20 @@
 import type { CSSProperties } from 'react';
 import { combinedMixGroups, startFillOf, type CombinedMixGroup } from '../../domain/combinedRefill';
-import { carbsFill, partsOf } from '../../domain/fuel';
-import type { Fill } from '../../domain/types';
+import { carbsFill, citricAmount, partsOf } from '../../domain/fuel';
+import type { CitricSource, Fill } from '../../domain/types';
 import { t, type Lang } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
 
 function mixSplit(carbs: number, ratio: number): { malto: number; fructose: number } {
   return { malto: (carbs * ratio) / (ratio + 1), fructose: carbs / (ratio + 1) };
+}
+
+function citricSourceRowLabel(source: CitricSource, strings: ReturnType<typeof t>): string {
+  return source === 'lemon'
+    ? strings.citricSourceLemonJuice
+    : source === 'lime'
+      ? strings.citricSourceLimeJuice
+      : strings.mixRowCitric;
 }
 
 const rowStyle: CSSProperties = {
@@ -134,10 +142,12 @@ export function MobileMixSheet() {
               const n = partsOf(fill, gear);
               const split = mixSplit(carbs, mix.ratio || 2);
               const salt = (vessel.vol / 100) * (fill.content === 'gel' ? mix.gelSalt : mix.salt);
-              const citric =
+              const citricSource = fill.content === 'gel' ? mix.gelCitricSource : mix.citricSource;
+              const citricGrams =
                 (vessel.vol / 100) * (fill.content === 'gel' ? mix.gelCitric : mix.citric);
               const isStart = i === 0;
               const selected = isStart && combineStartGids.includes(vessel.gid);
+              const citric = citricAmount(citricGrams, citricSource);
 
               const lines: { k: string; v: string }[] =
                 fill.content === 'water'
@@ -147,7 +157,10 @@ export function MobileMixSheet() {
                       { k: strings.mixRowMalto, v: split.malto.toFixed(1) + ' g' },
                       { k: strings.mixRowFructose, v: split.fructose.toFixed(1) + ' g' },
                       { k: strings.mixRowSalt, v: salt.toFixed(2) + ' g' },
-                      { k: strings.mixRowCitric, v: citric.toFixed(2) + ' g' },
+                      {
+                        k: citricSourceRowLabel(citricSource, strings),
+                        v: citric.amount.toFixed(citric.unit === 'ml' ? 1 : 2) + ' ' + citric.unit,
+                      },
                       { k: strings.mixRowWater, v: vessel.vol + ' ml' },
                     ];
 

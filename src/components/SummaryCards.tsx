@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { planSummary } from '../domain/fuel';
+import { planSummary, recoveryCarbs } from '../domain/fuel';
 import { t } from '../i18n/strings';
 import { useAppStore } from '../store/appStore';
 
@@ -55,6 +55,20 @@ const footerValueStyle: CSSProperties = {
   fontFamily: "'JetBrains Mono', monospace",
   color: 'var(--ink)',
 };
+const recoveryValueStyle: CSSProperties = {
+  fontFamily: "'JetBrains Mono', monospace",
+  fontSize: 20,
+  fontWeight: 700,
+  color: 'var(--carb)',
+};
+const recoveryHintStyle: CSSProperties = {
+  fontSize: 12,
+  color: 'var(--muted-2)',
+};
+const recoveryNoteStyle: CSSProperties = {
+  fontSize: 11,
+  color: 'var(--muted-3)',
+};
 
 export function SummaryCards() {
   const route = useAppStore((s) => s.route);
@@ -69,6 +83,7 @@ export function SummaryCards() {
   const summary = planSummary({ route, mix, gear, fills, foods, foodLib });
   const carbColor = statusColor(summary.coverage, 'var(--carb)');
   const hydColor = statusColor(summary.hydrationPct, 'var(--water)');
+  const recovery = recoveryCarbs(route.weight);
 
   return (
     <div
@@ -150,6 +165,27 @@ export function SummaryCards() {
             {strings.planned} <b style={footerValueStyle}>{summary.fluidPlanned} ml</b>
           </span>
         </div>
+      </div>
+
+      <div style={cardStyle}>
+        <div style={titleRowStyle}>
+          <span style={titleStyle}>{strings.recoveryTitle}</span>
+          <span
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 11,
+              fontWeight: 700,
+              color: 'var(--muted-2)',
+            }}
+          >
+            1.0–1.2 g/kg
+          </span>
+        </div>
+        <div style={recoveryValueStyle}>
+          ~{recovery.min}–{recovery.max} g
+        </div>
+        <div style={recoveryHintStyle}>{strings.recoveryHint}</div>
+        <div style={recoveryNoteStyle}>{strings.recoveryNote}</div>
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import type {
+  CitricSource,
   Content,
   Fill,
   FoodItem,
@@ -204,6 +205,28 @@ export function volOf(fill: Fill, gear: Vessel[]): number {
 export function carbsFill(fill: Fill, gear: Vessel[], mix: MixSettings): number {
   if (fill.content === 'water') return 0;
   return (volOf(fill, gear) / 100) * (fill.content === 'gel' ? mix.gelConc : mix.conc);
+}
+
+// Approximate citric-acid concentration of fresh juice (g per ml), used only to turn a
+// citric-acid-equivalent gram figure into a practical "squeeze this much juice" amount for the
+// lemon/lime sources. Citric acid powder is ~100% citric acid, so it needs no conversion. These
+// are rough real-world ballparks (lemon ~5% w/v, lime ~6% w/v, lime being slightly more acidic),
+// not a precise nutritional reference — good enough for a recipe card, not a lab.
+const JUICE_CITRIC_YIELD_G_PER_ML: Record<Exclude<CitricSource, 'citric'>, number> = {
+  lemon: 0.05,
+  lime: 0.06,
+};
+
+export interface CitricAmount {
+  amount: number;
+  unit: 'g' | 'ml';
+}
+
+/** Converts a citric-acid-equivalent gram amount into the practical amount/unit for the given source. */
+export function citricAmount(gramsCitricAcid: number, source: CitricSource): CitricAmount {
+  if (source === 'citric') return { amount: gramsCitricAcid, unit: 'g' };
+  const yieldPerMl = JUICE_CITRIC_YIELD_G_PER_ML[source];
+  return { amount: yieldPerMl > 0 ? gramsCitricAcid / yieldPerMl : 0, unit: 'ml' };
 }
 
 export function partsOf(fill: Fill, gear: Vessel[]): number {
@@ -458,6 +481,27 @@ export function planSummary(state: PlanState): PlanSummary {
     hydrationPct,
     coverage,
     absorbedTotal: S[S.length - 1].absorbed,
+  };
+}
+
+export interface RecoveryCarbs {
+  min: number;
+  max: number;
+}
+
+const RECOVERY_CARBS_MIN_G_PER_KG = 1.0;
+const RECOVERY_CARBS_MAX_G_PER_KG = 1.2;
+
+/**
+ * Recommended carbs to eat in the first ~30 min after finishing a ride, per
+ * common sports-nutrition guidance of 1.0–1.2 g/kg body weight. Shown as a
+ * range (not a single midpoint) since the source guidance itself is a range
+ * and rounding to one number would imply false precision.
+ */
+export function recoveryCarbs(weightKg: number): RecoveryCarbs {
+  return {
+    min: Math.round(weightKg * RECOVERY_CARBS_MIN_G_PER_KG),
+    max: Math.round(weightKg * RECOVERY_CARBS_MAX_G_PER_KG),
   };
 }
 

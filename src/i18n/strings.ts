@@ -78,6 +78,12 @@ export interface StringTable {
   concLabel: string;
   saltLabel: string;
   citricLabel: string;
+  citricSourceLabel: string;
+  citricSourceCitric: string;
+  citricSourceLemon: string;
+  citricSourceLime: string;
+  citricSourceLemonJuice: string;
+  citricSourceLimeJuice: string;
   gelConcLabel: string;
   per100: string;
   mixIzo: string;
@@ -267,6 +273,19 @@ export interface StringTable {
   eatenOnceLabel: string;
   carbCardTitle: string;
   inPlanSuffix: string;
+  backupSection: string;
+  backupHint: string;
+  exportSettingsButton: string;
+  importSettingsButton: string;
+  importSettingsConfirmTitle: string;
+  importSettingsConfirmBody: string;
+  importSettingsConfirmCancel: string;
+  importSettingsConfirmConfirm: string;
+  importSettingsError: string;
+  importSettingsSuccess: string;
+  recoveryTitle: string;
+  recoveryHint: string;
+  recoveryNote: string;
 }
 
 export const STR: Record<Lang, StringTable> = {
@@ -356,6 +375,12 @@ export const STR: Record<Lang, StringTable> = {
     concLabel: 'cukry',
     saltLabel: 'sól',
     citricLabel: 'kwasek',
+    citricSourceLabel: 'źródło kwasku',
+    citricSourceCitric: 'Kwasek cytrynowy',
+    citricSourceLemon: 'Cytryna',
+    citricSourceLime: 'Limonka',
+    citricSourceLemonJuice: 'Sok z cytryny',
+    citricSourceLimeJuice: 'Sok z limonki',
     gelConcLabel: 'cukry',
     per100: 'g/100 ml',
     mixIzo: 'Izotonik',
@@ -593,6 +618,22 @@ export const STR: Record<Lang, StringTable> = {
     eatenOnceLabel: 'zjedzone jednorazowo',
     carbCardTitle: 'Węglowodany',
     inPlanSuffix: '× w planie',
+    backupSection: 'Kopia zapasowa',
+    backupHint:
+      'Zapisz ustawienia (sprzęt, produkty, profil, plan) do pliku albo wczytaj wcześniejszą kopię na innym urządzeniu.',
+    exportSettingsButton: 'Eksportuj ustawienia',
+    importSettingsButton: 'Importuj ustawienia',
+    importSettingsConfirmTitle: 'Zastąpić bieżące ustawienia?',
+    importSettingsConfirmBody:
+      'Import nadpisze Twój aktualny sprzęt, produkty, mieszankę i plan danymi z pliku. Tej zmiany nie da się cofnąć.',
+    importSettingsConfirmCancel: 'Anuluj',
+    importSettingsConfirmConfirm: 'Importuj',
+    importSettingsError:
+      'Nie udało się wczytać pliku — sprawdź, czy to poprawny eksport ustawień z Carb Fueling.',
+    importSettingsSuccess: 'Ustawienia zaimportowane.',
+    recoveryTitle: 'Regeneracja',
+    recoveryHint: 'Zjedz tyle w ciągu pierwszych 30 minut po zakończeniu jazdy.',
+    recoveryNote: 'Uzupełnia plan tankowania na trasie — nie zastępuje go.',
   },
   en: {
     tagline: 'carbohydrate & hydration planner',
@@ -679,6 +720,12 @@ export const STR: Record<Lang, StringTable> = {
     concLabel: 'carbs',
     saltLabel: 'salt',
     citricLabel: 'citric',
+    citricSourceLabel: 'acid source',
+    citricSourceCitric: 'Citric acid',
+    citricSourceLemon: 'Lemon',
+    citricSourceLime: 'Lime',
+    citricSourceLemonJuice: 'Lemon juice',
+    citricSourceLimeJuice: 'Lime juice',
     gelConcLabel: 'carbs',
     per100: 'g/100 ml',
     mixIzo: 'Isotonic',
@@ -915,6 +962,22 @@ export const STR: Record<Lang, StringTable> = {
     eatenOnceLabel: 'eaten once',
     carbCardTitle: 'Carbs',
     inPlanSuffix: '× in plan',
+    backupSection: 'Backup',
+    backupHint:
+      'Save your settings (gear, products, profile, plan) to a file, or load a backup on another device.',
+    exportSettingsButton: 'Export settings',
+    importSettingsButton: 'Import settings',
+    importSettingsConfirmTitle: 'Replace your current settings?',
+    importSettingsConfirmBody:
+      "Importing will overwrite your current gear, products, mix and plan with the file's data. This can't be undone.",
+    importSettingsConfirmCancel: 'Cancel',
+    importSettingsConfirmConfirm: 'Import',
+    importSettingsError:
+      "Could not read that file — check it's a valid Carb Fueling settings export.",
+    importSettingsSuccess: 'Settings imported.',
+    recoveryTitle: 'Recovery',
+    recoveryHint: 'Aim to eat this much within the first 30 minutes after finishing.',
+    recoveryNote: "Complements your fueling plan — it doesn't replace it.",
   },
 };
 
