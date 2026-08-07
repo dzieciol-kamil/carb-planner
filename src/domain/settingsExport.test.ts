@@ -35,6 +35,8 @@ function makeData(overrides: Partial<SettingsExportData> = {}): SettingsExportDa
       citric: 0.2,
       gelSalt: 0.4,
       gelCitric: 0.4,
+      citricSource: 'citric',
+      gelCitricSource: 'citric',
     },
     gear: [{ gid: 'g1', name: 'Bidon', vol: 650, allowed: ['water', 'izo'], gelParts: 4 }],
     fills: [{ fid: 1, gid: 'g1', content: 'izo', from: 0, to: 50 }],
