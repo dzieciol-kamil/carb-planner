@@ -607,14 +607,14 @@ export const STR: Record<Lang, StringTable> = {
     combineFillCheckbox: 'Przygotuj razem',
     combineSectionTitle: 'Wspólna porcja',
     combineSectionHint:
-      'Zaznacz napełnienia mieszane w jednym słoiku (dowolne bidony, dowolny moment), żeby zobaczyć jedną wspólną porcję zamiast osobnych składów.',
+      'Zaznacz napełnienia, które przygotowujesz razem (dowolne bidony, dowolny moment), żeby zobaczyć jedną wspólną porcję zamiast osobnych składów.',
     combineBottles: 'Bidony',
     combineNote: 'Uwzględnione we wspólnej porcji powyżej.',
     combineMixedLabel: 'Izo + żel',
     combinePourLabel: 'Ile do którego bidonu',
     combineCrossTypeConfirmTitle: 'Połączyć izo i żel w jedną porcję?',
     combineCrossTypeConfirmBody:
-      'Łączenie izo i żelu w jednym słoiku wymaga wspólnych ustawień mieszanki. Proporcję malto:fruktoza, sól i kwasek dla tej łączonej porcji dopasujemy do Twoich ustawień izo — ustawienia żelu same w sobie się nie zmienią.',
+      'Łączenie izo i żelu w jedną porcję wymaga wspólnych ustawień mieszanki. Proporcję malto:fruktoza, sól i kwasek dla tej łączonej porcji dopasujemy do Twoich ustawień izo — ustawienia żelu same w sobie się nie zmienią.',
     combineCrossTypeConfirmCancel: 'Anuluj',
     combineCrossTypeConfirmConfirm: 'Połącz',
     bidonComposition: 'SKŁAD BIDONÓW',
@@ -955,14 +955,14 @@ export const STR: Record<Lang, StringTable> = {
     combineFillCheckbox: 'Prepare together',
     combineSectionTitle: 'Combined batch',
     combineSectionHint:
-      'Pick the fills mixed in one jar (any bottle, any time) to see one combined batch instead of separate recipes.',
+      'Pick the fills you prepare together (any bottle, any time) to see one combined batch instead of separate recipes.',
     combineBottles: 'Bottles',
     combineNote: 'Included in the combined batch above.',
     combineMixedLabel: 'Izo + gel',
     combinePourLabel: 'How much goes in each bottle',
     combineCrossTypeConfirmTitle: 'Combine izo and gel into one batch?',
     combineCrossTypeConfirmBody:
-      'Combining izo and gel in one jar needs one shared recipe. The malto:fructose ratio, salt, and citric for this combined batch will be aligned to your izo settings — your gel settings themselves won’t change.',
+      'Combining izo and gel into one batch needs one shared recipe. The malto:fructose ratio, salt, and citric for this combined batch will be aligned to your izo settings — your gel settings themselves won’t change.',
     combineCrossTypeConfirmCancel: 'Cancel',
     combineCrossTypeConfirmConfirm: 'Combine',
     bidonComposition: 'BOTTLE RECIPES',
