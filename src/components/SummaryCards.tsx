@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react';
 import { planSummary, recoveryCarbs } from '../domain/fuel';
 import { t } from '../i18n/strings';
 import { useAppStore } from '../store/appStore';
+import { InfoPopover } from './ui/InfoPopover';
 
 function fmt(n: number): string {
   return n.toFixed(0);
@@ -57,7 +58,6 @@ const footerValueStyle: CSSProperties = {
 };
 const recoveryAnnotationStyle: CSSProperties = {
   color: 'var(--muted-2)',
-  cursor: 'help',
 };
 
 export function SummaryCards() {
@@ -113,9 +113,13 @@ export function SummaryCards() {
         <div style={footerRowStyle}>
           <span>
             {strings.needSum} <b style={footerValueStyle}>{fmt(summary.target)} g</b>{' '}
-            <span style={recoveryAnnotationStyle} title={strings.recoveryHint}>
+            <InfoPopover
+              hint={strings.recoveryHint}
+              triggerStyle={recoveryAnnotationStyle}
+              popoverStyle={{ bottom: 'calc(100% + 6px)', left: 0 }}
+            >
               ({strings.recoveryLabel}: ~{recovery.min}–{recovery.max} g ⓘ)
-            </span>
+            </InfoPopover>
           </span>
           <span>
             {strings.planned}{' '}

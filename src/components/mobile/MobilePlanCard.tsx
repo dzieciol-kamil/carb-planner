@@ -59,7 +59,6 @@ export function MobilePlanCard({ item }: { item: PlanCardItem }) {
   const setFillContent = useAppStore((s) => s.setFillContent);
   const updateFood = useAppStore((s) => s.updateFood);
   const removeFood = useAppStore((s) => s.removeFood);
-  const setFoodContinuous = useAppStore((s) => s.setFoodContinuous);
   const strings = t(lang);
 
   const distanceKm = dist(route);
@@ -472,23 +471,6 @@ export function MobilePlanCard({ item }: { item: PlanCardItem }) {
             gap: 10,
           }}
         >
-          <div style={{ display: 'flex', gap: 6 }}>
-            <button
-              type="button"
-              style={chipStyle(!food.cont, 'var(--food)')}
-              onClick={() => setFoodContinuous(food.id, false)}
-            >
-              {strings.shotMode}
-            </button>
-            <button
-              type="button"
-              style={chipStyle(!!food.cont, 'var(--food)')}
-              onClick={() => setFoodContinuous(food.id, true)}
-            >
-              {strings.contMode}
-            </button>
-          </div>
-
           {food.cont ? (
             <>
               <MobileStepper

@@ -157,34 +157,6 @@ export function MobileMixSheet() {
           <p style={{ margin: 0, fontSize: 13, color: 'var(--muted)' }}>{strings.mixSheetEmpty}</p>
         )}
 
-        {showCombined && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-            <div>
-              <div
-                style={{
-                  fontSize: 11,
-                  fontWeight: 700,
-                  textTransform: 'uppercase',
-                  color: 'var(--muted)',
-                }}
-              >
-                {strings.combineSectionTitle}
-              </div>
-              <div style={{ fontSize: 11, color: 'var(--muted-2)', marginTop: 2 }}>
-                {strings.combineSectionHint}
-              </div>
-            </div>
-            {groups.map((group) => (
-              <CombinedGroupRows
-                key={group.content}
-                group={group}
-                lang={lang}
-                contentLabel={contentLabel}
-              />
-            ))}
-          </div>
-        )}
-
         {vesselGroups.map(({ vessel, vesselFills }) => (
           <div key={vessel.gid}>
             {vesselFills.map((fill, i) => {
@@ -268,6 +240,34 @@ export function MobileMixSheet() {
             })}
           </div>
         ))}
+
+        {showCombined && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <div>
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  color: 'var(--muted)',
+                }}
+              >
+                {strings.combineSectionTitle}
+              </div>
+              <div style={{ fontSize: 11, color: 'var(--muted-2)', marginTop: 2 }}>
+                {strings.combineSectionHint}
+              </div>
+            </div>
+            {groups.map((group) => (
+              <CombinedGroupRows
+                key={group.content}
+                group={group}
+                lang={lang}
+                contentLabel={contentLabel}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {pendingFid != null && (

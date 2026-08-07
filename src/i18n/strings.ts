@@ -120,8 +120,6 @@ export interface StringTable {
   water: string;
   izo: string;
   gel: string;
-  shotMode: string;
-  contMode: string;
   fill: string;
   refills: string;
   addFill: string;
@@ -424,8 +422,6 @@ export const STR: Record<Lang, StringTable> = {
     water: 'Woda',
     izo: 'Izo',
     gel: 'Żel',
-    shotMode: 'Jednorazowo',
-    contMode: 'Ciągle',
     fill: 'Napełnienie',
     refills: 'dolewki',
     addFill: '+ dolewka po wyczerpaniu',
@@ -777,8 +773,6 @@ export const STR: Record<Lang, StringTable> = {
     water: 'Water',
     izo: 'Izo',
     gel: 'Gel',
-    shotMode: 'Shot',
-    contMode: 'Steady',
     fill: 'Fill',
     refills: 'refills',
     addFill: '+ refill once empty',

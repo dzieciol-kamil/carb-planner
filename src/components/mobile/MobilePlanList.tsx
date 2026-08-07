@@ -4,6 +4,7 @@ import { dist, planSummary, recoveryCarbs } from '../../domain/fuel';
 import { t } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
 import { sourceColor } from '../chart/theme';
+import { InfoPopover } from '../ui/InfoPopover';
 import { MobilePlanCard, type PlanCardItem } from './MobilePlanCard';
 
 const MIN_GAP_KM = 6;
@@ -161,17 +162,18 @@ export function MobilePlanList() {
           >
             {Math.round(summary.absorbedTotal)} / {Math.round(summary.target)} g
           </div>
-          <div
-            style={{
+          <InfoPopover
+            hint={strings.recoveryHint}
+            triggerStyle={{
+              display: 'block',
               fontSize: 9,
               color: carbInNorm ? '#3D7A26' : '#A3512A',
               marginTop: 2,
-              cursor: 'help',
             }}
-            title={strings.recoveryHint}
+            popoverStyle={{ top: 'calc(100% + 6px)', left: 0 }}
           >
             ({strings.recoveryLabel}: ~{recovery.min}–{recovery.max} g ⓘ)
-          </div>
+          </InfoPopover>
         </div>
         <div style={coverageCardStyle(hydInNorm)}>
           <div

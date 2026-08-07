@@ -172,7 +172,6 @@ interface AppState {
 
   updateFood: (id: number, patch: Partial<FoodItem>) => void;
   removeFood: (id: number) => void;
-  setFoodContinuous: (id: number, cont: boolean) => void;
   addFoodFromLibrary: (key: string) => void;
 
   addShop: () => void;
@@ -495,17 +494,6 @@ export const useAppStore = create<AppState>()(
           foods: s.foods.filter((f) => f.id !== id),
           ui: { ...s.ui, hoverKey: null, selKey: null },
         })),
-      setFoodContinuous: (id, cont) =>
-        set((s) => {
-          const distanceKm = dist(s.route);
-          return {
-            foods: s.foods.map((f) =>
-              f.id === id
-                ? { ...f, cont, to: cont ? Math.min(distanceKm, f.from + 18) : f.from }
-                : f,
-            ),
-          };
-        }),
       addFoodFromLibrary: (key) =>
         set((s) => {
           const entry = s.foodLib.find((f) => f.key === key);
