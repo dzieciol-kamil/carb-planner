@@ -169,8 +169,31 @@ export function RecipesSection() {
         </button>
       </div>
 
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: 14,
+        }}
+      >
+        {gear.map((vessel) => (
+          <VesselRecipeCard
+            key={vessel.gid}
+            vessel={vessel}
+            fills={fills.filter((f) => f.gid === vessel.gid).sort((a, b) => a.from - b.from)}
+            route={route}
+            mix={mix}
+            xUnit={xUnit}
+            lang={lang}
+            combinedFillIds={combinedFillIds}
+            showCombined={showCombined}
+            onToggleCombine={handleToggle}
+          />
+        ))}
+      </div>
+
       {showCombined && (
-        <div style={{ marginBottom: 18, display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={{ marginTop: 18, display: 'flex', flexDirection: 'column', gap: 10 }}>
           <div>
             <div
               style={{
@@ -195,29 +218,6 @@ export function RecipesSection() {
           </div>
         </div>
       )}
-
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-          gap: 14,
-        }}
-      >
-        {gear.map((vessel) => (
-          <VesselRecipeCard
-            key={vessel.gid}
-            vessel={vessel}
-            fills={fills.filter((f) => f.gid === vessel.gid).sort((a, b) => a.from - b.from)}
-            route={route}
-            mix={mix}
-            xUnit={xUnit}
-            lang={lang}
-            combinedFillIds={combinedFillIds}
-            showCombined={showCombined}
-            onToggleCombine={handleToggle}
-          />
-        ))}
-      </div>
 
       {pendingFid != null && (
         <ConfirmDialog
