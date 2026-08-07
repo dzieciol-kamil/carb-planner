@@ -95,6 +95,18 @@ function citricStep(unit: CitricAmount['unit']): number {
   return 0.05;
 }
 
+// `NumberInput` renders its value with a bare `String(value)` — unlike `MobileStepper`, it has no
+// `format` option to round for display. Both `citricAmount`'s ml conversion (division by a yield
+// constant like 0.06) and `citricGramsFromAmount`'s fruit->grams conversion (e.g. 0.25 * 30 * 0.06)
+// can produce long floating-point tails (3.3333333333333335, 0.44999999999999996) that overflow
+// the narrow 1/3-width grid cell. Round for display only — the value the user actually typed still
+// flows through `onChange` unrounded, so this doesn't affect what gets stored.
+function roundCitricDisplay(amount: number, unit: CitricAmount['unit']): number {
+  if (unit === 'ml') return Math.round(amount * 10) / 10;
+  if (unit === 'fruit') return Math.round(amount * 4) / 4;
+  return Math.round(amount * 100) / 100;
+}
+
 // The "Izo" caption on the 2:1 preset flags it as this app's default isotonic ratio — showing
 // that same caption on the gel row's identical preset would misleadingly imply the gel mix is
 // somehow "isotonic" too, so the gel row skips it and shows only the bare "2:1".
@@ -320,7 +332,7 @@ export function MixPanel() {
             </span>
             <NumberInput
               step={citricStep(izoCitric.unit)}
-              value={izoCitric.amount}
+              value={roundCitricDisplay(izoCitric.amount, izoCitric.unit)}
               onChange={(v) => setCitric(citricGramsFromAmount(v, mix.citricSource))}
               style={miniInputStyle}
             />
@@ -391,7 +403,7 @@ export function MixPanel() {
             </span>
             <NumberInput
               step={citricStep(gelCitricAmt.unit)}
-              value={gelCitricAmt.amount}
+              value={roundCitricDisplay(gelCitricAmt.amount, gelCitricAmt.unit)}
               onChange={(v) => setGelCitric(citricGramsFromAmount(v, mix.gelCitricSource))}
               style={miniInputStyle}
             />
