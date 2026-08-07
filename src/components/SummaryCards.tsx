@@ -55,21 +55,9 @@ const footerValueStyle: CSSProperties = {
   fontFamily: "'JetBrains Mono', monospace",
   color: 'var(--ink)',
 };
-const recoveryValueStyle: CSSProperties = {
-  fontFamily: "'JetBrains Mono', monospace",
-  fontSize: 20,
-  fontWeight: 700,
-  color: 'var(--carb)',
-};
-const recoveryHintStyle: CSSProperties = {
-  fontSize: 12,
+const recoveryAnnotationStyle: CSSProperties = {
   color: 'var(--muted-2)',
-};
-const recoveryRowStyle: CSSProperties = {
-  display: 'flex',
-  alignItems: 'flex-end',
-  justifyContent: 'space-between',
-  gap: 10,
+  cursor: 'help',
 };
 
 export function SummaryCards() {
@@ -124,7 +112,10 @@ export function SummaryCards() {
         </div>
         <div style={footerRowStyle}>
           <span>
-            {strings.needSum} <b style={footerValueStyle}>{fmt(summary.target)} g</b>
+            {strings.needSum} <b style={footerValueStyle}>{fmt(summary.target)} g</b>{' '}
+            <span style={recoveryAnnotationStyle} title={strings.recoveryHint}>
+              ({strings.recoveryLabel}: ~{recovery.min}–{recovery.max} g ⓘ)
+            </span>
           </span>
           <span>
             {strings.planned}{' '}
@@ -166,28 +157,6 @@ export function SummaryCards() {
           <span>
             {strings.planned} <b style={footerValueStyle}>{summary.fluidPlanned} ml</b>
           </span>
-        </div>
-      </div>
-
-      <div style={cardStyle}>
-        <div style={titleRowStyle}>
-          <span style={titleStyle}>{strings.recoveryTitle}</span>
-          <span
-            style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: 11,
-              fontWeight: 700,
-              color: 'var(--muted-2)',
-            }}
-          >
-            1.0–1.2 g/kg
-          </span>
-        </div>
-        <div style={recoveryRowStyle}>
-          <div style={recoveryHintStyle}>{strings.recoveryHint}</div>
-          <div style={recoveryValueStyle}>
-            ~{recovery.min}–{recovery.max} g
-          </div>
         </div>
       </div>
     </div>

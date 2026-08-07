@@ -161,6 +161,17 @@ export function MobilePlanList() {
           >
             {Math.round(summary.absorbedTotal)} / {Math.round(summary.target)} g
           </div>
+          <div
+            style={{
+              fontSize: 9,
+              color: carbInNorm ? '#3D7A26' : '#A3512A',
+              marginTop: 2,
+              cursor: 'help',
+            }}
+            title={strings.recoveryHint}
+          >
+            ({strings.recoveryLabel}: ~{recovery.min}–{recovery.max} g ⓘ)
+          </div>
         </div>
         <div style={coverageCardStyle(hydInNorm)}>
           <div
@@ -210,45 +221,6 @@ export function MobilePlanList() {
             {summary.fluidPlanned} / {summary.sweatLoss} ml
           </div>
         </div>
-      </div>
-
-      <div
-        style={{
-          borderRadius: 13,
-          padding: '11px 12px',
-          background: '#F9FAF7',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: 10,
-        }}
-      >
-        <div>
-          <div
-            style={{
-              fontSize: 10,
-              fontWeight: 600,
-              textTransform: 'uppercase',
-              color: 'var(--ink-soft)',
-            }}
-          >
-            {strings.recoveryTitle}
-          </div>
-          <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 2 }}>
-            {strings.recoveryHint}
-          </div>
-        </div>
-        <span
-          style={{
-            fontFamily: "'JetBrains Mono', monospace",
-            fontSize: 16,
-            fontWeight: 700,
-            color: 'var(--ink)',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          ~{recovery.min}–{recovery.max} g
-        </span>
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

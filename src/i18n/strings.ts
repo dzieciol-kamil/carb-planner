@@ -283,7 +283,7 @@ export interface StringTable {
   importSettingsConfirmConfirm: string;
   importSettingsError: string;
   importSettingsSuccess: string;
-  recoveryTitle: string;
+  recoveryLabel: string;
   recoveryHint: string;
 }
 
@@ -630,7 +630,7 @@ export const STR: Record<Lang, StringTable> = {
     importSettingsError:
       'Nie udało się wczytać pliku — sprawdź, czy to poprawny eksport ustawień z Carb Fueling.',
     importSettingsSuccess: 'Ustawienia zaimportowane.',
-    recoveryTitle: 'Regeneracja',
+    recoveryLabel: 'Regeneracja',
     recoveryHint: 'Zjedz tyle w ciągu pierwszych 30 minut po zakończeniu jazdy.',
   },
   en: {
@@ -973,7 +973,7 @@ export const STR: Record<Lang, StringTable> = {
     importSettingsError:
       "Could not read that file — check it's a valid Carb Fueling settings export.",
     importSettingsSuccess: 'Settings imported.',
-    recoveryTitle: 'Recovery',
+    recoveryLabel: 'Recovery',
     recoveryHint: 'Aim to eat this much within the first 30 minutes after finishing.',
   },
 };
