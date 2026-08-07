@@ -78,7 +78,7 @@ export function SummaryCards() {
   return (
     <div
       style={{
-        flex: '1 1 36%',
+        flex: '1 1 44%',
         minWidth: 240,
         boxSizing: 'border-box',
         display: 'flex',
@@ -112,13 +112,13 @@ export function SummaryCards() {
         </div>
         <div style={footerRowStyle}>
           <span>
-            {strings.needSum} <b style={footerValueStyle}>{fmt(summary.target)} g</b>{' '}
+            {strings.needSum} <b style={footerValueStyle}>{fmt(summary.target)}g</b>{' '}
             <InfoPopover
               hint={strings.recoveryHint}
               triggerStyle={recoveryAnnotationStyle}
               popoverStyle={{ bottom: 'calc(100% + 6px)', left: 0 }}
             >
-              ({strings.recoveryLabel}: ~{recovery.min}–{recovery.max} g ⓘ)
+              ({strings.recoveryLabel}: ~{recovery.min}–{recovery.max}g ⓘ)
             </InfoPopover>
           </span>
           <span>

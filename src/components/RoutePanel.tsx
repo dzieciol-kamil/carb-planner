@@ -96,8 +96,8 @@ export function RoutePanel() {
   return (
     <div
       style={{
-        flex: '1 1 58%',
-        minWidth: 430,
+        flex: '1 1 49%',
+        minWidth: 760,
         boxSizing: 'border-box',
         background: '#fff',
         border: '1px solid var(--border)',
@@ -299,8 +299,9 @@ export function RoutePanel() {
 
       <div
         style={{
-          flex: '1 1 100%',
+          flex: '0 1 710px',
           width: '100%',
+          maxWidth: 710,
           display: 'flex',
           alignItems: 'center',
           gap: 16,
