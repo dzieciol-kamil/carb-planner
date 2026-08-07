@@ -450,19 +450,35 @@ describe('fmtFruitFraction', () => {
 });
 
 describe('fmtFruitFractionPct', () => {
-  test('appends a percentage alongside the ASCII fraction for non-whole amounts', () => {
+  test('appends a percentage alongside the ASCII fraction for amounts under one whole fruit', () => {
     expect(fmtFruitFractionPct(0)).toBe('0');
     expect(fmtFruitFractionPct(0.25)).toBe('1/4 (25%)');
     expect(fmtFruitFractionPct(0.5)).toBe('1/2 (50%)');
     expect(fmtFruitFractionPct(0.75)).toBe('3/4 (75%)');
+  });
+
+  test('drops the percentage at or above one whole fruit — the mixed-number fraction alone is clear', () => {
     expect(fmtFruitFractionPct(1)).toBe('1');
-    expect(fmtFruitFractionPct(1.25)).toBe('1 1/4 (125%)');
-    expect(fmtFruitFractionPct(1.75)).toBe('1 3/4 (175%)');
+    expect(fmtFruitFractionPct(1.25)).toBe('1 1/4');
+    expect(fmtFruitFractionPct(1.75)).toBe('1 3/4');
     expect(fmtFruitFractionPct(2)).toBe('2');
+    expect(fmtFruitFractionPct(6.75)).toBe('6 3/4');
+  });
+
+  test('never shows a percentage for amounts >= 1', () => {
+    for (const n of [1, 1.25, 1.5, 1.75, 2, 2.5, 6.75]) {
+      expect(fmtFruitFractionPct(n)).not.toMatch(/%/);
+    }
+  });
+
+  test('shows a percentage for fractional amounts under 1', () => {
+    for (const n of [0.25, 0.5, 0.75]) {
+      expect(fmtFruitFractionPct(n)).toMatch(/%/);
+    }
   });
 
   test('never emits the unicode fraction glyphs (¼ ½ ¾)', () => {
-    for (const n of [0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5]) {
+    for (const n of [0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 6.75]) {
       expect(fmtFruitFractionPct(n)).not.toMatch(/[¼½¾]/);
     }
   });

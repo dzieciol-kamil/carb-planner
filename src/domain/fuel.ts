@@ -316,15 +316,16 @@ export function fmtFruitFraction(n: number): string {
 }
 
 /**
- * Recipe-card display for a whole-fruit citric amount: `fmtFruitFraction`'s ASCII numeral plus a
- * percentage of a whole fruit in parentheses, e.g. 0.75 → "3/4 (75%)", 1.25 → "1 1/4 (125%)".
- * Whole amounts (no remainder) skip the percentage since they were never ambiguous to read, e.g.
- * 1 → "1", not "1 (100%)".
+ * Recipe-card display for a whole-fruit citric amount: `fmtFruitFraction`'s ASCII numeral, plus a
+ * percentage in parentheses when the amount is under one whole fruit, e.g. 0.75 → "3/4 (75%)".
+ * The percentage only reads intuitively as "fraction of one fruit" below 1 — past that point the
+ * mixed-number fraction alone already communicates the quantity clearly, and tacking on a
+ * percentage there (e.g. "6 3/4 (675%)") looks like noise or a typo rather than useful info. So
+ * amounts at or above 1 whole fruit skip it entirely: 1 → "1", 1.25 → "1 1/4", 6.75 → "6 3/4".
  */
 export function fmtFruitFractionPct(n: number): string {
   const numeral = fmtFruitFraction(n);
-  const whole = Math.floor(n + 1e-9);
-  const hasFraction = n > 0 && Math.abs(n - whole) > 1e-9;
+  const hasFraction = n > 0 && n < 1 && numeral !== '0';
   return hasFraction ? `${numeral} (${Math.round(n * 100)}%)` : numeral;
 }
 
