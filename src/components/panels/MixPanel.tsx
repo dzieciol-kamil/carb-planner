@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import { combinedGroups } from '../../domain/combinedRefill';
 import { citricAmount, citricGramsFromAmount, type CitricAmount } from '../../domain/fuel';
 import type { CitricSource, Content } from '../../domain/types';
 import { t } from '../../i18n/strings';
@@ -116,17 +117,17 @@ function presetCaption(r: number, strings: ReturnType<typeof t>, forGel: boolean
   return null;
 }
 
-function cOpt(on: boolean, color: string): CSSProperties {
+function cOpt(on: boolean, color: string, disabled = false): CSSProperties {
   return {
-    border: '1px solid ' + (on ? color : 'var(--chip-border)'),
-    background: on ? color : '#fff',
-    color: on ? '#fff' : 'var(--muted)',
+    border: '1px solid ' + (disabled ? 'var(--chip-border)' : on ? color : 'var(--chip-border)'),
+    background: disabled ? '#F7F8F5' : on ? color : '#fff',
+    color: disabled ? '#C9CEC7' : on ? '#fff' : 'var(--muted)',
     borderRadius: 7,
     padding: '5px 10px',
     fontSize: 11,
     fontWeight: 700,
     fontFamily: 'Archivo, sans-serif',
-    cursor: 'pointer',
+    cursor: disabled ? 'not-allowed' : 'pointer',
   };
 }
 
@@ -135,9 +136,10 @@ interface RatioRowProps {
   onChange: (n: number) => void;
   strings: ReturnType<typeof t>;
   forGel: boolean;
+  disabled?: boolean;
 }
 
-function RatioRow({ value, onChange, strings, forGel }: RatioRowProps) {
+function RatioRow({ value, onChange, strings, forGel, disabled = false }: RatioRowProps) {
   const isPreset = RATIO_PRESETS.includes(value);
   return (
     <div
@@ -158,8 +160,9 @@ function RatioRow({ value, onChange, strings, forGel }: RatioRowProps) {
             <button
               key={r}
               onClick={() => onChange(r)}
+              disabled={disabled}
               style={{
-                ...cOpt(value === r, 'var(--ink)'),
+                ...cOpt(value === r, 'var(--ink)', disabled),
                 display: 'flex',
                 flexDirection: 'row',
                 alignItems: 'baseline',
@@ -181,7 +184,8 @@ function RatioRow({ value, onChange, strings, forGel }: RatioRowProps) {
             borderRadius: 7,
             padding: '4px 8px',
             border: '1px solid ' + (isPreset ? 'var(--chip-border)' : 'var(--ink)'),
-            background: '#fff',
+            background: disabled ? '#F7F8F5' : '#fff',
+            opacity: disabled ? 0.6 : 1,
           }}
         >
           <span style={{ fontSize: 10.5, color: 'var(--muted)' }}>{strings.ratioCustom}</span>
@@ -192,6 +196,7 @@ function RatioRow({ value, onChange, strings, forGel }: RatioRowProps) {
             value={value}
             onChange={onChange}
             fallback={2}
+            disabled={disabled}
             style={{
               width: 44,
               border: 'none',
@@ -213,6 +218,8 @@ export function MixPanel() {
   const lang = useAppStore((s) => s.ui.lang);
   const mix = useAppStore((s) => s.mix);
   const gear = useAppStore((s) => s.gear);
+  const fills = useAppStore((s) => s.fills);
+  const combinedFillIds = useAppStore((s) => s.combinedFillIds);
   const closePanel = useAppStore((s) => s.closePanel);
   const setRatio = useAppStore((s) => s.setRatio);
   const setGelRatio = useAppStore((s) => s.setGelRatio);
@@ -234,6 +241,14 @@ export function MixPanel() {
   const strings = t(lang);
   const izoCitric = citricAmount(mix.citric, mix.citricSource);
   const gelCitricAmt = citricAmount(mix.gelCitric, mix.gelCitricSource);
+  // Gel's ratio/salt/citric/citricSource are inherited from izo when there's an active
+  // cross-type combine (see combinedRefill.ts's 'mixed' group) — the combined batch computes
+  // under izo's numbers, so editing gel's own copies of these would be misleading while that's
+  // in effect. gelConc is never part of that shared recipe, so it stays editable regardless.
+  // Read live store state (not memoized) so this follows the user's combine-checkbox selection
+  // in real time, including while this panel is open.
+  const selectedFills = fills.filter((f) => combinedFillIds.includes(f.fid));
+  const gelLocked = combinedGroups(selectedFills, gear, mix).some((g) => g.content === 'mixed');
 
   return (
     <PanelShell title={strings.gearMix} onClose={closePanel}>
@@ -342,7 +357,29 @@ export function MixPanel() {
 
       <div style={sectionCardStyle}>
         <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 10 }}>{strings.mixGel}</div>
-        <RatioRow value={mix.gelRatio} onChange={setGelRatio} strings={strings} forGel={true} />
+        {gelLocked && (
+          <p
+            style={{
+              margin: '0 0 10px',
+              fontSize: 11,
+              lineHeight: 1.5,
+              color: 'var(--muted-2)',
+              background: '#F4F5F2',
+              border: '1px solid var(--chip-border)',
+              borderRadius: 8,
+              padding: '7px 9px',
+            }}
+          >
+            {strings.gelLockedNote}
+          </p>
+        )}
+        <RatioRow
+          value={mix.gelRatio}
+          onChange={setGelRatio}
+          strings={strings}
+          forGel={true}
+          disabled={gelLocked}
+        />
         <div
           style={{
             marginBottom: 8,
@@ -350,6 +387,7 @@ export function MixPanel() {
             alignItems: 'center',
             gap: 6,
             flexWrap: 'wrap',
+            opacity: gelLocked ? 0.6 : 1,
           }}
         >
           <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{strings.citricSourceLabel}</span>
@@ -357,7 +395,8 @@ export function MixPanel() {
             <button
               key={src}
               onClick={() => setGelCitricSource(src)}
-              style={cOpt(mix.gelCitricSource === src, 'var(--ink)')}
+              disabled={gelLocked}
+              style={cOpt(mix.gelCitricSource === src, 'var(--ink)', gelLocked)}
             >
               {citricSourceLabel(src, strings)}
             </button>
@@ -378,7 +417,7 @@ export function MixPanel() {
               style={miniInputStyle}
             />
           </label>
-          <label style={miniLabelStyle}>
+          <label style={{ ...miniLabelStyle, opacity: gelLocked ? 0.6 : 1 }}>
             <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
               <span style={{ fontSize: 11, color: 'var(--ink-soft)', fontWeight: 600 }}>
                 {strings.saltLabel}
@@ -389,10 +428,11 @@ export function MixPanel() {
               step={0.05}
               value={mix.gelSalt}
               onChange={setGelSalt}
+              disabled={gelLocked}
               style={miniInputStyle}
             />
           </label>
-          <label style={miniLabelStyle}>
+          <label style={{ ...miniLabelStyle, opacity: gelLocked ? 0.6 : 1 }}>
             <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
               <span style={{ fontSize: 11, color: 'var(--ink-soft)', fontWeight: 600 }}>
                 {citricFieldLabel(mix.gelCitricSource, strings)}
@@ -406,6 +446,7 @@ export function MixPanel() {
               value={gelCitricAmt.amount}
               onChange={(v) => setGelCitric(citricGramsFromAmount(v, mix.gelCitricSource))}
               round={(v) => roundCitricDisplay(v, gelCitricAmt.unit)}
+              disabled={gelLocked}
               style={miniInputStyle}
             />
           </label>

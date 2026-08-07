@@ -25,6 +25,7 @@ interface NumberInputProps {
    * omitted, behavior is identical to before this prop existed.
    */
   round?: (value: number) => number;
+  disabled?: boolean;
 }
 
 function parse(text: string, parser: 'float' | 'int'): number {
@@ -49,6 +50,7 @@ export function NumberInput({
   className,
   onCommit,
   round,
+  disabled,
 }: NumberInputProps) {
   const [text, setText] = useState(display(value, zeroAsEmpty, round));
   const focused = useRef(false);
@@ -63,10 +65,11 @@ export function NumberInput({
     <input
       type="number"
       className={className}
-      style={style}
+      style={disabled ? { ...style, cursor: 'not-allowed' } : style}
       min={min}
       max={max}
       step={step}
+      disabled={disabled}
       value={text}
       onFocus={() => {
         focused.current = true;
