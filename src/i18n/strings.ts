@@ -269,6 +269,7 @@ export interface StringTable {
   combineCrossTypeConfirmTitle: string;
   combineCrossTypeConfirmBody: string;
   combineCrossTypeConfirmCancel: string;
+  gelLockedNote: string;
   combineCrossTypeConfirmConfirm: string;
   bidonComposition: string;
   perFillGrams: string;
@@ -380,7 +381,7 @@ export const STR: Record<Lang, StringTable> = {
     concLabel: 'cukry',
     saltLabel: 'sól',
     citricLabel: 'kwasek',
-    citricSourceLabel: 'źródło kwasku',
+    citricSourceLabel: 'kwasek',
     citricSourceCitric: 'Kwasek cytrynowy',
     citricSourceLemon: 'Cytryna',
     citricSourceLime: 'Limonka',
@@ -618,9 +619,11 @@ export const STR: Record<Lang, StringTable> = {
     combinePourLabel: 'Ile do którego bidonu',
     combineCrossTypeConfirmTitle: 'Połączyć izo i żel w jedną porcję?',
     combineCrossTypeConfirmBody:
-      'Łączenie izo i żelu w jedną porcję wymaga wspólnych ustawień mieszanki. Proporcję malto:fruktoza, sól i kwasek dla tej łączonej porcji dopasujemy do Twoich ustawień izo — ustawienia żelu same w sobie się nie zmienią.',
+      'Ta wspólna porcja przejmie z ustawień izo: proporcję malto:fruktoza, sól oraz kwasek (ilość i rodzaj). Własne ustawienia żelu zostają zapisane, ale nie obowiązują, dopóki porcje są połączone — edytuj je w ustawieniach izo. Stężenie żelu (g/100 ml) nadal ustawiasz osobno.',
     combineCrossTypeConfirmCancel: 'Anuluj',
     combineCrossTypeConfirmConfirm: 'Połącz',
+    gelLockedNote:
+      'Masz połączone porcje — proporcja, sól i kwasek żelu są przejęte z ustawień izo, edytuj je tam.',
     bidonComposition: 'SKŁAD BIDONÓW',
     perFillGrams: 'gramatura na napełnienie ›',
     addLandmark: 'Dodaj punkt orientacyjny',
@@ -731,7 +734,7 @@ export const STR: Record<Lang, StringTable> = {
     concLabel: 'carbs',
     saltLabel: 'salt',
     citricLabel: 'citric',
-    citricSourceLabel: 'acid source',
+    citricSourceLabel: 'acid',
     citricSourceCitric: 'Citric acid',
     citricSourceLemon: 'Lemon',
     citricSourceLime: 'Lime',
@@ -968,9 +971,11 @@ export const STR: Record<Lang, StringTable> = {
     combinePourLabel: 'How much goes in each bottle',
     combineCrossTypeConfirmTitle: 'Combine izo and gel into one batch?',
     combineCrossTypeConfirmBody:
-      'Combining izo and gel into one batch needs one shared recipe. The malto:fructose ratio, salt, and citric for this combined batch will be aligned to your izo settings — your gel settings themselves won’t change.',
+      "This combined batch takes its malto:fructose ratio, salt, and citric (amount and source) from your izo settings. Gel's own values stay saved but won't apply while combined — edit them under izo instead. Gel's concentration (g/100 ml) is still set independently.",
     combineCrossTypeConfirmCancel: 'Cancel',
     combineCrossTypeConfirmConfirm: 'Combine',
+    gelLockedNote:
+      "You have a combined batch — gel's ratio, salt, and citric are inherited from izo, edit them there.",
     bidonComposition: 'BOTTLE RECIPES',
     perFillGrams: 'grams per fill ›',
     addLandmark: 'Add landmark',

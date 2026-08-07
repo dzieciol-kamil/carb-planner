@@ -1,3 +1,4 @@
+import { combinedGroups } from '../../domain/combinedRefill';
 import {
   absCap,
   citricAmount,
@@ -16,6 +17,9 @@ const CITRIC_SOURCES: CitricSource[] = ['citric', 'lemon', 'lemonJuice', 'lime',
 export function MobileMix() {
   const lang = useAppStore((s) => s.ui.lang);
   const mix = useAppStore((s) => s.mix);
+  const gear = useAppStore((s) => s.gear);
+  const fills = useAppStore((s) => s.fills);
+  const combinedFillIds = useAppStore((s) => s.combinedFillIds);
   const setRatio = useAppStore((s) => s.setRatio);
   const setGelRatio = useAppStore((s) => s.setGelRatio);
   const setConc = useAppStore((s) => s.setConc);
@@ -32,6 +36,12 @@ export function MobileMix() {
   // No fills in scope here — falls back to absCap's izo-only default rather than a real
   // izo/gel blend, since this is a live preview of the mix settings themselves, not a plan.
   const cap = absCap(mix);
+  // Same lock condition as MixPanel.tsx's desktop counterpart: gel's ratio/salt/citric/source
+  // are inherited from izo whenever there's an active cross-type combine, so those controls
+  // become read-only here too. Reads live store state so it tracks the combine selection while
+  // this panel stays open.
+  const selectedFills = fills.filter((f) => combinedFillIds.includes(f.fid));
+  const gelLocked = combinedGroups(selectedFills, gear, mix).some((g) => g.content === 'mixed');
   // See MixPanel.tsx's presetCaption for why the gel row skips the "Izo" caption on 2:1.
   const presetCaption = (r: number, forGel: boolean) =>
     r === 2
@@ -74,8 +84,12 @@ export function MobileMix() {
   const izoCitric = citricAmount(mix.citric, mix.citricSource);
   const gelCitricAmt = citricAmount(mix.gelCitric, mix.gelCitricSource);
 
-  const citricSourceButtons = (active: CitricSource, onChange: (src: CitricSource) => void) => (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+  const citricSourceButtons = (
+    active: CitricSource,
+    onChange: (src: CitricSource) => void,
+    disabled = false,
+  ) => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, opacity: disabled ? 0.6 : 1 }}>
       {CITRIC_SOURCES.map((src) => {
         const isActive = active === src;
         return (
@@ -83,6 +97,7 @@ export function MobileMix() {
             key={src}
             type="button"
             onClick={() => onChange(src)}
+            disabled={disabled}
             style={{
               flex: '1 1 76px',
               padding: '10px 4px',
@@ -92,7 +107,7 @@ export function MobileMix() {
               color: isActive ? '#fff' : 'var(--muted-2)',
               fontSize: 11,
               fontWeight: 600,
-              cursor: 'pointer',
+              cursor: disabled ? 'not-allowed' : 'pointer',
             }}
           >
             {citricSourceCaption(src)}
@@ -128,8 +143,13 @@ export function MobileMix() {
     };
   };
 
-  const ratioButtons = (value: number, onChange: (n: number) => void, forGel: boolean) => (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+  const ratioButtons = (
+    value: number,
+    onChange: (n: number) => void,
+    forGel: boolean,
+    disabled = false,
+  ) => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, opacity: disabled ? 0.6 : 1 }}>
       {RATIO_PRESETS.map((r) => {
         const caption = presetCaption(r, forGel);
         const active = value === r;
@@ -138,6 +158,7 @@ export function MobileMix() {
             key={r}
             type="button"
             onClick={() => onChange(r)}
+            disabled={disabled}
             style={{
               flex: '1 1 76px',
               padding: '14px 4px',
@@ -147,7 +168,7 @@ export function MobileMix() {
               color: active ? '#fff' : 'var(--muted-2)',
               fontSize: 12,
               fontWeight: 600,
-              cursor: 'pointer',
+              cursor: disabled ? 'not-allowed' : 'pointer',
             }}
           >
             {caption ? caption + ' ' : ''}
@@ -227,8 +248,24 @@ export function MobileMix() {
         >
           {strings.mixGel}
         </div>
-        {ratioButtons(mix.gelRatio, setGelRatio, true)}
-        {citricSourceButtons(mix.gelCitricSource, setGelCitricSource)}
+        {gelLocked && (
+          <p
+            style={{
+              margin: 0,
+              fontSize: 11,
+              lineHeight: 1.5,
+              color: 'var(--muted-2)',
+              background: '#F4F5F2',
+              border: '1px solid var(--chip-border)',
+              borderRadius: 8,
+              padding: '8px 10px',
+            }}
+          >
+            {strings.gelLockedNote}
+          </p>
+        )}
+        {ratioButtons(mix.gelRatio, setGelRatio, true, gelLocked)}
+        {citricSourceButtons(mix.gelCitricSource, setGelCitricSource, gelLocked)}
         <MobileStepper
           label={strings.gelConcLabel + ' (' + strings.per100 + ')'}
           value={mix.gelConc}
@@ -247,12 +284,14 @@ export function MobileMix() {
           bigStep={0.2}
           format={(v) => v.toFixed(1)}
           onChange={setGelSalt}
+          disabled={gelLocked}
         />
         <MobileStepper
           label={citricFieldLabel(mix.gelCitricSource, gelCitricAmt.unit)}
           value={gelCitricAmt.amount}
           {...citricStepperProps(gelCitricAmt.unit, 8)}
           onChange={(v) => setGelCitric(citricGramsFromAmount(v, mix.gelCitricSource))}
+          disabled={gelLocked}
         />
       </div>
 

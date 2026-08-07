@@ -10,6 +10,7 @@ export interface MobileStepperProps {
   min: number;
   max: number;
   format?: (v: number) => string;
+  disabled?: boolean;
 }
 
 const btnBase: CSSProperties = {
@@ -49,17 +50,22 @@ export function MobileStepper({
   min,
   max,
   format,
+  disabled,
 }: MobileStepperProps) {
   const fmt = format ?? ((v: number) => String(Math.round(v)));
   const bump = (delta: number) => onChange(clampStepValue(value, delta, min, max));
+  const dim: CSSProperties = disabled
+    ? { opacity: 0.5, cursor: 'not-allowed', color: 'var(--muted-3)' }
+    : {};
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 6, opacity: disabled ? 0.6 : 1 }}>
       {label && (
         <span style={{ fontSize: 12, color: 'var(--muted-2)', flex: '1 1 auto' }}>{label}</span>
       )}
       <button
         type="button"
-        style={bigBtnStyle}
+        disabled={disabled}
+        style={{ ...bigBtnStyle, ...dim }}
         onClick={() => bump(-bigStep)}
         aria-label={'-' + bigStep}
       >
@@ -67,7 +73,8 @@ export function MobileStepper({
       </button>
       <button
         type="button"
-        style={smallBtnStyle}
+        disabled={disabled}
+        style={{ ...smallBtnStyle, ...dim }}
         onClick={() => bump(-smallStep)}
         aria-label={'-' + smallStep}
       >
@@ -76,7 +83,8 @@ export function MobileStepper({
       <span style={valueStyle}>{fmt(value)}</span>
       <button
         type="button"
-        style={smallBtnStyle}
+        disabled={disabled}
+        style={{ ...smallBtnStyle, ...dim }}
         onClick={() => bump(smallStep)}
         aria-label={'+' + smallStep}
       >
@@ -84,7 +92,8 @@ export function MobileStepper({
       </button>
       <button
         type="button"
-        style={bigBtnStyle}
+        disabled={disabled}
+        style={{ ...bigBtnStyle, ...dim }}
         onClick={() => bump(bigStep)}
         aria-label={'+' + bigStep}
       >
