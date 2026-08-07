@@ -123,48 +123,41 @@ export function MobileProfile() {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'baseline',
-              gap: 8,
-            }}
-          >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
             <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{strings.meView}</span>
-            {viewMode === 'auto' && (
-              <span style={{ fontSize: 11, color: 'var(--muted-3)' }}>
-                {strings.autoDetected}
-                {autoView === 'desktop' ? strings.desktop : strings.mobile}
-              </span>
-            )}
+            <div style={{ display: 'flex', gap: 6, flex: 1, minWidth: 160 }}>
+              {(['auto', 'desktop', 'mobile'] as const).map((v) => (
+                <button
+                  key={v}
+                  type="button"
+                  onClick={() => handleViewModePick(v)}
+                  style={{
+                    flex: 1,
+                    padding: '11px 4px',
+                    borderRadius: 9,
+                    border: '1px solid ' + (viewMode === v ? 'var(--ink)' : 'var(--chip-border)'),
+                    background: viewMode === v ? 'var(--ink)' : '#fff',
+                    color: viewMode === v ? '#fff' : 'var(--muted-2)',
+                    fontSize: 12,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                  }}
+                >
+                  {v === 'auto'
+                    ? strings.viewAuto
+                    : v === 'desktop'
+                      ? strings.desktop
+                      : strings.mobile}
+                </button>
+              ))}
+            </div>
           </div>
-          <div style={{ display: 'flex', gap: 6 }}>
-            {(['auto', 'desktop', 'mobile'] as const).map((v) => (
-              <button
-                key={v}
-                type="button"
-                onClick={() => handleViewModePick(v)}
-                style={{
-                  flex: 1,
-                  padding: '11px 4px',
-                  borderRadius: 9,
-                  border: '1px solid ' + (viewMode === v ? 'var(--ink)' : 'var(--chip-border)'),
-                  background: viewMode === v ? 'var(--ink)' : '#fff',
-                  color: viewMode === v ? '#fff' : 'var(--muted-2)',
-                  fontSize: 12,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                }}
-              >
-                {v === 'auto'
-                  ? strings.viewAuto
-                  : v === 'desktop'
-                    ? strings.desktop
-                    : strings.mobile}
-              </button>
-            ))}
-          </div>
+          {viewMode === 'auto' && (
+            <span style={{ fontSize: 11, color: 'var(--muted-3)' }}>
+              {strings.autoDetected}
+              {autoView === 'desktop' ? strings.desktop : strings.mobile}
+            </span>
+          )}
         </div>
       </div>
 
