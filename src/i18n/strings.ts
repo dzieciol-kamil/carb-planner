@@ -283,7 +283,7 @@ export interface StringTable {
   importPlanConfirmConfirm: string;
   importPlanError: string;
   importPlanSuccess: string;
-  recoveryTitle: string;
+  recoveryLabel: string;
   recoveryHint: string;
 }
 
@@ -630,7 +630,7 @@ export const STR: Record<Lang, StringTable> = {
     importPlanError:
       'Nie udało się wczytać pliku — sprawdź, czy to poprawny eksport planu z Carb Fueling.',
     importPlanSuccess: 'Plan zaimportowany.',
-    recoveryTitle: 'Regeneracja',
+    recoveryLabel: 'Regeneracja',
     recoveryHint: 'Zjedz tyle w ciągu pierwszych 30 minut po zakończeniu jazdy.',
   },
   en: {
@@ -972,7 +972,7 @@ export const STR: Record<Lang, StringTable> = {
     importPlanConfirmConfirm: 'Import',
     importPlanError: "Could not read that file — check it's a valid Carb Fueling plan export.",
     importPlanSuccess: 'Plan imported.',
-    recoveryTitle: 'Recovery',
+    recoveryLabel: 'Recovery',
     recoveryHint: 'Aim to eat this much within the first 30 minutes after finishing.',
   },
 };
