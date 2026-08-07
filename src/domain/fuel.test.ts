@@ -7,6 +7,7 @@ import {
   dist,
   distanceAtTime,
   eff,
+  fmtFruitFraction,
   fmtHM,
   fmtX,
   fracFill,
@@ -51,6 +52,7 @@ function makeMix(overrides: Partial<MixSettings> = {}): MixSettings {
     conc: 11,
     gelConc: 60,
     ratio: 2,
+    gelRatio: 2,
     salt: 0.16,
     citric: 0.2,
     gelSalt: 0.4,
@@ -343,26 +345,64 @@ describe('citricAmount', () => {
     expect(citricAmount(1.2, 'citric')).toEqual({ amount: 1.2, unit: 'g' });
   });
 
-  test('lemon converts citric-acid grams into juice ml using ~5% w/v yield', () => {
-    const result = citricAmount(1, 'lemon');
+  test('lemonJuice converts citric-acid grams into juice ml using ~5% w/v yield', () => {
+    const result = citricAmount(1, 'lemonJuice');
     expect(result.unit).toBe('ml');
     expect(result.amount).toBeCloseTo(20, 6);
   });
 
-  test('lime converts citric-acid grams into juice ml using ~6% w/v yield', () => {
-    const result = citricAmount(1, 'lime');
+  test('limeJuice converts citric-acid grams into juice ml using ~6% w/v yield', () => {
+    const result = citricAmount(1, 'limeJuice');
     expect(result.unit).toBe('ml');
     expect(result.amount).toBeCloseTo(16.6667, 3);
   });
 
-  test('lime yields less ml than lemon for the same citric-acid target (lime is more concentrated)', () => {
-    expect(citricAmount(1, 'lime').amount).toBeLessThan(citricAmount(1, 'lemon').amount);
+  test('limeJuice yields less ml than lemonJuice for the same citric-acid target (lime is more concentrated)', () => {
+    expect(citricAmount(1, 'limeJuice').amount).toBeLessThan(citricAmount(1, 'lemonJuice').amount);
   });
 
   test('zero grams converts to zero regardless of source', () => {
     expect(citricAmount(0, 'citric').amount).toBe(0);
     expect(citricAmount(0, 'lemon').amount).toBe(0);
+    expect(citricAmount(0, 'lemonJuice').amount).toBe(0);
     expect(citricAmount(0, 'lime').amount).toBe(0);
+    expect(citricAmount(0, 'limeJuice').amount).toBe(0);
+  });
+
+  test('whole lemon needs less than one fruit for a small amount, rounded to the nearest quarter', () => {
+    // 1g citric-acid-equivalent -> 20ml juice (5% w/v) -> 20/45 of a whole lemon (~44%) -> rounds to 1/2
+    const result = citricAmount(1, 'lemon');
+    expect(result.unit).toBe('fruit');
+    expect(result.amount).toBeCloseTo(0.5, 6);
+  });
+
+  test('whole lime needs less than one fruit for a small amount, rounded to the nearest quarter', () => {
+    // 1g citric-acid-equivalent -> ~16.67ml juice (6% w/v) -> 16.67/30 of a whole lime (~55.6%) -> rounds to 1/2
+    const result = citricAmount(1, 'lime');
+    expect(result.unit).toBe('fruit');
+    expect(result.amount).toBeCloseTo(0.5, 6);
+  });
+
+  test('a bigger amount rounds up to a whole number of fruit', () => {
+    // 3g citric-acid-equivalent -> 60ml juice -> 60/45 = 1.33 lemons -> rounds to 1.25
+    expect(citricAmount(3, 'lemon').amount).toBeCloseTo(1.25, 6);
+  });
+
+  test('zero grams needs zero fruit', () => {
+    expect(citricAmount(0, 'lemon')).toEqual({ amount: 0, unit: 'fruit' });
+    expect(citricAmount(0, 'lime')).toEqual({ amount: 0, unit: 'fruit' });
+  });
+});
+
+describe('fmtFruitFraction', () => {
+  test('formats whole numbers and quarter fractions', () => {
+    expect(fmtFruitFraction(0)).toBe('0');
+    expect(fmtFruitFraction(0.25)).toBe('¼');
+    expect(fmtFruitFraction(0.5)).toBe('½');
+    expect(fmtFruitFraction(0.75)).toBe('¾');
+    expect(fmtFruitFraction(1)).toBe('1');
+    expect(fmtFruitFraction(1.25)).toBe('1¼');
+    expect(fmtFruitFraction(2)).toBe('2');
   });
 });
 

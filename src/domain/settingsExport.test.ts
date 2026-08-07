@@ -31,6 +31,7 @@ function makeData(overrides: Partial<SettingsExportData> = {}): SettingsExportDa
       conc: 8.4,
       gelConc: 60,
       ratio: 2,
+      gelRatio: 2,
       salt: 0.16,
       citric: 0.2,
       gelSalt: 0.4,

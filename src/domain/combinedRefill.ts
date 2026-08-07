@@ -1,5 +1,5 @@
 import { carbsFill, partsOf, volOf } from './fuel';
-import type { Content, Fill, MixSettings, Vessel } from './types';
+import type { CitricSource, Content, Fill, MixSettings, Vessel } from './types';
 
 // A vessel's "start fill" is the one it's filled with before departure — the
 // earliest fill on that vessel by position. A vessel with no fills yet
@@ -17,7 +17,10 @@ export interface CombinedMixGroup {
   maltoG: number;
   fructoseG: number;
   saltG: number;
+  /** Citric-acid-equivalent grams — feed this into `citricAmount()` along with `citricSource`
+   *  to get the practical amount (g / ml / fraction of a fruit) for the group's actual source. */
   citricG: number;
+  citricSource: CitricSource;
   parts: number;
 }
 
@@ -31,7 +34,6 @@ export function combinedMixGroups(
   gear: Vessel[],
   mix: MixSettings,
 ): CombinedMixGroup[] {
-  const ratio = mix.ratio || 2;
   const order: Content[] = ['izo', 'gel', 'water'];
 
   return order
@@ -45,8 +47,10 @@ export function combinedMixGroups(
       let citricG = 0;
       let parts = 0;
       const vesselNames: string[] = [];
+      const ratio = content === 'gel' ? mix.gelRatio : mix.ratio;
       const perLiterSalt = content === 'gel' ? mix.gelSalt : mix.salt;
       const perLiterCitric = content === 'gel' ? mix.gelCitric : mix.citric;
+      const citricSource = content === 'gel' ? mix.gelCitricSource : mix.citricSource;
 
       for (const f of group) {
         const vessel = gear.find((g) => g.gid === f.gid);
@@ -59,16 +63,18 @@ export function combinedMixGroups(
         if (vessel) vesselNames.push(vessel.name);
       }
 
+      const r = ratio || 2;
       return {
         content,
         fillIds: group.map((f) => f.fid),
         vesselNames,
         volumeMl,
         carbsG,
-        maltoG: (carbsG * ratio) / (ratio + 1),
-        fructoseG: carbsG / (ratio + 1),
+        maltoG: (carbsG * r) / (r + 1),
+        fructoseG: carbsG / (r + 1),
         saltG,
         citricG,
+        citricSource,
         parts,
       };
     });

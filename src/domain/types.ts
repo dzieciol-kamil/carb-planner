@@ -2,8 +2,11 @@ export type Mode = 'route' | 'time';
 export type Intensity = 'low' | 'mid' | 'high';
 export type XUnit = 'km' | 'h';
 export type Content = 'water' | 'izo' | 'gel';
-/** Sour component of a recipe: pure citric acid powder, or fresh lemon/lime juice. */
-export type CitricSource = 'citric' | 'lemon' | 'lime';
+/**
+ * Sour component of a recipe: pure citric acid powder, a whole fresh fruit
+ * (measured as a fraction of one fruit), or its pre-squeezed juice (measured in ml).
+ */
+export type CitricSource = 'citric' | 'lemon' | 'lemonJuice' | 'lime' | 'limeJuice';
 
 export interface RouteInput {
   mode: Mode;
@@ -31,6 +34,7 @@ export interface MixSettings {
   conc: number;
   gelConc: number;
   ratio: number;
+  gelRatio: number;
   salt: number;
   citric: number;
   gelSalt: number;

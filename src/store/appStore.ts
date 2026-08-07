@@ -180,6 +180,7 @@ interface AppState {
   toggleCombineStart: (gid: string) => void;
 
   setRatio: (n: number) => void;
+  setGelRatio: (n: number) => void;
   setConc: (n: number) => void;
   setSalt: (n: number) => void;
   setCitric: (n: number) => void;
@@ -223,6 +224,7 @@ const defaultMix: MixSettings = {
   conc: 8.4,
   gelConc: 60,
   ratio: 2,
+  gelRatio: 2,
   salt: 0.16,
   citric: 0.2,
   gelSalt: 0.4,
@@ -552,6 +554,7 @@ export const useAppStore = create<AppState>()(
         })),
 
       setRatio: (n) => set((s) => ({ mix: { ...s.mix, ratio: clamp(n, 0.2, 10) } })),
+      setGelRatio: (n) => set((s) => ({ mix: { ...s.mix, gelRatio: clamp(n, 0.2, 10) } })),
       setConc: (n) => set((s) => ({ mix: { ...s.mix, conc: clamp(n, 0, 100) } })),
       setSalt: (n) => set((s) => ({ mix: { ...s.mix, salt: clamp(n, 0, 10) } })),
       setCitric: (n) => set((s) => ({ mix: { ...s.mix, citric: clamp(n, 0, 10) } })),

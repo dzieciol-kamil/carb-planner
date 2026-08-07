@@ -1,8 +1,14 @@
 import type { CSSProperties } from 'react';
 import { combinedMixGroups, startFillOf, type CombinedMixGroup } from '../../domain/combinedRefill';
-import { carbsFill, citricAmount, partsOf } from '../../domain/fuel';
+import {
+  carbsFill,
+  citricAmount,
+  fmtFruitFraction,
+  partsOf,
+  type CitricAmount,
+} from '../../domain/fuel';
 import type { CitricSource, Fill } from '../../domain/types';
-import { t, type Lang } from '../../i18n/strings';
+import { fruitNoun, t, type Lang } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
 
 function mixSplit(carbs: number, ratio: number): { malto: number; fructose: number } {
@@ -10,11 +16,25 @@ function mixSplit(carbs: number, ratio: number): { malto: number; fructose: numb
 }
 
 function citricSourceRowLabel(source: CitricSource, strings: ReturnType<typeof t>): string {
-  return source === 'lemon'
-    ? strings.citricSourceLemonJuice
-    : source === 'lime'
-      ? strings.citricSourceLimeJuice
-      : strings.mixRowCitric;
+  switch (source) {
+    case 'lemon':
+      return strings.citricSourceLemon;
+    case 'lemonJuice':
+      return strings.citricSourceLemonJuice;
+    case 'lime':
+      return strings.citricSourceLime;
+    case 'limeJuice':
+      return strings.citricSourceLimeJuice;
+    default:
+      return strings.mixRowCitric;
+  }
+}
+
+function citricValueLabel(citric: CitricAmount, source: CitricSource, lang: Lang): string {
+  if (citric.unit === 'g') return citric.amount.toFixed(2) + ' g';
+  if (citric.unit === 'ml') return citric.amount.toFixed(1) + ' ml';
+  const species = source === 'lime' ? 'lime' : 'lemon';
+  return fmtFruitFraction(citric.amount) + ' ' + fruitNoun(species, citric.amount, lang);
 }
 
 const rowStyle: CSSProperties = {
@@ -140,7 +160,8 @@ export function MobileMixSheet() {
             {vesselFills.map((fill, i) => {
               const carbs = carbsFill(fill, gear, mix);
               const n = partsOf(fill, gear);
-              const split = mixSplit(carbs, mix.ratio || 2);
+              const ratio = fill.content === 'gel' ? mix.gelRatio : mix.ratio;
+              const split = mixSplit(carbs, ratio || 2);
               const salt = (vessel.vol / 100) * (fill.content === 'gel' ? mix.gelSalt : mix.salt);
               const citricSource = fill.content === 'gel' ? mix.gelCitricSource : mix.citricSource;
               const citricGrams =
@@ -159,7 +180,7 @@ export function MobileMixSheet() {
                       { k: strings.mixRowSalt, v: salt.toFixed(2) + ' g' },
                       {
                         k: citricSourceRowLabel(citricSource, strings),
-                        v: citric.amount.toFixed(citric.unit === 'ml' ? 1 : 2) + ' ' + citric.unit,
+                        v: citricValueLabel(citric, citricSource, lang),
                       },
                       { k: strings.mixRowWater, v: vessel.vol + ' ml' },
                     ];
@@ -235,6 +256,7 @@ function CombinedGroupRows({
   contentLabel: (content: 'water' | 'izo' | 'gel') => string;
 }) {
   const strings = t(lang);
+  const citric = citricAmount(group.citricG, group.citricSource);
   const lines: { k: string; v: string }[] =
     group.content === 'water'
       ? [{ k: strings.mixRowWater, v: group.volumeMl + ' ml' }]
@@ -243,7 +265,10 @@ function CombinedGroupRows({
           { k: strings.mixRowMalto, v: group.maltoG.toFixed(1) + ' g' },
           { k: strings.mixRowFructose, v: group.fructoseG.toFixed(1) + ' g' },
           { k: strings.mixRowSalt, v: group.saltG.toFixed(2) + ' g' },
-          { k: strings.mixRowCitric, v: group.citricG.toFixed(2) + ' g' },
+          {
+            k: citricSourceRowLabel(group.citricSource, strings),
+            v: citricValueLabel(citric, group.citricSource, lang),
+          },
           { k: strings.mixRowWater, v: group.volumeMl + ' ml' },
         ];
 

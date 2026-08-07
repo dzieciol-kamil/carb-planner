@@ -9,7 +9,7 @@ import { PanelShell } from './PanelShell';
 
 const RATIO_PRESETS = [2, 1.5, 1, 0.8];
 const CONTENT_OPTIONS: Content[] = ['water', 'izo', 'gel'];
-const CITRIC_SOURCES: CitricSource[] = ['citric', 'lemon', 'lime'];
+const CITRIC_SOURCES: CitricSource[] = ['citric', 'lemon', 'lemonJuice', 'lime', 'limeJuice'];
 
 const sectionCardStyle: CSSProperties = {
   border: '1px solid #E9EBE5',
@@ -57,15 +57,25 @@ function contentLabel(content: Content, lang: 'pl' | 'en'): string {
 }
 
 function citricSourceLabel(source: CitricSource, strings: ReturnType<typeof t>): string {
-  return source === 'lemon'
-    ? strings.citricSourceLemon
-    : source === 'lime'
-      ? strings.citricSourceLime
-      : strings.citricSourceCitric;
+  switch (source) {
+    case 'lemon':
+      return strings.citricSourceLemon;
+    case 'lemonJuice':
+      return strings.citricSourceLemonJuice;
+    case 'lime':
+      return strings.citricSourceLime;
+    case 'limeJuice':
+      return strings.citricSourceLimeJuice;
+    default:
+      return strings.citricSourceCitric;
+  }
 }
 
-function presetCaption(r: number, strings: ReturnType<typeof t>): string | null {
-  if (r === 2) return strings.izo;
+// The "Izo" caption on the 2:1 preset flags it as this app's default isotonic ratio — showing
+// that same caption on the gel row's identical preset would misleadingly imply the gel mix is
+// somehow "isotonic" too, so the gel row skips it and shows only the bare "2:1".
+function presetCaption(r: number, strings: ReturnType<typeof t>, forGel: boolean): string | null {
+  if (r === 2) return forGel ? null : strings.izo;
   if (r === 1) return strings.ratioLabelSugar;
   if (r === 0.8) return strings.ratioLabelHoney;
   return null;
@@ -85,12 +95,92 @@ function cOpt(on: boolean, color: string): CSSProperties {
   };
 }
 
+interface RatioRowProps {
+  value: number;
+  onChange: (n: number) => void;
+  strings: ReturnType<typeof t>;
+  forGel: boolean;
+}
+
+function RatioRow({ value, onChange, strings, forGel }: RatioRowProps) {
+  const isPreset = RATIO_PRESETS.includes(value);
+  return (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 12,
+        marginBottom: 10,
+        flexWrap: 'wrap',
+      }}
+    >
+      <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{strings.ratio}</span>
+      <span style={{ display: 'flex', gap: 4, alignItems: 'center', flexWrap: 'wrap' }}>
+        {RATIO_PRESETS.map((r) => {
+          const caption = presetCaption(r, strings, forGel);
+          return (
+            <button
+              key={r}
+              onClick={() => onChange(r)}
+              style={{
+                ...cOpt(value === r, 'var(--ink)'),
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'baseline',
+                gap: 4,
+              }}
+            >
+              {caption && (
+                <span style={{ fontSize: 10, fontWeight: 600, opacity: 0.75 }}>{caption}</span>
+              )}
+              <span>{r}:1</span>
+            </button>
+          );
+        })}
+        <label
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 4,
+            borderRadius: 7,
+            padding: '4px 8px',
+            border: '1px solid ' + (isPreset ? 'var(--chip-border)' : 'var(--ink)'),
+            background: '#fff',
+          }}
+        >
+          <span style={{ fontSize: 10.5, color: 'var(--muted)' }}>{strings.ratioCustom}</span>
+          <NumberInput
+            min={0.2}
+            max={10}
+            step={0.1}
+            value={value}
+            onChange={onChange}
+            fallback={2}
+            style={{
+              width: 44,
+              border: 'none',
+              background: 'transparent',
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 12,
+              fontWeight: 700,
+              textAlign: 'right',
+            }}
+          />
+          <span style={{ fontSize: 10.5, color: 'var(--muted)' }}>:1</span>
+        </label>
+      </span>
+    </div>
+  );
+}
+
 export function MixPanel() {
   const lang = useAppStore((s) => s.ui.lang);
   const mix = useAppStore((s) => s.mix);
   const gear = useAppStore((s) => s.gear);
   const closePanel = useAppStore((s) => s.closePanel);
   const setRatio = useAppStore((s) => s.setRatio);
+  const setGelRatio = useAppStore((s) => s.setGelRatio);
   const setConc = useAppStore((s) => s.setConc);
   const setSalt = useAppStore((s) => s.setSalt);
   const setCitric = useAppStore((s) => s.setCitric);
@@ -107,8 +197,6 @@ export function MixPanel() {
   const setVesselGelParts = useAppStore((s) => s.setVesselGelParts);
   const dragKey = useAppStore((s) => s.ui.dragKey);
   const strings = t(lang);
-
-  const ratioIsPreset = RATIO_PRESETS.includes(mix.ratio);
 
   return (
     <PanelShell title={strings.gearMix} onClose={closePanel}>
@@ -153,75 +241,9 @@ export function MixPanel() {
         {strings.mixHint}
       </p>
 
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: 12,
-          marginBottom: 10,
-          flexWrap: 'wrap',
-        }}
-      >
-        <span style={{ fontSize: 12, color: 'var(--muted-2)' }}>{strings.ratio}</span>
-        <span style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
-          {RATIO_PRESETS.map((r) => {
-            const caption = presetCaption(r, strings);
-            return (
-              <button
-                key={r}
-                onClick={() => setRatio(r)}
-                style={{
-                  ...cOpt(mix.ratio === r, 'var(--ink)'),
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'baseline',
-                  gap: 4,
-                }}
-              >
-                {caption && (
-                  <span style={{ fontSize: 10, fontWeight: 600, opacity: 0.75 }}>{caption}</span>
-                )}
-                <span>{r}:1</span>
-              </button>
-            );
-          })}
-          <label
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 4,
-              borderRadius: 7,
-              padding: '4px 8px',
-              border: '1px solid ' + (ratioIsPreset ? 'var(--chip-border)' : 'var(--ink)'),
-              background: '#fff',
-            }}
-          >
-            <span style={{ fontSize: 10.5, color: 'var(--muted)' }}>{strings.ratioCustom}</span>
-            <NumberInput
-              min={0.2}
-              max={10}
-              step={0.1}
-              value={mix.ratio}
-              onChange={setRatio}
-              fallback={2}
-              style={{
-                width: 44,
-                border: 'none',
-                background: 'transparent',
-                fontFamily: "'JetBrains Mono', monospace",
-                fontSize: 12,
-                fontWeight: 700,
-                textAlign: 'right',
-              }}
-            />
-            <span style={{ fontSize: 10.5, color: 'var(--muted)' }}>:1</span>
-          </label>
-        </span>
-      </div>
-
       <div style={sectionCardStyle}>
         <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 10 }}>{strings.mixIzo}</div>
+        <RatioRow value={mix.ratio} onChange={setRatio} strings={strings} forGel={false} />
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
           <label style={miniLabelStyle}>
             <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
@@ -276,6 +298,7 @@ export function MixPanel() {
 
       <div style={sectionCardStyle}>
         <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 10 }}>{strings.mixGel}</div>
+        <RatioRow value={mix.gelRatio} onChange={setGelRatio} strings={strings} forGel={true} />
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
           <label style={miniLabelStyle}>
             <span style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
