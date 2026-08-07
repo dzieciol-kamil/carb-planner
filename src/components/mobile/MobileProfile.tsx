@@ -1,5 +1,11 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { absCap } from '../../domain/fuel';
+import {
+  buildSettingsExport,
+  parseSettingsImport,
+  serializeSettingsExport,
+  settingsExportFileName,
+} from '../../domain/settingsExport';
 import { LANGS, t } from '../../i18n/strings';
 import {
   hasPlanData,
@@ -22,11 +28,16 @@ export function MobileProfile() {
   const setViewMode = useAppStore((s) => s.setViewMode);
   const mix = useAppStore((s) => s.mix);
   const startTour = useAppStore((s) => s.startTour);
+  const getSettingsExportData = useAppStore((s) => s.getSettingsExportData);
+  const importSettings = useAppStore((s) => s.importSettings);
   const strings = t(lang);
   const cap = absCap(mix);
   const absorptionNote = strings.capNote + cap + ' g/h' + strings.capNote2;
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [pendingViewMode, setPendingViewMode] = useState<ViewMode | null>(null);
+  const [pendingImportFile, setPendingImportFile] = useState<File | null>(null);
+  const [importFeedback, setImportFeedback] = useState<'error' | 'success' | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleReplay = () => {
     if (hasPlanData(useAppStore.getState())) {
@@ -39,6 +50,46 @@ export function MobileProfile() {
   const handleViewModePick = (v: ViewMode) => {
     if (shouldConfirmViewModeChange(v, viewMode)) setPendingViewMode(v);
     else setViewMode(v);
+  };
+
+  const handleExport = () => {
+    const file = buildSettingsExport(getSettingsExportData());
+    const blob = new Blob([serializeSettingsExport(file)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = settingsExportFileName();
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImportPick = () => fileInputRef.current?.click();
+
+  // Always confirm before import: it silently overwrites the entire plan —
+  // route, gear, mix, fills, foods and shops, not just narrow "settings" —
+  // a rare, deliberate action, so there's no real UX cost to asking every
+  // time rather than trying to detect "is there anything worth losing".
+  const handleFileChosen = (file: File | null) => {
+    if (!file) return;
+    setPendingImportFile(file);
+  };
+
+  const applyImportedFile = async (file: File) => {
+    setImportFeedback(null);
+    try {
+      const text = await file.text();
+      const result = parseSettingsImport(text);
+      if (!result.ok) {
+        setImportFeedback('error');
+        return;
+      }
+      importSettings(result.data);
+      setImportFeedback('success');
+    } catch {
+      setImportFeedback('error');
+    }
   };
 
   return (
@@ -159,6 +210,91 @@ export function MobileProfile() {
             </span>
           )}
         </div>
+      </div>
+
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 10,
+          paddingTop: 16,
+          borderTop: '1px solid var(--chip-border)',
+        }}
+      >
+        <div
+          style={{
+            fontSize: 11,
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            color: 'var(--muted)',
+          }}
+        >
+          {strings.planDataSection}
+        </div>
+        <p style={{ margin: 0, fontSize: 12, lineHeight: 1.5, color: 'var(--muted-2)' }}>
+          {strings.planDataHint}
+        </p>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button
+            type="button"
+            onClick={handleExport}
+            style={{
+              flex: 1,
+              border: '1px solid var(--chip-border)',
+              background: '#fff',
+              color: 'var(--ink)',
+              borderRadius: 10,
+              padding: '11px 12px',
+              fontFamily: 'Archivo, sans-serif',
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            {strings.exportPlanButton}
+          </button>
+          <button
+            type="button"
+            onClick={handleImportPick}
+            style={{
+              flex: 1,
+              border: '1px solid var(--chip-border)',
+              background: '#fff',
+              color: 'var(--ink)',
+              borderRadius: 10,
+              padding: '11px 12px',
+              fontFamily: 'Archivo, sans-serif',
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            {strings.importPlanButton}
+          </button>
+        </div>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="application/json,.json"
+          style={{ display: 'none' }}
+          onChange={(e) => {
+            const file = e.target.files?.[0] ?? null;
+            handleFileChosen(file);
+            e.target.value = '';
+          }}
+        />
+        {importFeedback && (
+          <p
+            style={{
+              margin: 0,
+              fontSize: 12,
+              lineHeight: 1.5,
+              color: importFeedback === 'error' ? '#B3402A' : 'var(--muted-2)',
+            }}
+          >
+            {importFeedback === 'error' ? strings.importPlanError : strings.importPlanSuccess}
+          </p>
+        )}
       </div>
 
       <div
@@ -338,6 +474,21 @@ export function MobileProfile() {
           onConfirm={() => {
             setViewMode(pendingViewMode);
             setPendingViewMode(null);
+          }}
+        />
+      )}
+
+      {pendingImportFile && (
+        <ConfirmDialog
+          title={strings.importPlanConfirmTitle}
+          body={strings.importPlanConfirmBody}
+          cancelLabel={strings.importPlanConfirmCancel}
+          confirmLabel={strings.importPlanConfirmConfirm}
+          onCancel={() => setPendingImportFile(null)}
+          onConfirm={() => {
+            const file = pendingImportFile;
+            setPendingImportFile(null);
+            void applyImportedFile(file);
           }}
         />
       )}
