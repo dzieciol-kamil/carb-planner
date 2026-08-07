@@ -83,14 +83,28 @@ export function sweat(route: RouteInput): number {
   return Math.round(((base + iB) * (route.weight / 75)) / 10) * 10;
 }
 
-// Deliberately keyed off the izo ratio only, not a blend with gelRatio: the gut absorption
-// limit is a single whole-plan figure, and izo is the dominant, steadier carb source across a
-// ride, so it's the more sensible anchor for this cap than trying to blend two ratios that can
-// now diverge.
-export function absCap(mix: MixSettings): number {
-  const r = mix.ratio || 2;
-  const glu = r / (r + 1);
-  const fru = 1 / (r + 1);
+/**
+ * Gut absorption ceiling (g/h). izo and gel can each have their own malto:fructose ratio, so
+ * this blends `ratio`/`gelRatio` weighted by how much each content type actually contributes
+ * to the plan's carbs (izoCarbs/gelCarbs) — a rider fuelling mostly from a low-ratio gel has a
+ * lower real cap than a pure-izo plan would suggest, and vice versa.
+ *
+ * izoCarbs/gelCarbs default to 0 (no split known), which falls back to the izo ratio alone —
+ * used by UI spots that only have `mix` in scope with no plan/fills yet to weigh (the footer's
+ * absorption note, the mobile "Me" tab, and the mix-editing screen's live preview), rather than
+ * pretending to know a real-world split. Call sites that do have fills/gear (samples() below,
+ * the desktop/mobile charts) pass the actual carb totals for a true blended figure.
+ */
+export function absCap(mix: MixSettings, izoCarbs = 0, gelCarbs = 0): number {
+  const rIzo = mix.ratio || 2;
+  const rGel = mix.gelRatio || 2;
+  const gluIzo = rIzo / (rIzo + 1);
+  const gluGel = rGel / (rGel + 1);
+  const total = izoCarbs + gelCarbs;
+  const wGel = total > 0 ? gelCarbs / total : 0;
+  const wIzo = 1 - wGel;
+  const glu = wIzo * gluIzo + wGel * gluGel;
+  const fru = 1 - glu;
   return Math.round(Math.max(45, Math.min(95, Math.min(60 / glu, 32 / fru))));
 }
 
@@ -325,7 +339,13 @@ export function samples(state: PlanState): Sample[] {
   const target = hrs * cph(route);
   const N = PROFILE_SAMPLES;
   const tot = effTotal(route);
-  const cap = absCap(mix);
+  const izoCarbs = fills
+    .filter((f) => f.content === 'izo')
+    .reduce((a, f) => a + carbsFill(f, gear, mix), 0);
+  const gelCarbs = fills
+    .filter((f) => f.content === 'gel')
+    .reduce((a, f) => a + carbsFill(f, gear, mix), 0);
+  const cap = absCap(mix, izoCarbs, gelCarbs);
   // Assumes equal time per equal-distance sample (flat-pace approximation); the chart's
   // time axis is now terrain-aware (see timeAtDistance) but this absorption model is not — a
   // known, deliberate scope boundary, not an oversight.

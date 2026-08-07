@@ -175,6 +175,41 @@ describe('absCap', () => {
   test('very low ratio clamps to the 45 g/h floor', () => {
     expect(absCap(makeMix({ ratio: 0.2 }))).toBe(45);
   });
+
+  test('with no izo/gel carb split given, falls back to the izo ratio alone', () => {
+    const mix = makeMix({ ratio: 2, gelRatio: 0.8 });
+    expect(absCap(mix)).toBe(absCap(makeMix({ ratio: 2 })));
+    expect(absCap(mix, 0, 0)).toBe(absCap(mix));
+  });
+
+  test('all-izo carbs matches the izo-only calculation regardless of gelRatio', () => {
+    const mix = makeMix({ ratio: 2, gelRatio: 0.8 });
+    expect(absCap(mix, 100, 0)).toBe(absCap(makeMix({ ratio: 2 })));
+  });
+
+  test('all-gel carbs matches the gel-only calculation regardless of ratio', () => {
+    const mix = makeMix({ ratio: 2, gelRatio: 0.8 });
+    expect(absCap(mix, 0, 100)).toBe(absCap(makeMix({ ratio: 0.8 })));
+  });
+
+  test('gel-heavy plan (izo 2:1, gel 0.8:1, ~80% carbs from gel) blends down toward the gel cap, not the izo-only figure', () => {
+    // Regression for the bug where absCap ignored gelRatio entirely and reported the
+    // izo-only cap (~90 g/h) even when most of the plan's carbs came from a lower-ratio gel.
+    const mix = makeMix({ ratio: 2, gelRatio: 0.8 });
+    const izoOnlyCap = absCap(makeMix({ ratio: 2 }));
+    const blended = absCap(mix, 20, 80);
+    expect(blended).toBe(63);
+    expect(blended).toBeLessThan(izoOnlyCap);
+  });
+
+  test('a 50/50 izo/gel carb split lands between the two single-source caps', () => {
+    const mix = makeMix({ ratio: 2, gelRatio: 0.8 });
+    const izoOnlyCap = absCap(mix, 100, 0);
+    const gelOnlyCap = absCap(mix, 0, 100);
+    const blended = absCap(mix, 50, 50);
+    expect(blended).toBeGreaterThanOrEqual(gelOnlyCap);
+    expect(blended).toBeLessThanOrEqual(izoOnlyCap);
+  });
 });
 
 describe('preRideGut', () => {
@@ -518,6 +553,44 @@ describe('samples', () => {
     expect(S[80].intake).toBeCloseTo(100, 6);
     expect(S[159].intake).toBeCloseTo(100, 6);
     expect(S[160].intake).toBeCloseTo(150, 6);
+  });
+
+  test('a gel-heavy plan absorbs less by the end when gelRatio drags the blended cap down', () => {
+    // Regression for the bug where samples() derived its absorption cap from mix.ratio only,
+    // ignoring gelRatio entirely — a plan fuelled purely from gel used to get the izo cap
+    // (90 g/h) no matter what gelRatio said. A single 200g gel dump at the start line, over a
+    // 3h ride, drains fully under a 90 g/h cap (270g of capacity) but stalls partway under a
+    // 45 g/h cap (135g of capacity) — so the two mixes below should end with different
+    // `absorbed` totals, not the same one.
+    const gear: Vessel[] = [{ gid: 'g1', name: 'Flask', vol: 200, allowed: ['gel'], gelParts: 1 }];
+    const fills: Fill[] = [{ fid: 1, gid: 'g1', content: 'gel', from: 0, to: 0 }];
+    const route = makeRoute({
+      mode: 'time',
+      hours: 3,
+      minutes: 0,
+      useGpx: false,
+      preMealCarbs: 0,
+    });
+
+    const highCapPlan = makePlan({
+      route,
+      gear,
+      fills,
+      mix: makeMix({ gelConc: 100, gelRatio: 2 }),
+    });
+    const lowCapPlan = makePlan({
+      route,
+      gear,
+      fills,
+      mix: makeMix({ gelConc: 100, gelRatio: 0.2 }),
+    });
+
+    const highCapAbsorbed = samples(highCapPlan).at(-1)!.absorbed;
+    const lowCapAbsorbed = samples(lowCapPlan).at(-1)!.absorbed;
+
+    expect(highCapAbsorbed).toBeCloseTo(200, 4); // 90 g/h * 3h = 270g of capacity clears the 200g dump
+    expect(lowCapAbsorbed).toBeCloseTo(135, 4); // 45 g/h floor * 3h = 135g of capacity, can't clear it all
+    expect(lowCapAbsorbed).toBeLessThan(highCapAbsorbed);
   });
 });
 

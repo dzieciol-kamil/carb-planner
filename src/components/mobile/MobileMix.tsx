@@ -23,6 +23,8 @@ export function MobileMix() {
   const openMixSheet = useAppStore((s) => s.openMixSheet);
   const strings = t(lang);
 
+  // No fills in scope here — falls back to absCap's izo-only default rather than a real
+  // izo/gel blend, since this is a live preview of the mix settings themselves, not a plan.
   const cap = absCap(mix);
   // See MixPanel.tsx's presetCaption for why the gel row skips the "Izo" caption on 2:1.
   const presetCaption = (r: number, forGel: boolean) =>
