@@ -1,5 +1,10 @@
-import type { CSSProperties } from 'react';
-import { combinedMixGroups, startFillOf, type CombinedMixGroup } from '../../domain/combinedRefill';
+import { useState, type CSSProperties } from 'react';
+import {
+  combineNeedsConfirm,
+  combinedGroups,
+  type CombinedGroup,
+  type ContainerPour,
+} from '../../domain/combinedRefill';
 import {
   carbsFill,
   citricAmount,
@@ -19,11 +24,15 @@ import type {
 } from '../../domain/types';
 import { fruitNoun, t, type Lang } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
+import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { sourceColor } from '../chart/theme';
 
-function contentLabel(content: Fill['content'], lang: Lang): string {
+function contentLabel(content: CombinedGroup['content'], lang: Lang): string {
   const strings = t(lang);
-  return content === 'water' ? strings.water : content === 'gel' ? strings.gel : strings.izo;
+  if (content === 'water') return strings.water;
+  if (content === 'gel') return strings.gel;
+  if (content === 'mixed') return strings.combineMixedLabel;
+  return strings.izo;
 }
 
 function citricSourceLineLabel(source: CitricSource, strings: ReturnType<typeof t>): string {
@@ -52,6 +61,13 @@ function mixSplit(carbs: number, ratio: number): { malto: number; fructose: numb
   return { malto: (carbs * ratio) / (ratio + 1), fructose: carbs / (ratio + 1) };
 }
 
+function pourLine(pour: ContainerPour, content: CombinedGroup['content']): string {
+  const pct = Math.round(pour.fraction * 100);
+  const vol = `${Math.round(pour.volumeMl)} ml`;
+  if (content === 'water') return `${pour.vesselName}: ${pct}% → ${vol}`;
+  return `${pour.vesselName}: ${pct}% → ${pour.carbsG.toFixed(0)} g, ${vol}`;
+}
+
 const cardStyle: CSSProperties = {
   border: '1px solid var(--border-soft)',
   borderRadius: 12,
@@ -73,18 +89,29 @@ export function RecipesSection() {
   const mix = useAppStore((s) => s.mix);
   const gear = useAppStore((s) => s.gear);
   const fills = useAppStore((s) => s.fills);
-  const combineStartGids = useAppStore((s) => s.combineStartGids);
-  const toggleCombineStart = useAppStore((s) => s.toggleCombineStart);
+  const combinedFillIds = useAppStore((s) => s.combinedFillIds);
+  const toggleCombinedFill = useAppStore((s) => s.toggleCombinedFill);
   const lang = useAppStore((s) => s.ui.lang);
   const xUnit = useAppStore((s) => s.ui.xUnit);
   const openPanel = useAppStore((s) => s.openPanel);
   const strings = t(lang);
+  const [pendingFid, setPendingFid] = useState<number | null>(null);
 
-  const selectedStartFills = combineStartGids
-    .map((gid) => startFillOf(gid, fills))
-    .filter((f): f is Fill => f != null);
-  const showCombined = selectedStartFills.length > 1;
-  const combinedGroups = showCombined ? combinedMixGroups(selectedStartFills, gear, mix) : [];
+  const selectedFills = fills.filter((f) => combinedFillIds.includes(f.fid));
+  const showCombined = selectedFills.length > 1;
+  const groups = showCombined ? combinedGroups(selectedFills, gear, mix) : [];
+
+  function handleToggle(fill: Fill) {
+    if (combinedFillIds.includes(fill.fid)) {
+      toggleCombinedFill(fill.fid);
+      return;
+    }
+    if (combineNeedsConfirm([...selectedFills, fill], mix)) {
+      setPendingFid(fill.fid);
+      return;
+    }
+    toggleCombinedFill(fill.fid);
+  }
 
   return (
     <div
@@ -153,15 +180,15 @@ export function RecipesSection() {
                 textTransform: 'uppercase',
               }}
             >
-              {strings.combineStartSectionTitle}
+              {strings.combineSectionTitle}
             </div>
             <div style={{ fontSize: 12, color: 'var(--muted-2)', marginTop: 4 }}>
-              {strings.combineStartSectionHint}
+              {strings.combineSectionHint}
             </div>
           </div>
           <div style={cardStyle}>
             <div style={{ padding: '10px 14px 12px' }}>
-              {combinedGroups.map((group) => (
+              {groups.map((group) => (
                 <CombinedGroupBlock key={group.content} group={group} lang={lang} />
               ))}
             </div>
@@ -185,17 +212,31 @@ export function RecipesSection() {
             mix={mix}
             xUnit={xUnit}
             lang={lang}
-            selected={combineStartGids.includes(vessel.gid)}
+            combinedFillIds={combinedFillIds}
             showCombined={showCombined}
-            onToggleCombineStart={() => toggleCombineStart(vessel.gid)}
+            onToggleCombine={handleToggle}
           />
         ))}
       </div>
+
+      {pendingFid != null && (
+        <ConfirmDialog
+          title={strings.combineCrossTypeConfirmTitle}
+          body={strings.combineCrossTypeConfirmBody}
+          cancelLabel={strings.combineCrossTypeConfirmCancel}
+          confirmLabel={strings.combineCrossTypeConfirmConfirm}
+          onCancel={() => setPendingFid(null)}
+          onConfirm={() => {
+            toggleCombinedFill(pendingFid);
+            setPendingFid(null);
+          }}
+        />
+      )}
     </div>
   );
 }
 
-function CombinedGroupBlock({ group, lang }: { group: CombinedMixGroup; lang: Lang }) {
+function CombinedGroupBlock({ group, lang }: { group: CombinedGroup; lang: Lang }) {
   const strings = t(lang);
   const citric = citricAmount(group.citricG, group.citricSource);
   const lines: { k: string; v: string }[] =
@@ -229,7 +270,7 @@ function CombinedGroupBlock({ group, lang }: { group: CombinedMixGroup; lang: La
           {group.content === 'gel' ? ` ${group.parts}×` : ''}
         </span>
         <span style={{ fontSize: 11, color: 'var(--muted-3)' }}>
-          {strings.combineStartBottles}: {group.vesselNames.join(', ')}
+          {strings.combineBottles}: {group.vesselNames.join(', ')}
         </span>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -252,6 +293,27 @@ function CombinedGroupBlock({ group, lang }: { group: CombinedMixGroup; lang: La
           </div>
         ))}
       </div>
+      {group.pours && group.pours.length > 1 && (
+        <div style={{ marginTop: 8, paddingTop: 8, borderTop: '1px dashed var(--border-soft)' }}>
+          <div style={{ fontSize: 11, color: 'var(--muted-3)', marginBottom: 4 }}>
+            {strings.combinePourLabel}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {group.pours.map((pour) => (
+              <div
+                key={pour.fid}
+                style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: 11,
+                  color: 'var(--ink-soft)',
+                }}
+              >
+                {pourLine(pour, group.content)}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -263,9 +325,9 @@ interface VesselRecipeCardProps {
   mix: MixSettings;
   xUnit: XUnit;
   lang: Lang;
-  selected: boolean;
+  combinedFillIds: number[];
   showCombined: boolean;
-  onToggleCombineStart: () => void;
+  onToggleCombine: (fill: Fill) => void;
 }
 
 function VesselRecipeCard({
@@ -275,9 +337,9 @@ function VesselRecipeCard({
   mix,
   xUnit,
   lang,
-  selected,
+  combinedFillIds,
   showCombined,
-  onToggleCombineStart,
+  onToggleCombine,
 }: VesselRecipeCardProps) {
   const strings = t(lang);
 
@@ -290,21 +352,24 @@ function VesselRecipeCard({
         </span>
       </div>
       <div style={{ padding: '4px 14px 12px' }}>
-        {fills.map((f, i) => (
-          <FillRecipe
-            key={f.fid}
-            fill={f}
-            index={i}
-            vessel={vessel}
-            route={route}
-            mix={mix}
-            xUnit={xUnit}
-            lang={lang}
-            selected={i === 0 && selected}
-            showCombinedNote={i === 0 && selected && showCombined}
-            onToggleCombineStart={i === 0 ? onToggleCombineStart : undefined}
-          />
-        ))}
+        {fills.map((f, i) => {
+          const selected = combinedFillIds.includes(f.fid);
+          return (
+            <FillRecipe
+              key={f.fid}
+              fill={f}
+              index={i}
+              vessel={vessel}
+              route={route}
+              mix={mix}
+              xUnit={xUnit}
+              lang={lang}
+              selected={selected}
+              showCombinedNote={selected && showCombined}
+              onToggleCombine={() => onToggleCombine(f)}
+            />
+          );
+        })}
       </div>
     </div>
   );
@@ -320,7 +385,7 @@ interface FillRecipeProps {
   lang: Lang;
   selected: boolean;
   showCombinedNote: boolean;
-  onToggleCombineStart: (() => void) | undefined;
+  onToggleCombine: () => void;
 }
 
 function FillRecipe({
@@ -333,7 +398,7 @@ function FillRecipe({
   lang,
   selected,
   showCombinedNote,
-  onToggleCombineStart,
+  onToggleCombine,
 }: FillRecipeProps) {
   const strings = t(lang);
   const carbs = carbsFill(fill, [vessel], mix);
@@ -383,14 +448,12 @@ function FillRecipe({
         <span
           style={{ fontSize: 12, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}
         >
-          {onToggleCombineStart && (
-            <input
-              type="checkbox"
-              checked={selected}
-              onChange={onToggleCombineStart}
-              title={strings.combineStartCheckbox}
-            />
-          )}
+          <input
+            type="checkbox"
+            checked={selected}
+            onChange={onToggleCombine}
+            title={strings.combineFillCheckbox}
+          />
           {strings.fill} {index + 1} · {rangeLabel(fill.from, fill.to, false, route, xUnit)}
         </span>
         <span
@@ -410,9 +473,7 @@ function FillRecipe({
         </span>
       </div>
       {showCombinedNote ? (
-        <p style={{ margin: 0, fontSize: 12, color: 'var(--muted-2)' }}>
-          {strings.combineStartNote}
-        </p>
+        <p style={{ margin: 0, fontSize: 12, color: 'var(--muted-2)' }}>{strings.combineNote}</p>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           {lines.map((line) => (

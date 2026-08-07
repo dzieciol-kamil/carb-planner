@@ -9,6 +9,7 @@ import {
   moveListItem,
   nextShopAt,
 } from '../domain/dragMath';
+import { startFillOf } from '../domain/combinedRefill';
 import { dist } from '../domain/fuel';
 import { loadGpxFile } from '../domain/gpx';
 import type { SettingsExportData } from '../domain/settingsExport';
@@ -108,9 +109,10 @@ interface AppState {
   foods: FoodItem[];
   shops: ShopStop[];
   foodLib: FoodLibEntry[];
-  // Vessel ids whose start fill the rider has picked to prepare together as one
-  // batch (see RecipesSection / MobileMixSheet) — unrelated to shop stops.
-  combineStartGids: string[];
+  // Fill ids the rider has picked to prepare together as one batch (see
+  // RecipesSection / MobileMixSheet) — any fill of any vessel, not just each
+  // vessel's start fill. Unrelated to shop stops.
+  combinedFillIds: number[];
   ui: UiState;
   nextGid: number;
   nextFid: number;
@@ -177,7 +179,7 @@ interface AppState {
   updateShop: (id: number, patch: Partial<ShopStop>) => void;
   removeShop: (id: number) => void;
 
-  toggleCombineStart: (gid: string) => void;
+  toggleCombinedFill: (fid: number) => void;
 
   setRatio: (n: number) => void;
   setGelRatio: (n: number) => void;
@@ -244,7 +246,7 @@ const defaultFoods: FoodItem[] = [];
 
 const defaultShops: ShopStop[] = [];
 
-const defaultCombineStartGids: string[] = [];
+const defaultCombinedFillIds: number[] = [];
 
 const defaultFoodLib: FoodLibEntry[] = [
   { key: 'gel', pl: 'Żel energetyczny', en: 'Energy gel', carbs: 22 },
@@ -263,7 +265,7 @@ export const useAppStore = create<AppState>()(
       foods: defaultFoods,
       shops: defaultShops,
       foodLib: defaultFoodLib,
-      combineStartGids: defaultCombineStartGids,
+      combinedFillIds: defaultCombinedFillIds,
       ui: {
         lang: defaultLang(),
         viewMode: 'auto',
@@ -460,6 +462,7 @@ export const useAppStore = create<AppState>()(
       removeFill: (fid) =>
         set((s) => ({
           fills: s.fills.filter((f) => f.fid !== fid),
+          combinedFillIds: s.combinedFillIds.filter((f) => f !== fid),
           ui: { ...s.ui, hoverKey: null, selKey: null },
         })),
       addFillInGap: (gid) =>
@@ -546,11 +549,11 @@ export const useAppStore = create<AppState>()(
           ui: { ...s.ui, hoverKey: null, dragKey: null },
         })),
 
-      toggleCombineStart: (gid) =>
+      toggleCombinedFill: (fid) =>
         set((s) => ({
-          combineStartGids: s.combineStartGids.includes(gid)
-            ? s.combineStartGids.filter((g) => g !== gid)
-            : [...s.combineStartGids, gid],
+          combinedFillIds: s.combinedFillIds.includes(fid)
+            ? s.combinedFillIds.filter((f) => f !== fid)
+            : [...s.combinedFillIds, fid],
         })),
 
       setRatio: (n) => set((s) => ({ mix: { ...s.mix, ratio: clamp(n, 0.2, 10) } })),
@@ -568,11 +571,14 @@ export const useAppStore = create<AppState>()(
       updateVessel: (gid, patch) =>
         set((s) => ({ gear: s.gear.map((g) => (g.gid === gid ? { ...g, ...patch } : g)) })),
       removeVessel: (gid) =>
-        set((s) => ({
-          gear: s.gear.filter((g) => g.gid !== gid),
-          fills: s.fills.filter((f) => f.gid !== gid),
-          combineStartGids: s.combineStartGids.filter((g) => g !== gid),
-        })),
+        set((s) => {
+          const removedFids = new Set(s.fills.filter((f) => f.gid === gid).map((f) => f.fid));
+          return {
+            gear: s.gear.filter((g) => g.gid !== gid),
+            fills: s.fills.filter((f) => f.gid !== gid),
+            combinedFillIds: s.combinedFillIds.filter((fid) => !removedFids.has(fid)),
+          };
+        }),
       addVessel: () =>
         set((s) => ({
           gear: [
@@ -590,18 +596,29 @@ export const useAppStore = create<AppState>()(
       reorderVessel: (fromIndex, toIndex) =>
         set((s) => ({ gear: moveListItem(s.gear, fromIndex, toIndex) })),
       toggleVesselAllowed: (gid, content) =>
-        set((s) => ({
-          gear: s.gear.map((g) => {
-            if (g.gid !== gid) return g;
-            const cur = g.allowed || [];
-            const on = cur.includes(content);
-            const next = on ? cur.filter((v) => v !== content) : [...cur, content];
-            return { ...g, allowed: next.length ? next : cur };
-          }),
-          fills: s.gear.find((g) => g.gid === gid)?.allowed.includes(content)
-            ? s.fills.filter((f) => !(f.gid === gid && f.content === content))
-            : s.fills,
-        })),
+        set((s) => {
+          const willRemoveFills = !!s.gear.find((g) => g.gid === gid)?.allowed.includes(content);
+          const removedFids = willRemoveFills
+            ? new Set(
+                s.fills.filter((f) => f.gid === gid && f.content === content).map((f) => f.fid),
+              )
+            : null;
+          return {
+            gear: s.gear.map((g) => {
+              if (g.gid !== gid) return g;
+              const cur = g.allowed || [];
+              const on = cur.includes(content);
+              const next = on ? cur.filter((v) => v !== content) : [...cur, content];
+              return { ...g, allowed: next.length ? next : cur };
+            }),
+            fills: willRemoveFills
+              ? s.fills.filter((f) => !(f.gid === gid && f.content === content))
+              : s.fills,
+            combinedFillIds: removedFids
+              ? s.combinedFillIds.filter((fid) => !removedFids.has(fid))
+              : s.combinedFillIds,
+          };
+        }),
       setVesselGelParts: (gid, n) =>
         set((s) => ({
           gear: s.gear.map((g) =>
@@ -625,8 +642,26 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: 'carbfueling',
-      version: 1,
+      version: 2,
       storage: createJSONStorage(() => createDebouncedLocalStorage(400)),
+      // v1 -> v2: the combine-bottles feature moved from a per-vessel "start fill only"
+      // checkbox (combineStartGids: vessel ids) to a per-fill one (combinedFillIds: fill
+      // ids). Map each previously-selected vessel to its own start fill's id so an
+      // existing selection survives the upgrade instead of silently vanishing.
+      migrate: (persistedState, version) => {
+        const s = persistedState as
+          (Partial<AppState> & { combineStartGids?: string[] }) | undefined;
+        if (!s) return s;
+        if (version < 2) {
+          const oldGids = Array.isArray(s.combineStartGids) ? s.combineStartGids : [];
+          const fills = Array.isArray(s.fills) ? s.fills : [];
+          s.combinedFillIds = oldGids
+            .map((gid) => startFillOf(gid, fills)?.fid)
+            .filter((fid): fid is number => fid != null);
+          delete s.combineStartGids;
+        }
+        return s;
+      },
       merge: (persistedState, currentState) => {
         const persisted = persistedState as Partial<AppState> | undefined;
         return {

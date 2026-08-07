@@ -1,5 +1,10 @@
-import type { CSSProperties } from 'react';
-import { combinedMixGroups, startFillOf, type CombinedMixGroup } from '../../domain/combinedRefill';
+import { useState, type CSSProperties } from 'react';
+import {
+  combineNeedsConfirm,
+  combinedGroups,
+  type CombinedGroup,
+  type ContainerPour,
+} from '../../domain/combinedRefill';
 import {
   carbsFill,
   citricAmount,
@@ -10,6 +15,7 @@ import {
 import type { CitricSource, Fill } from '../../domain/types';
 import { fruitNoun, t, type Lang } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
+import { ConfirmDialog } from '../ui/ConfirmDialog';
 
 function mixSplit(carbs: number, ratio: number): { malto: number; fructose: number } {
   return { malto: (carbs * ratio) / (ratio + 1), fructose: carbs / (ratio + 1) };
@@ -37,6 +43,13 @@ function citricValueLabel(citric: CitricAmount, source: CitricSource, lang: Lang
   return fmtFruitFraction(citric.amount) + ' ' + fruitNoun(species, citric.amount, lang);
 }
 
+function pourLine(pour: ContainerPour, content: CombinedGroup['content']): string {
+  const pct = Math.round(pour.fraction * 100);
+  const vol = Math.round(pour.volumeMl) + ' ml';
+  if (content === 'water') return `${pour.vesselName}: ${pct}% → ${vol}`;
+  return `${pour.vesselName}: ${pct}% → ${pour.carbsG.toFixed(0)} g, ${vol}`;
+}
+
 const rowStyle: CSSProperties = {
   display: 'flex',
   alignItems: 'baseline',
@@ -52,25 +65,42 @@ export function MobileMixSheet() {
   const lang = useAppStore((s) => s.ui.lang);
   const gear = useAppStore((s) => s.gear);
   const fills = useAppStore((s) => s.fills);
-  const combineStartGids = useAppStore((s) => s.combineStartGids);
-  const toggleCombineStart = useAppStore((s) => s.toggleCombineStart);
+  const combinedFillIds = useAppStore((s) => s.combinedFillIds);
+  const toggleCombinedFill = useAppStore((s) => s.toggleCombinedFill);
   const mix = useAppStore((s) => s.mix);
   const strings = t(lang);
+  const [pendingFid, setPendingFid] = useState<number | null>(null);
 
   if (!open) return null;
 
-  const contentLabel = (content: 'water' | 'izo' | 'gel') =>
-    content === 'water' ? strings.water : content === 'gel' ? strings.gel : strings.izo;
+  const contentLabel = (content: CombinedGroup['content']) =>
+    content === 'water'
+      ? strings.water
+      : content === 'gel'
+        ? strings.gel
+        : content === 'mixed'
+          ? strings.combineMixedLabel
+          : strings.izo;
 
-  const selectedStartFills = combineStartGids
-    .map((gid) => startFillOf(gid, fills))
-    .filter((f): f is Fill => f != null);
-  const showCombined = selectedStartFills.length > 1;
-  const combinedGroups = showCombined ? combinedMixGroups(selectedStartFills, gear, mix) : [];
+  const selectedFills = fills.filter((f) => combinedFillIds.includes(f.fid));
+  const showCombined = selectedFills.length > 1;
+  const groups = showCombined ? combinedGroups(selectedFills, gear, mix) : [];
 
-  const groups = gear
+  const vesselGroups = gear
     .map((vessel) => ({ vessel, vesselFills: fills.filter((f) => f.gid === vessel.gid) }))
     .filter((g) => g.vesselFills.length > 0);
+
+  function handleToggle(fill: Fill) {
+    if (combinedFillIds.includes(fill.fid)) {
+      toggleCombinedFill(fill.fid);
+      return;
+    }
+    if (combineNeedsConfirm([...selectedFills, fill], mix)) {
+      setPendingFid(fill.fid);
+      return;
+    }
+    toggleCombinedFill(fill.fid);
+  }
 
   return (
     <div
@@ -123,7 +153,7 @@ export function MobileMixSheet() {
           gap: 18,
         }}
       >
-        {groups.length === 0 && (
+        {vesselGroups.length === 0 && (
           <p style={{ margin: 0, fontSize: 13, color: 'var(--muted)' }}>{strings.mixSheetEmpty}</p>
         )}
 
@@ -138,13 +168,13 @@ export function MobileMixSheet() {
                   color: 'var(--muted)',
                 }}
               >
-                {strings.combineStartSectionTitle}
+                {strings.combineSectionTitle}
               </div>
               <div style={{ fontSize: 11, color: 'var(--muted-2)', marginTop: 2 }}>
-                {strings.combineStartSectionHint}
+                {strings.combineSectionHint}
               </div>
             </div>
-            {combinedGroups.map((group) => (
+            {groups.map((group) => (
               <CombinedGroupRows
                 key={group.content}
                 group={group}
@@ -155,7 +185,7 @@ export function MobileMixSheet() {
           </div>
         )}
 
-        {groups.map(({ vessel, vesselFills }) => (
+        {vesselGroups.map(({ vessel, vesselFills }) => (
           <div key={vessel.gid}>
             {vesselFills.map((fill, i) => {
               const carbs = carbsFill(fill, gear, mix);
@@ -166,8 +196,7 @@ export function MobileMixSheet() {
               const citricSource = fill.content === 'gel' ? mix.gelCitricSource : mix.citricSource;
               const citricGrams =
                 (vessel.vol / 100) * (fill.content === 'gel' ? mix.gelCitric : mix.citric);
-              const isStart = i === 0;
-              const selected = isStart && combineStartGids.includes(vessel.gid);
+              const selected = combinedFillIds.includes(fill.fid);
               const citric = citricAmount(citricGrams, citricSource);
 
               const lines: { k: string; v: string }[] =
@@ -196,14 +225,12 @@ export function MobileMixSheet() {
                       fontWeight: 700,
                     }}
                   >
-                    {isStart && (
-                      <input
-                        type="checkbox"
-                        checked={selected}
-                        onChange={() => toggleCombineStart(vessel.gid)}
-                        title={strings.combineStartCheckbox}
-                      />
-                    )}
+                    <input
+                      type="checkbox"
+                      checked={selected}
+                      onChange={() => handleToggle(fill)}
+                      title={strings.combineFillCheckbox}
+                    />
                     {vessel.name} · napełnienie {i + 1}
                   </div>
                   <div
@@ -218,7 +245,7 @@ export function MobileMixSheet() {
                   </div>
                   {selected && showCombined ? (
                     <p style={{ margin: '4px 0 0', fontSize: 12, color: 'var(--muted-2)' }}>
-                      {strings.combineStartNote}
+                      {strings.combineNote}
                     </p>
                   ) : (
                     lines.map((line) => (
@@ -242,6 +269,20 @@ export function MobileMixSheet() {
           </div>
         ))}
       </div>
+
+      {pendingFid != null && (
+        <ConfirmDialog
+          title={strings.combineCrossTypeConfirmTitle}
+          body={strings.combineCrossTypeConfirmBody}
+          cancelLabel={strings.combineCrossTypeConfirmCancel}
+          confirmLabel={strings.combineCrossTypeConfirmConfirm}
+          onCancel={() => setPendingFid(null)}
+          onConfirm={() => {
+            toggleCombinedFill(pendingFid);
+            setPendingFid(null);
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -251,9 +292,9 @@ function CombinedGroupRows({
   lang,
   contentLabel,
 }: {
-  group: CombinedMixGroup;
+  group: CombinedGroup;
   lang: Lang;
-  contentLabel: (content: 'water' | 'izo' | 'gel') => string;
+  contentLabel: (content: CombinedGroup['content']) => string;
 }) {
   const strings = t(lang);
   const citric = citricAmount(group.citricG, group.citricSource);
@@ -283,7 +324,7 @@ function CombinedGroupRows({
         }}
       >
         {contentLabel(group.content)}
-        {group.content === 'gel' ? ' · ' + group.parts + '×' : ''} · {strings.combineStartBottles}:{' '}
+        {group.content === 'gel' ? ' · ' + group.parts + '×' : ''} · {strings.combineBottles}:{' '}
         {group.vesselNames.join(', ')}
       </div>
       {lines.map((line) => (
@@ -300,6 +341,27 @@ function CombinedGroupRows({
           </span>
         </div>
       ))}
+      {group.pours && group.pours.length > 1 && (
+        <div style={{ marginTop: 6, paddingTop: 6, borderTop: '1px dashed #F0F1ED' }}>
+          <div style={{ fontSize: 10, color: 'var(--muted-3)', marginBottom: 3 }}>
+            {strings.combinePourLabel}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {group.pours.map((pour) => (
+              <div
+                key={pour.fid}
+                style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: 12,
+                  color: 'var(--ink-soft)',
+                }}
+              >
+                {pourLine(pour, group.content)}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
