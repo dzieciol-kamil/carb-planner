@@ -1,6 +1,14 @@
 import type { CSSProperties } from 'react';
 import { combinedMixGroups, startFillOf, type CombinedMixGroup } from '../../domain/combinedRefill';
-import { carbsFill, citricAmount, fmtX, partsOf, rangeLabel } from '../../domain/fuel';
+import {
+  carbsFill,
+  citricAmount,
+  fmtFruitFraction,
+  fmtX,
+  partsOf,
+  rangeLabel,
+  type CitricAmount,
+} from '../../domain/fuel';
 import type {
   CitricSource,
   Fill,
@@ -9,7 +17,7 @@ import type {
   Vessel,
   XUnit,
 } from '../../domain/types';
-import { t, type Lang } from '../../i18n/strings';
+import { fruitNoun, t, type Lang } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
 import { sourceColor } from '../chart/theme';
 
@@ -19,11 +27,25 @@ function contentLabel(content: Fill['content'], lang: Lang): string {
 }
 
 function citricSourceLineLabel(source: CitricSource, strings: ReturnType<typeof t>): string {
-  return source === 'lemon'
-    ? strings.citricSourceLemonJuice
-    : source === 'lime'
-      ? strings.citricSourceLimeJuice
-      : strings.citric;
+  switch (source) {
+    case 'lemon':
+      return strings.citricSourceLemon;
+    case 'lemonJuice':
+      return strings.citricSourceLemonJuice;
+    case 'lime':
+      return strings.citricSourceLime;
+    case 'limeJuice':
+      return strings.citricSourceLimeJuice;
+    default:
+      return strings.citric;
+  }
+}
+
+function citricValueLabel(citric: CitricAmount, source: CitricSource, lang: Lang): string {
+  if (citric.unit === 'g') return `${citric.amount.toFixed(2)} g`;
+  if (citric.unit === 'ml') return `${citric.amount.toFixed(1)} ml`;
+  const species = source === 'lime' ? 'lime' : 'lemon';
+  return `${fmtFruitFraction(citric.amount)} ${fruitNoun(species, citric.amount, lang)}`;
 }
 
 function mixSplit(carbs: number, ratio: number): { malto: number; fructose: number } {
@@ -175,6 +197,7 @@ export function RecipesSection() {
 
 function CombinedGroupBlock({ group, lang }: { group: CombinedMixGroup; lang: Lang }) {
   const strings = t(lang);
+  const citric = citricAmount(group.citricG, group.citricSource);
   const lines: { k: string; v: string }[] =
     group.content === 'water'
       ? [{ k: strings.waterFill, v: `${group.volumeMl} ml` }]
@@ -183,7 +206,10 @@ function CombinedGroupBlock({ group, lang }: { group: CombinedMixGroup; lang: La
           { k: strings.malto, v: `${group.maltoG.toFixed(1)} g` },
           { k: strings.fructose, v: `${group.fructoseG.toFixed(1)} g` },
           { k: strings.salt, v: `${group.saltG.toFixed(2)} g` },
-          { k: strings.citric, v: `${group.citricG.toFixed(2)} g` },
+          {
+            k: citricSourceLineLabel(group.citricSource, strings),
+            v: citricValueLabel(citric, group.citricSource, lang),
+          },
           { k: strings.waterFill, v: `${group.volumeMl} ml` },
         ];
 
@@ -312,7 +338,8 @@ function FillRecipe({
   const strings = t(lang);
   const carbs = carbsFill(fill, [vessel], mix);
   const n = partsOf(fill, [vessel]);
-  const split = mixSplit(carbs, mix.ratio || 2);
+  const ratio = fill.content === 'gel' ? mix.gelRatio : mix.ratio;
+  const split = mixSplit(carbs, ratio || 2);
   const citricSource = fill.content === 'gel' ? mix.gelCitricSource : mix.citricSource;
   const citricGrams = (vessel.vol / 100) * (fill.content === 'gel' ? mix.gelCitric : mix.citric);
   const citric = citricAmount(citricGrams, citricSource);
@@ -330,7 +357,7 @@ function FillRecipe({
           },
           {
             k: citricSourceLineLabel(citricSource, strings),
-            v: `${citric.amount.toFixed(citric.unit === 'ml' ? 1 : 2)} ${citric.unit}`,
+            v: citricValueLabel(citric, citricSource, lang),
           },
           { k: strings.waterFill, v: `${vessel.vol} ml` },
         ];

@@ -980,3 +980,33 @@ export const STR: Record<Lang, StringTable> = {
 export function t(lang: Lang): StringTable {
   return { ...STR.en, ...STR[lang] };
 }
+
+type FruitSpecies = 'lemon' | 'lime';
+
+// Word forms for "N lemons/limes" next to a fraction like "¾ cytryny". Polish noun counting
+// has three buckets (1 / 2-4 / 5+, plus fractions taking the genitive-singular "few" form);
+// English just needs singular vs. plural. This is a personal project, not a grammar textbook —
+// close enough for a recipe card, not aiming to nail every edge case (e.g. "1½").
+const FRUIT_NOUNS: Record<
+  Lang,
+  Record<FruitSpecies, { one: string; few: string; many: string }>
+> = {
+  pl: {
+    lemon: { one: 'cytryna', few: 'cytryny', many: 'cytryn' },
+    lime: { one: 'limonka', few: 'limonki', many: 'limonek' },
+  },
+  en: {
+    lemon: { one: 'lemon', few: 'lemons', many: 'lemons' },
+    lime: { one: 'lime', few: 'limes', many: 'limes' },
+  },
+};
+
+/** Declines the fruit noun for a whole-fruit citric amount, e.g. pl: ¾ → "cytryny", 1 → "cytryna". */
+export function fruitNoun(species: FruitSpecies, amount: number, lang: Lang): string {
+  const forms = FRUIT_NOUNS[lang][species];
+  if (lang === 'en') return amount <= 1 ? forms.one : forms.few;
+  if (amount === 1) return forms.one;
+  if (!Number.isInteger(amount)) return forms.few;
+  if (amount >= 2 && amount <= 4) return forms.few;
+  return forms.many;
+}

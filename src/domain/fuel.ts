@@ -83,10 +83,28 @@ export function sweat(route: RouteInput): number {
   return Math.round(((base + iB) * (route.weight / 75)) / 10) * 10;
 }
 
-export function absCap(mix: MixSettings): number {
-  const r = mix.ratio || 2;
-  const glu = r / (r + 1);
-  const fru = 1 / (r + 1);
+/**
+ * Gut absorption ceiling (g/h). izo and gel can each have their own malto:fructose ratio, so
+ * this blends `ratio`/`gelRatio` weighted by how much each content type actually contributes
+ * to the plan's carbs (izoCarbs/gelCarbs) — a rider fuelling mostly from a low-ratio gel has a
+ * lower real cap than a pure-izo plan would suggest, and vice versa.
+ *
+ * izoCarbs/gelCarbs default to 0 (no split known), which falls back to the izo ratio alone —
+ * used by UI spots that only have `mix` in scope with no plan/fills yet to weigh (the footer's
+ * absorption note, the mobile "Me" tab, and the mix-editing screen's live preview), rather than
+ * pretending to know a real-world split. Call sites that do have fills/gear (samples() below,
+ * the desktop/mobile charts) pass the actual carb totals for a true blended figure.
+ */
+export function absCap(mix: MixSettings, izoCarbs = 0, gelCarbs = 0): number {
+  const rIzo = mix.ratio || 2;
+  const rGel = mix.gelRatio || 2;
+  const gluIzo = rIzo / (rIzo + 1);
+  const gluGel = rGel / (rGel + 1);
+  const total = izoCarbs + gelCarbs;
+  const wGel = total > 0 ? gelCarbs / total : 0;
+  const wIzo = 1 - wGel;
+  const glu = wIzo * gluIzo + wGel * gluGel;
+  const fru = 1 - glu;
   return Math.round(Math.max(45, Math.min(95, Math.min(60 / glu, 32 / fru))));
 }
 
@@ -207,26 +225,68 @@ export function carbsFill(fill: Fill, gear: Vessel[], mix: MixSettings): number 
   return (volOf(fill, gear) / 100) * (fill.content === 'gel' ? mix.gelConc : mix.conc);
 }
 
+export type FruitSpecies = 'lemon' | 'lime';
+
 // Approximate citric-acid concentration of fresh juice (g per ml), used only to turn a
 // citric-acid-equivalent gram figure into a practical "squeeze this much juice" amount for the
 // lemon/lime sources. Citric acid powder is ~100% citric acid, so it needs no conversion. These
 // are rough real-world ballparks (lemon ~5% w/v, lime ~6% w/v, lime being slightly more acidic),
 // not a precise nutritional reference — good enough for a recipe card, not a lab.
-const JUICE_CITRIC_YIELD_G_PER_ML: Record<Exclude<CitricSource, 'citric'>, number> = {
+const JUICE_CITRIC_YIELD_G_PER_ML: Record<FruitSpecies, number> = {
   lemon: 0.05,
   lime: 0.06,
 };
 
+// Roughly how much juice one whole average fruit yields — again a kitchen-table ballpark
+// (fruit size varies a lot), not a lab figure, just enough to turn "you need ~20ml of lemon
+// juice" into "that's about ½ a lemon" for the whole-fruit sources.
+const JUICE_ML_PER_WHOLE_FRUIT: Record<FruitSpecies, number> = {
+  lemon: 45,
+  lime: 30,
+};
+
+const FRUIT_SPECIES_OF: Record<Exclude<CitricSource, 'citric'>, FruitSpecies> = {
+  lemon: 'lemon',
+  lemonJuice: 'lemon',
+  lime: 'lime',
+  limeJuice: 'lime',
+};
+
 export interface CitricAmount {
   amount: number;
-  unit: 'g' | 'ml';
+  /** 'g' for citric acid powder, 'ml' for bottled/squeezed juice, 'fruit' for a fraction of one whole fruit. */
+  unit: 'g' | 'ml' | 'fruit';
 }
 
-/** Converts a citric-acid-equivalent gram amount into the practical amount/unit for the given source. */
+/**
+ * Converts a citric-acid-equivalent gram amount into the practical amount/unit for the given
+ * source: grams for plain citric acid, ml of juice for the juice sources, or a fraction of one
+ * whole fruit (rounded to the nearest quarter, e.g. 0.25/0.5/0.75/1) for the whole-fruit sources.
+ */
 export function citricAmount(gramsCitricAcid: number, source: CitricSource): CitricAmount {
   if (source === 'citric') return { amount: gramsCitricAcid, unit: 'g' };
-  const yieldPerMl = JUICE_CITRIC_YIELD_G_PER_ML[source];
-  return { amount: yieldPerMl > 0 ? gramsCitricAcid / yieldPerMl : 0, unit: 'ml' };
+  const species = FRUIT_SPECIES_OF[source];
+  const yieldPerMl = JUICE_CITRIC_YIELD_G_PER_ML[species];
+  const ml = yieldPerMl > 0 ? gramsCitricAcid / yieldPerMl : 0;
+  if (source === 'lemonJuice' || source === 'limeJuice') return { amount: ml, unit: 'ml' };
+  const mlPerFruit = JUICE_ML_PER_WHOLE_FRUIT[species];
+  const fraction = mlPerFruit > 0 ? Math.round((ml / mlPerFruit) * 4) / 4 : 0;
+  return { amount: fraction, unit: 'fruit' };
+}
+
+const FRACTION_GLYPHS: Record<number, string> = { 0.25: '¼', 0.5: '½', 0.75: '¾' };
+
+/**
+ * Formats a fraction-of-a-fruit amount (already rounded to the nearest quarter by
+ * `citricAmount`) as a compact numeral, e.g. 0 → "0", 0.25 → "¼", 1 → "1", 1.25 → "1¼".
+ */
+export function fmtFruitFraction(n: number): string {
+  if (n <= 0) return '0';
+  const whole = Math.floor(n + 1e-9);
+  const frac = Math.round((n - whole) * 4) / 4;
+  const glyph = FRACTION_GLYPHS[frac];
+  if (whole === 0) return glyph || String(n);
+  return glyph ? `${whole}${glyph}` : String(whole);
 }
 
 export function partsOf(fill: Fill, gear: Vessel[]): number {
@@ -279,7 +339,13 @@ export function samples(state: PlanState): Sample[] {
   const target = hrs * cph(route);
   const N = PROFILE_SAMPLES;
   const tot = effTotal(route);
-  const cap = absCap(mix);
+  const izoCarbs = fills
+    .filter((f) => f.content === 'izo')
+    .reduce((a, f) => a + carbsFill(f, gear, mix), 0);
+  const gelCarbs = fills
+    .filter((f) => f.content === 'gel')
+    .reduce((a, f) => a + carbsFill(f, gear, mix), 0);
+  const cap = absCap(mix, izoCarbs, gelCarbs);
   // Assumes equal time per equal-distance sample (flat-pace approximation); the chart's
   // time axis is now terrain-aware (see timeAtDistance) but this absorption model is not — a
   // known, deliberate scope boundary, not an oversight.

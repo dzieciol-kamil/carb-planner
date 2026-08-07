@@ -5,12 +5,13 @@ import { useAppStore } from '../../store/appStore';
 import { MobileStepper } from './MobileStepper';
 
 const RATIO_PRESETS = [2, 1.5, 1, 0.8];
-const CITRIC_SOURCES: CitricSource[] = ['citric', 'lemon', 'lime'];
+const CITRIC_SOURCES: CitricSource[] = ['citric', 'lemon', 'lemonJuice', 'lime', 'limeJuice'];
 
 export function MobileMix() {
   const lang = useAppStore((s) => s.ui.lang);
   const mix = useAppStore((s) => s.mix);
   const setRatio = useAppStore((s) => s.setRatio);
+  const setGelRatio = useAppStore((s) => s.setGelRatio);
   const setConc = useAppStore((s) => s.setConc);
   const setSalt = useAppStore((s) => s.setSalt);
   const setCitric = useAppStore((s) => s.setCitric);
@@ -22,22 +23,65 @@ export function MobileMix() {
   const openMixSheet = useAppStore((s) => s.openMixSheet);
   const strings = t(lang);
 
+  // No fills in scope here — falls back to absCap's izo-only default rather than a real
+  // izo/gel blend, since this is a live preview of the mix settings themselves, not a plan.
   const cap = absCap(mix);
-  const presetCaption = (r: number) =>
+  // See MixPanel.tsx's presetCaption for why the gel row skips the "Izo" caption on 2:1.
+  const presetCaption = (r: number, forGel: boolean) =>
     r === 2
-      ? strings.izo
+      ? forGel
+        ? null
+        : strings.izo
       : r === 1
         ? strings.ratioLabelSugar
         : r === 0.8
           ? strings.ratioLabelHoney
           : null;
 
-  const citricSourceCaption = (src: CitricSource) =>
-    src === 'lemon'
-      ? strings.citricSourceLemon
-      : src === 'lime'
-        ? strings.citricSourceLime
-        : strings.citricSourceCitric;
+  const citricSourceCaption = (src: CitricSource) => {
+    switch (src) {
+      case 'lemon':
+        return strings.citricSourceLemon;
+      case 'lemonJuice':
+        return strings.citricSourceLemonJuice;
+      case 'lime':
+        return strings.citricSourceLime;
+      case 'limeJuice':
+        return strings.citricSourceLimeJuice;
+      default:
+        return strings.citricSourceCitric;
+    }
+  };
+
+  const ratioButtons = (value: number, onChange: (n: number) => void, forGel: boolean) => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+      {RATIO_PRESETS.map((r) => {
+        const caption = presetCaption(r, forGel);
+        const active = value === r;
+        return (
+          <button
+            key={r}
+            type="button"
+            onClick={() => onChange(r)}
+            style={{
+              flex: '1 1 76px',
+              padding: '14px 4px',
+              borderRadius: 9,
+              border: '1px solid ' + (active ? 'var(--ink)' : 'var(--chip-border)'),
+              background: active ? 'var(--ink)' : '#fff',
+              color: active ? '#fff' : 'var(--muted-2)',
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            {caption ? caption + ' ' : ''}
+            {r}:1
+          </button>
+        );
+      })}
+    </div>
+  );
 
   return (
     <div style={{ padding: '12px 14px 16px', display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -55,33 +99,6 @@ export function MobileMix() {
         <p style={{ margin: 0, fontSize: 11, lineHeight: 1.5, color: 'var(--muted-2)' }}>
           {strings.mixHintMobile} {strings.absCapNoteMobile.replace('{cap}', String(cap))}
         </p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-          {RATIO_PRESETS.map((r) => {
-            const caption = presetCaption(r);
-            const active = mix.ratio === r;
-            return (
-              <button
-                key={r}
-                type="button"
-                onClick={() => setRatio(r)}
-                style={{
-                  flex: '1 1 76px',
-                  padding: '14px 4px',
-                  borderRadius: 9,
-                  border: '1px solid ' + (active ? 'var(--ink)' : 'var(--chip-border)'),
-                  background: active ? 'var(--ink)' : '#fff',
-                  color: active ? '#fff' : 'var(--muted-2)',
-                  fontSize: 12,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                }}
-              >
-                {caption ? caption + ' ' : ''}
-                {r}:1
-              </button>
-            );
-          })}
-        </div>
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -95,6 +112,7 @@ export function MobileMix() {
         >
           {strings.mixIzo}
         </div>
+        {ratioButtons(mix.ratio, setRatio, false)}
         <MobileStepper
           label={strings.concLabel + ' (' + strings.per100 + ')'}
           value={mix.conc}
@@ -162,6 +180,7 @@ export function MobileMix() {
         >
           {strings.mixGel}
         </div>
+        {ratioButtons(mix.gelRatio, setGelRatio, true)}
         <MobileStepper
           label={strings.gelConcLabel + ' (' + strings.per100 + ')'}
           value={mix.gelConc}

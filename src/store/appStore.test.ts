@@ -312,3 +312,64 @@ describe('citric source setters', () => {
     expect(useAppStore.getState().mix.gelCitricSource).toBe('citric');
   });
 });
+
+describe('ratio setters', () => {
+  beforeEach(() => {
+    useAppStore.setState(initialState, true);
+  });
+
+  test('defaults to 2:1 for both izo and gel', () => {
+    expect(useAppStore.getState().mix.ratio).toBe(2);
+    expect(useAppStore.getState().mix.gelRatio).toBe(2);
+  });
+
+  test('setRatio only changes the izo ratio', () => {
+    useAppStore.getState().setRatio(1);
+    expect(useAppStore.getState().mix.ratio).toBe(1);
+    expect(useAppStore.getState().mix.gelRatio).toBe(2);
+  });
+
+  test('setGelRatio only changes the gel ratio', () => {
+    useAppStore.getState().setGelRatio(0.8);
+    expect(useAppStore.getState().mix.gelRatio).toBe(0.8);
+    expect(useAppStore.getState().mix.ratio).toBe(2);
+  });
+
+  test('setGelRatio clamps to the 0.2-10 range', () => {
+    useAppStore.getState().setGelRatio(20);
+    expect(useAppStore.getState().mix.gelRatio).toBe(10);
+    useAppStore.getState().setGelRatio(0);
+    expect(useAppStore.getState().mix.gelRatio).toBe(0.2);
+  });
+
+  test('resetMix restores both ratios to 2:1', () => {
+    useAppStore.getState().setRatio(1);
+    useAppStore.getState().setGelRatio(0.8);
+    useAppStore.getState().resetMix();
+    expect(useAppStore.getState().mix.ratio).toBe(2);
+    expect(useAppStore.getState().mix.gelRatio).toBe(2);
+  });
+});
+
+describe('persisted mix merge', () => {
+  // Simulates a user whose localStorage was written before gelRatio existed: the persisted
+  // blob has no gelRatio key at all. merge() should fall back to the current default instead
+  // of leaving it undefined — same deep-merge-of-mix behavior citricSource already relies on.
+  test('fills in gelRatio for state persisted before the field existed', () => {
+    const merge = useAppStore.persist.getOptions().merge!;
+    const currentState = useAppStore.getState();
+    const legacyPersistedMix = {
+      conc: 8.4,
+      gelConc: 60,
+      ratio: 2,
+      salt: 0.16,
+      citric: 0.2,
+      gelSalt: 0.4,
+      gelCitric: 0.4,
+      citricSource: 'citric',
+      gelCitricSource: 'citric',
+    };
+    const merged = merge({ mix: legacyPersistedMix }, currentState) as typeof currentState;
+    expect(merged.mix.gelRatio).toBe(currentState.mix.gelRatio);
+  });
+});

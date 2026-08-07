@@ -6,6 +6,7 @@ const mix: MixSettings = {
   conc: 8,
   gelConc: 60,
   ratio: 2,
+  gelRatio: 2,
   salt: 0.4,
   citric: 0.4,
   gelSalt: 0.4,
@@ -83,6 +84,31 @@ describe('combinedMixGroups', () => {
     const groups = combinedMixGroups(fills, gear, mix);
     expect(groups).toHaveLength(1);
     expect(groups[0].vesselNames).toEqual(['Bidon']);
+  });
+
+  test('gel groups use gelRatio and gelCitricSource, izo groups use ratio and citricSource', () => {
+    const divergentMix: MixSettings = {
+      ...mix,
+      ratio: 2,
+      gelRatio: 1,
+      citricSource: 'citric',
+      gelCitricSource: 'lime',
+    };
+    const fills: Fill[] = [
+      { fid: 1, gid: 'g1', content: 'izo', from: 0, to: 25 },
+      { fid: 2, gid: 'g2', content: 'gel', from: 0, to: 10 },
+    ];
+    const groups = combinedMixGroups(fills, gear, divergentMix);
+    const izo = groups.find((g) => g.content === 'izo')!;
+    const gel = groups.find((g) => g.content === 'gel')!;
+
+    // izo: ratio 2:1 -> malto is 2/3 of carbs
+    expect(izo.maltoG).toBeCloseTo(izo.carbsG * (2 / 3), 5);
+    expect(izo.citricSource).toBe('citric');
+
+    // gel: gelRatio 1:1 -> malto is 1/2 of carbs, independent of izo's ratio
+    expect(gel.maltoG).toBeCloseTo(gel.carbsG * (1 / 2), 5);
+    expect(gel.citricSource).toBe('lime');
   });
 
   test('typical usage: caller resolves selected vessel ids to start fills first', () => {

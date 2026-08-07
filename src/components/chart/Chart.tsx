@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 import {
   absCap,
+  carbsFill,
   dist,
   distanceAtTime,
   fmtX,
@@ -56,7 +57,13 @@ export function Chart({ height, showAxis }: ChartProps) {
   const rateMode = yMode === 'rate' || fluidMode;
   const yk: NumericSampleKey = fluidMode ? 'fluidRate' : rateMode ? 'rate' : 'absorbed';
   const nk: NumericSampleKey = fluidMode ? 'sweatRate' : rateMode ? 'needRate' : 'need';
-  const cap = absCap(mix);
+  const izoCarbs = fills
+    .filter((f) => f.content === 'izo')
+    .reduce((a, f) => a + carbsFill(f, gear, mix), 0);
+  const gelCarbs = fills
+    .filter((f) => f.content === 'gel')
+    .reduce((a, f) => a + carbsFill(f, gear, mix), 0);
+  const cap = absCap(mix, izoCarbs, gelCarbs);
   const capY = fluidMode ? FLUID_CAP : cap;
 
   const maxY = fluidMode
