@@ -9,6 +9,7 @@ import {
   carbsFill,
   citricAmount,
   fmtFruitFractionPct,
+  mixSplit,
   partsOf,
   type CitricAmount,
 } from '../../domain/fuel';
@@ -16,10 +17,6 @@ import type { CitricSource, Fill } from '../../domain/types';
 import { fruitNoun, t, type Lang } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
-
-function mixSplit(carbs: number, ratio: number): { malto: number; fructose: number } {
-  return { malto: (carbs * ratio) / (ratio + 1), fructose: carbs / (ratio + 1) };
-}
 
 function citricSourceRowLabel(source: CitricSource, strings: ReturnType<typeof t>): string {
   switch (source) {
@@ -164,6 +161,7 @@ export function MobileMixSheet() {
               const n = partsOf(fill, gear);
               const ratio = fill.content === 'gel' ? mix.gelRatio : mix.ratio;
               const split = mixSplit(carbs, ratio || 2);
+              const preset = fill.content === 'gel' ? mix.gelRatioPreset : mix.ratioPreset;
               const salt = (vessel.vol / 100) * (fill.content === 'gel' ? mix.gelSalt : mix.salt);
               const citricSource = fill.content === 'gel' ? mix.gelCitricSource : mix.citricSource;
               const citricGrams =
@@ -176,8 +174,20 @@ export function MobileMixSheet() {
                   ? [{ k: strings.mixRowWater, v: vessel.vol + ' ml' }]
                   : [
                       { k: strings.mixRowSugar, v: carbs.toFixed(0) + ' g' },
-                      { k: strings.mixRowMalto, v: split.malto.toFixed(1) + ' g' },
-                      { k: strings.mixRowFructose, v: split.fructose.toFixed(1) + ' g' },
+                      ...(preset === 'honey' || preset === 'sugar'
+                        ? [
+                            {
+                              k:
+                                preset === 'honey'
+                                  ? strings.ratioLabelHoney
+                                  : strings.ratioLabelSugar,
+                              v: carbs.toFixed(0) + ' g',
+                            },
+                          ]
+                        : [
+                            { k: strings.mixRowMalto, v: split.malto.toFixed(1) + ' g' },
+                            { k: strings.mixRowFructose, v: split.fructose.toFixed(1) + ' g' },
+                          ]),
                       { k: strings.mixRowSalt, v: salt.toFixed(2) + ' g' },
                       {
                         k: citricSourceRowLabel(citricSource, strings),
@@ -303,8 +313,20 @@ function CombinedGroupRows({
       ? [{ k: strings.mixRowWater, v: group.volumeMl + ' ml' }]
       : [
           { k: strings.mixRowSugar, v: group.carbsG.toFixed(0) + ' g' },
-          { k: strings.mixRowMalto, v: group.maltoG.toFixed(1) + ' g' },
-          { k: strings.mixRowFructose, v: group.fructoseG.toFixed(1) + ' g' },
+          ...(group.ratioPreset === 'honey' || group.ratioPreset === 'sugar'
+            ? [
+                {
+                  k:
+                    group.ratioPreset === 'honey'
+                      ? strings.ratioLabelHoney
+                      : strings.ratioLabelSugar,
+                  v: group.carbsG.toFixed(0) + ' g',
+                },
+              ]
+            : [
+                { k: strings.mixRowMalto, v: group.maltoG.toFixed(1) + ' g' },
+                { k: strings.mixRowFructose, v: group.fructoseG.toFixed(1) + ' g' },
+              ]),
           { k: strings.mixRowSalt, v: group.saltG.toFixed(2) + ' g' },
           {
             k: citricSourceRowLabel(group.citricSource, strings),
