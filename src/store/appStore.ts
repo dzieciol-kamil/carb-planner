@@ -179,6 +179,7 @@ interface AppState {
   removeShop: (id: number) => void;
 
   toggleCombinedFill: (fid: number) => void;
+  clearCombinedFills: () => void;
 
   setRatio: (n: number) => void;
   setGelRatio: (n: number) => void;
@@ -543,6 +544,7 @@ export const useAppStore = create<AppState>()(
             ? s.combinedFillIds.filter((f) => f !== fid)
             : [...s.combinedFillIds, fid],
         })),
+      clearCombinedFills: () => set({ combinedFillIds: [] }),
 
       setRatio: (n) => set((s) => ({ mix: { ...s.mix, ratio: clamp(n, 0.2, 10) } })),
       setGelRatio: (n) => set((s) => ({ mix: { ...s.mix, gelRatio: clamp(n, 0.2, 10) } })),

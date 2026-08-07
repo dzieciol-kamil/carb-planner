@@ -30,6 +30,7 @@ export function MobileMix() {
   const setGelSalt = useAppStore((s) => s.setGelSalt);
   const setGelCitric = useAppStore((s) => s.setGelCitric);
   const setGelCitricSource = useAppStore((s) => s.setGelCitricSource);
+  const clearCombinedFills = useAppStore((s) => s.clearCombinedFills);
   const openMixSheet = useAppStore((s) => s.openMixSheet);
   const strings = t(lang);
 
@@ -218,6 +219,7 @@ export function MobileMix() {
           smallStep={1}
           bigStep={1}
           onChange={setConc}
+          stackedLabel
         />
         <MobileStepper
           label={strings.saltLabel + ' (g/l)'}
@@ -228,25 +230,55 @@ export function MobileMix() {
           bigStep={0.2}
           format={(v) => v.toFixed(1)}
           onChange={setSalt}
+          stackedLabel
         />
         <MobileStepper
           label={citricFieldLabel(mix.citricSource, izoCitric.unit)}
           value={izoCitric.amount}
           {...citricStepperProps(izoCitric.unit, 6)}
           onChange={(v) => setCitric(citricGramsFromAmount(v, mix.citricSource))}
+          stackedLabel
         />
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         <div
           style={{
-            fontSize: 11,
-            fontWeight: 700,
-            textTransform: 'uppercase',
-            color: 'var(--muted)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 8,
           }}
         >
-          {strings.mixGel}
+          <span
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              color: 'var(--muted)',
+            }}
+          >
+            {strings.mixGel}
+          </span>
+          {gelLocked && (
+            <button
+              type="button"
+              onClick={clearCombinedFills}
+              style={{
+                border: '1px solid var(--chip-border)',
+                background: '#fff',
+                borderRadius: 8,
+                padding: '5px 10px',
+                fontFamily: 'Archivo, sans-serif',
+                fontSize: 11,
+                fontWeight: 700,
+                color: 'var(--muted-2)',
+                cursor: 'pointer',
+              }}
+            >
+              {strings.unlockGelButton}
+            </button>
+          )}
         </div>
         {gelLocked && (
           <p
@@ -274,6 +306,7 @@ export function MobileMix() {
           smallStep={1}
           bigStep={5}
           onChange={setGelConc}
+          stackedLabel
         />
         <MobileStepper
           label={strings.saltLabel + ' (g/l)'}
@@ -285,6 +318,7 @@ export function MobileMix() {
           format={(v) => v.toFixed(1)}
           onChange={setGelSalt}
           disabled={gelLocked}
+          stackedLabel
         />
         <MobileStepper
           label={citricFieldLabel(mix.gelCitricSource, gelCitricAmt.unit)}
@@ -292,6 +326,7 @@ export function MobileMix() {
           {...citricStepperProps(gelCitricAmt.unit, 8)}
           onChange={(v) => setGelCitric(citricGramsFromAmount(v, mix.gelCitricSource))}
           disabled={gelLocked}
+          stackedLabel
         />
       </div>
 
