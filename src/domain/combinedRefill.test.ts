@@ -12,6 +12,8 @@ const mix: MixSettings = {
   gelConc: 60,
   ratio: 2,
   gelRatio: 2,
+  ratioPreset: 'iso',
+  gelRatioPreset: 'iso',
   salt: 0.4,
   citric: 0.4,
   gelSalt: 0.4,
@@ -237,6 +239,41 @@ describe('combinedGroups', () => {
       expect(groups).toHaveLength(1);
       expect(groups[0].fillIds).toEqual([1, 3, 2]);
     });
+  });
+
+  test('mixed/izo/water groups take ratioPreset from mix.ratioPreset, gel groups from mix.gelRatioPreset', () => {
+    const honeyMix: MixSettings = { ...mix, ratioPreset: 'honey', gelRatioPreset: 'sugar' };
+
+    const [izo] = combinedGroups(
+      [{ fid: 1, gid: 'g1', content: 'izo', from: 0, to: 25 }],
+      gear,
+      honeyMix,
+    );
+    expect(izo.ratioPreset).toBe('honey');
+
+    const [gel] = combinedGroups(
+      [{ fid: 2, gid: 'g2', content: 'gel', from: 0, to: 10 }],
+      gear,
+      honeyMix,
+    );
+    expect(gel.ratioPreset).toBe('sugar');
+
+    const [mixed] = combinedGroups(
+      [
+        { fid: 1, gid: 'g1', content: 'izo', from: 0, to: 25 },
+        { fid: 2, gid: 'g2', content: 'gel', from: 0, to: 10 },
+      ],
+      gear,
+      honeyMix,
+    );
+    expect(mixed.ratioPreset).toBe('honey');
+
+    const [water] = combinedGroups(
+      [{ fid: 3, gid: 'g3', content: 'water', from: 0, to: 5 }],
+      gear,
+      honeyMix,
+    );
+    expect(water.ratioPreset).toBe('honey');
   });
 
   describe('proportional pour split per container', () => {

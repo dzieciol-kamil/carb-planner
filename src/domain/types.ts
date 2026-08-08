@@ -7,6 +7,10 @@ export type Content = 'water' | 'izo' | 'gel';
  * (measured as a fraction of one fruit), or its pre-squeezed juice (measured in ml).
  */
 export type CitricSource = 'citric' | 'lemon' | 'lemonJuice' | 'lime' | 'limeJuice';
+/** Which preset produced `ratio`/`gelRatio` — 'custom' whenever the value was typed into the
+ *  free-entry field, even if it numerically matches a preset value. Drives whether the bottle-
+ *  composition card shows a single Miód/Cukier line or the Malto/Frukto split. */
+export type RatioPreset = 'iso' | 'sugar' | 'honey' | 'custom';
 
 export interface RouteInput {
   mode: Mode;
@@ -35,6 +39,8 @@ export interface MixSettings {
   gelConc: number;
   ratio: number;
   gelRatio: number;
+  ratioPreset: RatioPreset;
+  gelRatioPreset: RatioPreset;
   salt: number;
   citric: number;
   gelSalt: number;

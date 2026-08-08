@@ -10,6 +10,8 @@ import {
   citricAmount,
   fmtFruitFractionPct,
   fmtX,
+  honeyGramsFromCarbs,
+  mixSplit,
   partsOf,
   rangeLabel,
   type CitricAmount,
@@ -55,10 +57,6 @@ function citricValueLabel(citric: CitricAmount, source: CitricSource, lang: Lang
   if (citric.unit === 'ml') return `${citric.amount.toFixed(1)} ml`;
   const species = source === 'lime' ? 'lime' : 'lemon';
   return `${fmtFruitFractionPct(citric.amount)} ${fruitNoun(species, citric.amount, lang)}`;
-}
-
-function mixSplit(carbs: number, ratio: number): { malto: number; fructose: number } {
-  return { malto: (carbs * ratio) / (ratio + 1), fructose: carbs / (ratio + 1) };
 }
 
 function pourLine(pour: ContainerPour, content: CombinedGroup['content']): string {
@@ -244,8 +242,23 @@ function CombinedGroupBlock({ group, lang }: { group: CombinedGroup; lang: Lang 
       ? [{ k: strings.waterFill, v: `${group.volumeMl} ml` }]
       : [
           { k: strings.carbsIn, v: `${group.carbsG.toFixed(0)} g` },
-          { k: strings.malto, v: `${group.maltoG.toFixed(1)} g` },
-          { k: strings.fructose, v: `${group.fructoseG.toFixed(1)} g` },
+          ...(group.ratioPreset === 'honey' || group.ratioPreset === 'sugar'
+            ? [
+                {
+                  k:
+                    group.ratioPreset === 'honey'
+                      ? strings.ratioLabelHoney
+                      : strings.ratioLabelSugar,
+                  v:
+                    group.ratioPreset === 'honey'
+                      ? `${honeyGramsFromCarbs(group.carbsG).toFixed(0)} g`
+                      : `${group.carbsG.toFixed(0)} g`,
+                },
+              ]
+            : [
+                { k: strings.malto, v: `${group.maltoG.toFixed(1)} g` },
+                { k: strings.fructose, v: `${group.fructoseG.toFixed(1)} g` },
+              ]),
           { k: strings.salt, v: `${group.saltG.toFixed(2)} g` },
           {
             k: citricSourceLineLabel(group.citricSource, strings),
@@ -405,6 +418,7 @@ function FillRecipe({
   const n = partsOf(fill, [vessel]);
   const ratio = fill.content === 'gel' ? mix.gelRatio : mix.ratio;
   const split = mixSplit(carbs, ratio || 2);
+  const preset = fill.content === 'gel' ? mix.gelRatioPreset : mix.ratioPreset;
   const citricSource = fill.content === 'gel' ? mix.gelCitricSource : mix.citricSource;
   const citricGrams = (vessel.vol / 100) * (fill.content === 'gel' ? mix.gelCitric : mix.citric);
   const citric = citricAmount(citricGrams, citricSource);
@@ -414,8 +428,20 @@ function FillRecipe({
       ? [{ k: strings.waterFill, v: `${vessel.vol} ml` }]
       : [
           { k: strings.carbsIn, v: `${carbs.toFixed(0)} g` },
-          { k: strings.malto, v: `${split.malto.toFixed(1)} g` },
-          { k: strings.fructose, v: `${split.fructose.toFixed(1)} g` },
+          ...(preset === 'honey' || preset === 'sugar'
+            ? [
+                {
+                  k: preset === 'honey' ? strings.ratioLabelHoney : strings.ratioLabelSugar,
+                  v:
+                    preset === 'honey'
+                      ? `${honeyGramsFromCarbs(carbs).toFixed(0)} g`
+                      : `${carbs.toFixed(0)} g`,
+                },
+              ]
+            : [
+                { k: strings.malto, v: `${split.malto.toFixed(1)} g` },
+                { k: strings.fructose, v: `${split.fructose.toFixed(1)} g` },
+              ]),
           {
             k: strings.salt,
             v: `${((vessel.vol / 100) * (fill.content === 'gel' ? mix.gelSalt : mix.salt)).toFixed(2)} g`,

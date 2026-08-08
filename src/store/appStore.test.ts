@@ -347,30 +347,50 @@ describe('ratio setters', () => {
   });
 
   test('setRatio only changes the izo ratio', () => {
-    useAppStore.getState().setRatio(1);
+    useAppStore.getState().setRatio(1, 'sugar');
     expect(useAppStore.getState().mix.ratio).toBe(1);
     expect(useAppStore.getState().mix.gelRatio).toBe(2);
   });
 
   test('setGelRatio only changes the gel ratio', () => {
-    useAppStore.getState().setGelRatio(0.8);
+    useAppStore.getState().setGelRatio(0.8, 'honey');
     expect(useAppStore.getState().mix.gelRatio).toBe(0.8);
     expect(useAppStore.getState().mix.ratio).toBe(2);
   });
 
   test('setGelRatio clamps to the 0.2-10 range', () => {
-    useAppStore.getState().setGelRatio(20);
+    useAppStore.getState().setGelRatio(20, 'custom');
     expect(useAppStore.getState().mix.gelRatio).toBe(10);
-    useAppStore.getState().setGelRatio(0);
+    useAppStore.getState().setGelRatio(0, 'custom');
     expect(useAppStore.getState().mix.gelRatio).toBe(0.2);
   });
 
   test('resetMix restores both ratios to 2:1', () => {
-    useAppStore.getState().setRatio(1);
-    useAppStore.getState().setGelRatio(0.8);
+    useAppStore.getState().setRatio(1, 'sugar');
+    useAppStore.getState().setGelRatio(0.8, 'honey');
     useAppStore.getState().resetMix();
     expect(useAppStore.getState().mix.ratio).toBe(2);
     expect(useAppStore.getState().mix.gelRatio).toBe(2);
+  });
+
+  test('setRatio stores the preset tag alongside the ratio', () => {
+    useAppStore.getState().setRatio(0.8, 'honey');
+    expect(useAppStore.getState().mix.ratioPreset).toBe('honey');
+    useAppStore.getState().setRatio(1.3, 'custom');
+    expect(useAppStore.getState().mix.ratioPreset).toBe('custom');
+  });
+
+  test('setGelRatio stores the preset tag alongside the gel ratio', () => {
+    useAppStore.getState().setGelRatio(1, 'sugar');
+    expect(useAppStore.getState().mix.gelRatioPreset).toBe('sugar');
+  });
+
+  test('resetMix restores ratioPreset/gelRatioPreset to iso', () => {
+    useAppStore.getState().setRatio(0.8, 'honey');
+    useAppStore.getState().setGelRatio(1, 'sugar');
+    useAppStore.getState().resetMix();
+    expect(useAppStore.getState().mix.ratioPreset).toBe('iso');
+    expect(useAppStore.getState().mix.gelRatioPreset).toBe('iso');
   });
 });
 
@@ -394,5 +414,42 @@ describe('persisted mix merge', () => {
     };
     const merged = merge({ mix: legacyPersistedMix }, currentState) as typeof currentState;
     expect(merged.mix.gelRatio).toBe(currentState.mix.gelRatio);
+  });
+});
+
+describe('migrate: ratioPreset inference (v2 -> v3)', () => {
+  test('infers honey from a legacy ratio of 0.8', () => {
+    const migrate = useAppStore.persist.getOptions().migrate!;
+    const legacy = { mix: { ratio: 0.8, gelRatio: 2 } };
+    const migrated = migrate(legacy, 2) as ReturnType<typeof useAppStore.getState>;
+    expect(migrated.mix.ratioPreset).toBe('honey');
+    expect(migrated.mix.gelRatioPreset).toBe('iso');
+  });
+
+  test('infers sugar from a legacy ratio of 1', () => {
+    const migrate = useAppStore.persist.getOptions().migrate!;
+    const legacy = { mix: { ratio: 1, gelRatio: 1 } };
+    const migrated = migrate(legacy, 2) as ReturnType<typeof useAppStore.getState>;
+    expect(migrated.mix.ratioPreset).toBe('sugar');
+    expect(migrated.mix.gelRatioPreset).toBe('sugar');
+  });
+
+  test('infers custom from an arbitrary legacy ratio', () => {
+    const migrate = useAppStore.persist.getOptions().migrate!;
+    const legacy = { mix: { ratio: 1.3, gelRatio: 2 } };
+    const migrated = migrate(legacy, 2) as ReturnType<typeof useAppStore.getState>;
+    expect(migrated.mix.ratioPreset).toBe('custom');
+  });
+
+  test('leaves an already-tagged ratioPreset untouched', () => {
+    const migrate = useAppStore.persist.getOptions().migrate!;
+    const legacy = { mix: { ratio: 0.8, ratioPreset: 'custom', gelRatio: 2 } };
+    const migrated = migrate(legacy, 2) as ReturnType<typeof useAppStore.getState>;
+    expect(migrated.mix.ratioPreset).toBe('custom');
+  });
+
+  test('does nothing when there is no persisted mix at all', () => {
+    const migrate = useAppStore.persist.getOptions().migrate!;
+    expect(migrate({}, 2)).toEqual({});
   });
 });

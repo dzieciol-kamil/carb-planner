@@ -4,9 +4,10 @@ import {
   citricAmount,
   citricGramsFromAmount,
   fmtFruitFraction,
+  presetTagFor,
   type CitricAmount,
 } from '../../domain/fuel';
-import type { CitricSource } from '../../domain/types';
+import type { CitricSource, RatioPreset } from '../../domain/types';
 import { t } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
 import { MobileStepper } from './MobileStepper';
@@ -146,19 +147,20 @@ export function MobileMix() {
 
   const ratioButtons = (
     value: number,
-    onChange: (n: number) => void,
+    onChange: (n: number, preset: RatioPreset) => void,
     forGel: boolean,
     disabled = false,
+    preset: RatioPreset = 'custom',
   ) => (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, opacity: disabled ? 0.6 : 1 }}>
       {RATIO_PRESETS.map((r) => {
         const caption = presetCaption(r, forGel);
-        const active = value === r;
+        const active = value === r && preset === presetTagFor(r);
         return (
           <button
             key={r}
             type="button"
-            onClick={() => onChange(r)}
+            onClick={() => onChange(r, presetTagFor(r))}
             disabled={disabled}
             style={{
               flex: '1 1 76px',
@@ -209,7 +211,7 @@ export function MobileMix() {
         >
           {strings.mixIzo}
         </div>
-        {ratioButtons(mix.ratio, setRatio, false)}
+        {ratioButtons(mix.ratio, setRatio, false, false, mix.ratioPreset)}
         {citricSourceButtons(mix.citricSource, setCitricSource)}
         <MobileStepper
           label={strings.concLabel + ' (' + strings.per100 + ')'}
@@ -296,7 +298,7 @@ export function MobileMix() {
             {strings.gelLockedNote}
           </p>
         )}
-        {ratioButtons(mix.gelRatio, setGelRatio, true, gelLocked)}
+        {ratioButtons(mix.gelRatio, setGelRatio, true, gelLocked, mix.gelRatioPreset)}
         {citricSourceButtons(mix.gelCitricSource, setGelCitricSource, gelLocked)}
         <MobileStepper
           label={strings.gelConcLabel + ' (' + strings.per100 + ')'}

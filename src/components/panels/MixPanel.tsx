@@ -1,7 +1,12 @@
 import type { CSSProperties } from 'react';
 import { combinedGroups } from '../../domain/combinedRefill';
-import { citricAmount, citricGramsFromAmount, type CitricAmount } from '../../domain/fuel';
-import type { CitricSource, Content } from '../../domain/types';
+import {
+  citricAmount,
+  citricGramsFromAmount,
+  presetTagFor,
+  type CitricAmount,
+} from '../../domain/fuel';
+import type { CitricSource, Content, RatioPreset } from '../../domain/types';
 import { t } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
 import { sourceColor } from '../chart/theme';
@@ -153,14 +158,15 @@ function cOpt(on: boolean, color: string, disabled = false): CSSProperties {
 
 interface RatioRowProps {
   value: number;
-  onChange: (n: number) => void;
+  onChange: (n: number, preset: RatioPreset) => void;
   strings: ReturnType<typeof t>;
   forGel: boolean;
+  preset: RatioPreset;
   disabled?: boolean;
 }
 
-function RatioRow({ value, onChange, strings, forGel, disabled = false }: RatioRowProps) {
-  const isPreset = RATIO_PRESETS.includes(value);
+function RatioRow({ value, onChange, strings, forGel, preset, disabled = false }: RatioRowProps) {
+  const isPreset = RATIO_PRESETS.includes(value) && preset !== 'custom';
   return (
     <div
       style={{
@@ -188,10 +194,10 @@ function RatioRow({ value, onChange, strings, forGel, disabled = false }: RatioR
           return (
             <button
               key={r}
-              onClick={() => onChange(r)}
+              onClick={() => onChange(r, presetTagFor(r))}
               disabled={disabled}
               style={{
-                ...cOpt(value === r, 'var(--ink)', disabled),
+                ...cOpt(value === r && preset === presetTagFor(r), 'var(--ink)', disabled),
                 display: 'flex',
                 flexDirection: 'row',
                 alignItems: 'baseline',
@@ -223,7 +229,7 @@ function RatioRow({ value, onChange, strings, forGel, disabled = false }: RatioR
             max={10}
             step={0.1}
             value={value}
-            onChange={onChange}
+            onChange={(n) => onChange(n, 'custom')}
             fallback={2}
             disabled={disabled}
             style={{
@@ -325,7 +331,13 @@ export function MixPanel() {
 
       <div style={sectionCardStyle}>
         <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 10 }}>{strings.mixIzo}</div>
-        <RatioRow value={mix.ratio} onChange={setRatio} strings={strings} forGel={false} />
+        <RatioRow
+          value={mix.ratio}
+          onChange={setRatio}
+          strings={strings}
+          forGel={false}
+          preset={mix.ratioPreset}
+        />
         <div
           style={{
             marginBottom: 8,
@@ -453,6 +465,7 @@ export function MixPanel() {
           onChange={setGelRatio}
           strings={strings}
           forGel={true}
+          preset={mix.gelRatioPreset}
           disabled={gelLocked}
         />
         <div
