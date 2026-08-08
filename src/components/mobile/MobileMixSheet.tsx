@@ -9,6 +9,7 @@ import {
   carbsFill,
   citricAmount,
   fmtFruitFractionPct,
+  honeyGramsFromCarbs,
   mixSplit,
   partsOf,
   type CitricAmount,
@@ -181,7 +182,10 @@ export function MobileMixSheet() {
                                 preset === 'honey'
                                   ? strings.ratioLabelHoney
                                   : strings.ratioLabelSugar,
-                              v: carbs.toFixed(0) + ' g',
+                              v:
+                                preset === 'honey'
+                                  ? honeyGramsFromCarbs(carbs).toFixed(0) + ' g'
+                                  : carbs.toFixed(0) + ' g',
                             },
                           ]
                         : [
@@ -320,7 +324,10 @@ function CombinedGroupRows({
                     group.ratioPreset === 'honey'
                       ? strings.ratioLabelHoney
                       : strings.ratioLabelSugar,
-                  v: group.carbsG.toFixed(0) + ' g',
+                  v:
+                    group.ratioPreset === 'honey'
+                      ? honeyGramsFromCarbs(group.carbsG).toFixed(0) + ' g'
+                      : group.carbsG.toFixed(0) + ' g',
                 },
               ]
             : [

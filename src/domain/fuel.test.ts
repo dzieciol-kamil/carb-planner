@@ -14,6 +14,7 @@ import {
   fmtX,
   fracFill,
   fracFood,
+  honeyGramsFromCarbs,
   mixSplit,
   planExtras,
   planSummary,
@@ -936,5 +937,15 @@ describe('presetTagFor', () => {
   test('maps any other ratio (including the untagged 1.5 preset button) to custom', () => {
     expect(presetTagFor(1.5)).toBe('custom');
     expect(presetTagFor(3)).toBe('custom');
+  });
+});
+
+describe('honeyGramsFromCarbs', () => {
+  test('converts carb grams to honey mass at 80% carb fraction', () => {
+    expect(honeyGramsFromCarbs(80)).toBeCloseTo(100, 5);
+  });
+
+  test('returns 0 for 0 carbs', () => {
+    expect(honeyGramsFromCarbs(0)).toBe(0);
   });
 });

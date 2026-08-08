@@ -238,6 +238,18 @@ export function presetTagFor(r: number): RatioPreset {
   return 'custom';
 }
 
+// Honey is roughly 80% carbohydrate by weight — the rest is mostly water, plus trace
+// minerals and enzymes. A rough real-world ballpark (varies ~76-83% by floral source
+// and moisture content), not a lab figure — enough to turn "73g of carbs from honey"
+// into "that's about 91g of honey to weigh into the bottle," which is the number a
+// rider actually needs at the kitchen scale. Sugar (sucrose) needs no such conversion —
+// it's ≈100% carbohydrate — so this helper is honey-specific.
+const HONEY_CARB_FRACTION = 0.8;
+
+export function honeyGramsFromCarbs(carbsG: number): number {
+  return carbsG / HONEY_CARB_FRACTION;
+}
+
 export type FruitSpecies = 'lemon' | 'lime';
 
 // Approximate citric-acid concentration of fresh juice (g per ml), used only to turn a
