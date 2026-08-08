@@ -649,7 +649,7 @@ export const STR: Record<Lang, StringTable> = {
       'Nie udało się wczytać pliku — sprawdź, czy to poprawny eksport planu z Carb Fueling.',
     importPlanSuccess: 'Plan zaimportowany.',
     recoveryLabel: 'Regeneracja',
-    recoveryHint: 'Zjedz tyle w ciągu pierwszych 30 minut po zakończeniu jazdy.',
+    recoveryHint: 'Ilość węglowodanów, którą należy spożyć po jeździe, aby uzupełnić glikogen mięśniowy.',
   },
   en: {
     tagline: 'carbohydrate & hydration planner',
@@ -1001,7 +1001,7 @@ export const STR: Record<Lang, StringTable> = {
     importPlanError: "Could not read that file — check it's a valid Carb Fueling plan export.",
     importPlanSuccess: 'Plan imported.',
     recoveryLabel: 'Recovery',
-    recoveryHint: 'Aim to eat this much within the first 30 minutes after finishing.',
+    recoveryHint: 'The amount of carbohydrates to eat after your ride to replenish muscle glycogen.',
   },
 };
 
