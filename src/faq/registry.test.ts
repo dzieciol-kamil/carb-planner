@@ -31,9 +31,25 @@ describe('ARTICLES registry', () => {
     }
   });
 
-  it('ships exactly the 3 articles scoped for this round', () => {
+  it('ships exactly the 15 articles scoped for this round', () => {
     expect(ARTICLES.map((a) => a.slug).sort()).toEqual(
-      ['bonk-crisis', 'bottle-refill-planning', 'carb-transporter-mix'].sort(),
+      [
+        'bonk-crisis',
+        'bottle-refill-planning',
+        'bottle-vs-gel',
+        'carb-transporter-mix',
+        'carbs-per-hour-by-intensity',
+        'diy-flavor-additives',
+        'fueling-100km-vs-300km',
+        'gut-training-carb-tolerance',
+        'heat-carb-plan',
+        'honey-sugar-diy-mix',
+        'hydration-water-per-hour',
+        'malto-fructose-blend',
+        'pace-power-absorption',
+        'sodium-electrolytes-cycling',
+        'what-the-chart-shows',
+      ].sort(),
     );
   });
 
