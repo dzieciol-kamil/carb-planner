@@ -182,6 +182,32 @@ export function Footer() {
               >
                 <GitHubIcon />
               </a>
+              <a
+                href={lang === 'pl' ? '/pl/faq/' : '/faq/'}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  border: '1px solid var(--chip-border)',
+                  background: '#fff',
+                  borderRadius: 999,
+                  padding: '7px 13px',
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: 'var(--ink)',
+                }}
+              >
+                <span
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: '50%',
+                    background: 'var(--food)',
+                    flex: '0 0 8px',
+                  }}
+                />
+                <span>{strings.ftFaq}</span>
+              </a>
             </div>
             <a
               href="https://suppi.pl/kamild"

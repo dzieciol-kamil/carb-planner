@@ -168,6 +168,7 @@ export interface StringTable {
   ftLegal: string;
   ftLegalBody: string;
   ftLinks: string;
+  ftFaq: string;
   ftIssues: string;
   ftRepo: string;
   ftSupport: string;
@@ -493,6 +494,7 @@ export const STR: Record<Lang, StringTable> = {
     ftLegalBody:
       'To narzędzie edukacyjne i pomocnicze — nie jest poradą medyczną, dietetyczną ani treningową i nie zastępuje kontaktu ze specjalistą. Wyliczenia są szacunkowe, oparte na uśrednionych modelach; Twoje realne zapotrzebowanie, tolerancja żołądkowa, poziom nawodnienia i reakcja na wysiłek mogą się od nich istotnie różnić. Korzystasz z aplikacji na własną odpowiedzialność i wyłącznie na własne ryzyko. Autor nie ponosi odpowiedzialności za jakiekolwiek skutki zdrowotne, kontuzje, szkody, straty ani decyzje podjęte na podstawie wyników — w szczególności nie odpowiada za Twoje zdrowie ani życie. Jeśli chorujesz (m.in. cukrzyca, choroby nerek, serca, przewodu pokarmowego), przyjmujesz leki, jesteś w ciąży albo planujesz długi lub bardzo intensywny start — skonsultuj plan żywieniowy z lekarzem lub dietetykiem sportowym. Nie ignoruj objawów: przy zawrotach głowy, nudnościach, dezorientacji, skurczach lub podejrzeniu hiponatremii przerwij wysiłek i szukaj pomocy. Aplikacja jest dostarczana „taką, jaka jest”, bez żadnych gwarancji.',
     ftLinks: 'Współtwórz',
+    ftFaq: 'Częste pytania',
     ftIssues: 'Pomysły i błędy → GitHub Issues',
     ftRepo: 'Kod źródłowy na GitHubie',
     ftSupport: 'Postaw mi kawę',
@@ -649,7 +651,8 @@ export const STR: Record<Lang, StringTable> = {
       'Nie udało się wczytać pliku — sprawdź, czy to poprawny eksport planu z Carb Fueling.',
     importPlanSuccess: 'Plan zaimportowany.',
     recoveryLabel: 'Regeneracja',
-    recoveryHint: 'Ilość węglowodanów, którą należy spożyć po jeździe, aby uzupełnić glikogen mięśniowy.',
+    recoveryHint:
+      'Ilość węglowodanów, którą należy spożyć po jeździe, aby uzupełnić glikogen mięśniowy.',
   },
   en: {
     tagline: 'carbohydrate & hydration planner',
@@ -847,6 +850,7 @@ export const STR: Record<Lang, StringTable> = {
     ftLegalBody:
       'This is an educational planning aid — not medical, dietary or coaching advice, and no substitute for a professional. All figures are estimates based on averaged models; your real requirement, gut tolerance, hydration status and response to effort may differ significantly. You use the app on your own responsibility and entirely at your own risk. The author accepts no liability for any health consequences, injury, damage, loss or decisions made on the basis of these results — and specifically takes no responsibility for your health or life. If you have a medical condition (including diabetes, kidney, heart or gastrointestinal disease), take medication, are pregnant, or are preparing for a long or very hard event, discuss your fuelling plan with a doctor or sports dietitian. Never ignore symptoms: if you feel dizzy, nauseous, disoriented, cramping, or suspect hyponatraemia, stop and seek help. The app is provided "as is", without warranty of any kind.',
     ftLinks: 'Contribute',
+    ftFaq: 'FAQ',
     ftIssues: 'Ideas & bugs → GitHub Issues',
     ftRepo: 'Source code on GitHub',
     ftSupport: 'Buy me a coffee',
@@ -1001,7 +1005,8 @@ export const STR: Record<Lang, StringTable> = {
     importPlanError: "Could not read that file — check it's a valid Carb Fueling plan export.",
     importPlanSuccess: 'Plan imported.',
     recoveryLabel: 'Recovery',
-    recoveryHint: 'The amount of carbohydrates to eat after your ride to replenish muscle glycogen.',
+    recoveryHint:
+      'The amount of carbohydrates to eat after your ride to replenish muscle glycogen.',
   },
 };
 
