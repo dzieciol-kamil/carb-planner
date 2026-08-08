@@ -51,6 +51,14 @@ jobs:
           mkdir -p "$RUNNER_TEMP/site"
           cp -r dist/. "$RUNNER_TEMP/site/"
 
+      # This calls `vite build` directly, not `npm run build`, so scripts/build-faq.mjs never
+      # runs here — the /faq pages only get generated for tagged production releases (see the
+      # "Build production" step above). Known, accepted limitation: on /preview, the footer's
+      # FAQ link (src/components/Footer.tsx) will 404 before the first tag after this lands, and
+      # after that first tag it will silently navigate a preview session out to the *production*
+      # FAQ content (since the footer's href isn't base-aware). Not fixed here — if FAQ preview
+      # review becomes valuable, build-faq.mjs needs to become base-aware first (it currently
+      # hardcodes `SITE`, `/faq`, `/pl/faq`, and `href="/"` throughout).
       - name: Build preview (master) into /preview
         run: |
           git checkout master
