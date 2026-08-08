@@ -24,6 +24,13 @@ describe('ARTICLES registry', () => {
     }
   });
 
+  it('has a valid ISO datePublished for every article', () => {
+    for (const article of ARTICLES) {
+      expect(article.datePublished).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(Number.isNaN(Date.parse(article.datePublished))).toBe(false);
+    }
+  });
+
   it('ships exactly the 3 articles scoped for this round', () => {
     expect(ARTICLES.map((a) => a.slug).sort()).toEqual(
       ['bonk-crisis', 'bottle-refill-planning', 'carb-transporter-mix'].sort(),

@@ -185,7 +185,7 @@ async function main() {
           mainEntityOfPage: articleCanonical,
           author: { '@type': 'Organization', name: 'Carb Fueling' },
           publisher: { '@type': 'Organization', name: 'Carb Fueling' },
-          datePublished: '2026-08-08',
+          datePublished: article.datePublished,
         },
         bodyHtml: renderToStaticMarkup(createElement(ArticleComponent)),
       });

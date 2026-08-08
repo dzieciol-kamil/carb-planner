@@ -1,5 +1,7 @@
 export interface FaqArticleMeta {
   slug: string;
+  /** ISO date (YYYY-MM-DD) this article first went live — used as JSON-LD datePublished. */
+  datePublished: string;
   en: { title: string; description: string };
   pl: { title: string; description: string };
 }
@@ -7,6 +9,7 @@ export interface FaqArticleMeta {
 export const ARTICLES: FaqArticleMeta[] = [
   {
     slug: 'carb-transporter-mix',
+    datePublished: '2026-08-08',
     en: {
       title: "Why can't you absorb more than ~90g of carbs per hour?",
       description: 'How mixing glucose and fructose raises your gut absorption ceiling.',
@@ -18,6 +21,7 @@ export const ARTICLES: FaqArticleMeta[] = [
   },
   {
     slug: 'bonk-crisis',
+    datePublished: '2026-08-08',
     en: {
       title: 'What actually happens when you bonk — and how to see it coming',
       description: 'The gap between carbs burned and carbs delivered, and how to watch it.',
@@ -29,6 +33,7 @@ export const ARTICLES: FaqArticleMeta[] = [
   },
   {
     slug: 'bottle-refill-planning',
+    datePublished: '2026-08-08',
     en: {
       title: 'Planning bottle refills on a long ride',
       description: 'Where to place shop stops so you never run the tank dry.',
