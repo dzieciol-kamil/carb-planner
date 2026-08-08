@@ -23,11 +23,35 @@ const ROOT_STYLE = `
   a:hover { color: #2f7099; }
 `;
 
+function escapeHtml(str) {
+  return String(str).replace(
+    /[&<>"']/g,
+    (ch) =>
+      ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;',
+      })[ch],
+  );
+}
+
+// Safe to embed inside a <script type="application/ld+json"> element: JSON.stringify already
+// produces valid JSON, but a literal "</script" substring in a title/description would still
+// prematurely close the tag when parsed as HTML. Escaping "<" as its unicode escape prevents
+// that while remaining valid, round-trippable JSON.
+function safeJsonLd(obj) {
+  return JSON.stringify(obj).replace(/</g, '\\u003c');
+}
+
 function renderPage({ urlPath, altPath, lang, title, description, jsonLd, bodyHtml }) {
   const canonical = `${SITE}${urlPath}`;
   const alternate = `${SITE}${altPath}`;
   const enHref = lang === 'pl' ? alternate : canonical;
   const plHref = lang === 'pl' ? canonical : alternate;
+  const safeTitle = escapeHtml(title);
+  const safeDescription = escapeHtml(description);
   return `<!doctype html>
 <html lang="${lang}">
   <head>
@@ -43,14 +67,14 @@ function renderPage({ urlPath, altPath, lang, title, description, jsonLd, bodyHt
     <link rel="alternate" hreflang="pl" href="${plHref}" />
     <link rel="alternate" hreflang="x-default" href="${enHref}" />
     <meta name="theme-color" content="#16191c" />
-    <title>${title}</title>
-    <meta name="description" content="${description}" />
+    <title>${safeTitle}</title>
+    <meta name="description" content="${safeDescription}" />
     <meta property="og:type" content="article" />
     <meta property="og:url" content="${canonical}" />
-    <meta property="og:title" content="${title}" />
-    <meta property="og:description" content="${description}" />
+    <meta property="og:title" content="${safeTitle}" />
+    <meta property="og:description" content="${safeDescription}" />
     <meta property="og:locale" content="${lang === 'pl' ? 'pl_PL' : 'en_US'}" />
-    <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
+    <script type="application/ld+json">${safeJsonLd(jsonLd)}</script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
     <link
