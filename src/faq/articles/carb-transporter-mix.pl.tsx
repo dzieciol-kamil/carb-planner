@@ -13,18 +13,30 @@ export default function CarbTransporterMixPl() {
         Dlaczego nie wchłoniesz więcej niż ok. 90 g węglowodanów na godzinę?
       </h1>
       <p style={articleTextStyle}>
-        Jelito wchłania cukier dwoma osobnymi "drzwiami". Glukoza wchodzi jednymi, fruktoza drugimi.
-        Każde z nich ma swój limit prędkości.
+        Jelito wchłania cukier dwoma osobnymi "drzwiami" — a właściwie dwoma różnymi białkami
+        transportowymi wbudowanymi w ścianę jelita. Glukoza korzysta z jednego, nazywanego SGLT1,
+        fruktoza z drugiego, GLUT5. To fizycznie osobne systemy, więc każdy ma swój niezależny limit
+        prędkości.
       </p>
       <p style={articleTextStyle}>
-        Drzwi od glukozy przepuszczają maksymalnie ok. 60 g na godzinę — niezależnie od tego, ile
-        glukozy wypijesz. Jeśli pijesz samą maltodekstrynę albo żele czysto glukozowe, 60 g/h to
-        Twój twardy sufit. Nadmiar zalega w żołądku i kończy się wzdęciami albo skurczami.
+        Transporter SGLT1 przepuszcza maksymalnie ok. 60 g glukozy na godzinę — niezależnie od tego,
+        ile jej wypijesz. To aktywny mechanizm sprzężony z sodem, który po prostu wysyca się przy
+        tym tempie. Jeśli pijesz samą maltodekstrynę albo żele czysto glukozowe, 60 g/h to Twój
+        twardy sufit. Nadmiar zalega w żołądku i kończy się wzdęciami albo skurczami.
       </p>
       <p style={articleTextStyle}>
-        Fruktoza korzysta z innych drzwi, dobrych na kolejne ok. 30 g na godzinę. Dodając fruktozę
-        do miksu, otwierasz obie bramki naraz — dlatego mieszanki glukozowo-fruktozowe podnoszą
-        realny sufit do ok. 90 g na godzinę.
+        Fruktoza korzysta z transportera GLUT5, na osobnej trasie dobrej na kolejne ok. 30 g na
+        godzinę. Dodając fruktozę do miksu, otwierasz obie bramki naraz — dlatego mieszanki
+        glukozowo-fruktozowe podnoszą realny sufit do ok. 90 g na godzinę.
+      </p>
+      <p style={articleTextStyle}>
+        To nie tylko teoria — zostało to bezpośrednio zmierzone. Fizjolodzy sportu badają to w
+        testach z podwójnym znacznikiem izotopowym, śledząc, jak szybko spożyty cukier faktycznie
+        trafia do spalania (utlenianie węglowodanów egzogennych). Badania nad łączonym podawaniem
+        glukozy i fruktozy (Jeukendrup, 2010) pokazały, że łączenie źródeł węglowodanów
+        korzystających z różnych transporterów — określane przez niego jako "wielokrotnie
+        transportowalne węglowodany" — pozwala utleniać cukry niemal dwa razy szybciej niż sama
+        glukoza, co dobrze zgadza się z różnicą między ok. 60 g/h a ok. 90 g/h opisaną wyżej.
       </p>
       <img
         src="/faq/carb-transporter-mix/absorption-cap.png"
