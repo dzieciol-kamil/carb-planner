@@ -1,5 +1,14 @@
 import { useRef, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
-import { absCap, carbsFill, dist, fmtX, prof, samples, type Sample } from '../../domain/fuel';
+import {
+  absCap,
+  carbsFill,
+  dist,
+  fmtX,
+  prof,
+  samples,
+  valueAt,
+  type Sample,
+} from '../../domain/fuel';
 import { t } from '../../i18n/strings';
 import { useAppStore } from '../../store/appStore';
 import { ElevationLayer } from '../chart/ElevationLayer';
@@ -10,15 +19,6 @@ const HEIGHT = 168;
 const GUT_LIMIT = 60;
 
 type RateKey = 'rate' | 'needRate' | 'fluidRate' | 'sweatRate' | 'absorbed' | 'need' | 'gut';
-
-function valueAt(S: Sample[], D: number, x: number, key: RateKey): number {
-  const N = S.length - 1;
-  const f = Math.max(0, Math.min(1, x / D)) * N;
-  const i = Math.min(N - 1, Math.floor(f));
-  const a = S[i][key];
-  const b = S[i + 1][key];
-  return a + (b - a) * (f - i);
-}
 
 function polyline(
   arr: Sample[],

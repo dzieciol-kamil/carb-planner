@@ -96,8 +96,10 @@ export function RoutePanel() {
   return (
     <div
       style={{
-        flex: '1 1 49%',
-        minWidth: 760,
+        // flexShrink 0 pins this to exactly 760px; a residual flexGrow of 1 (vs.
+        // SummaryCards' 9999) only matters once this wraps onto its own row, where
+        // it's the sole item and grows to fill the full width per issue #68.
+        flex: '1 0 760px',
         boxSizing: 'border-box',
         background: '#fff',
         border: '1px solid var(--border)',
