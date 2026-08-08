@@ -9,36 +9,39 @@ import {
 export default function BottleRefillPlanningPl() {
   return (
     <FaqLayout lang="pl">
-      <h1 style={articleH1Style}>Jak zaplanować uzupełnianie butelek na długiej trasie</h1>
+      <h1 style={articleH1Style}>Jak zaplanować uzupełnianie bidonów na długiej trasie</h1>
       <p style={articleTextStyle}>
-        Gdy trasa jest dłuższa niż zawartość kilku butelek, nie zabierzesz całego planu od startu.
-        Potrzebujesz punktów uzupełniania — i pomysłu, co wlać do której butelki na miejscu.
+        Na dłuższej trasie zapas z paru bidonów już nie wystarczy — całego miksu nie zabierzesz od
+        razu na starcie. Potrzebujesz punktów, w których uzupełnisz zapasy, i pomysłu, co wtedy
+        wlejesz do którego bidonu.
       </p>
       <p style={articleTextStyle}>
-        Zacznij od całkowitego zapotrzebowania na węglowodany i płyny na całą trasę (Carb Fueling
-        liczy oba na podstawie trasy i warunków). Porównaj to z tym, ile faktycznie pomieszczą Twoje
-        bidony i flaszki. Brakująca część musi skądś się wziąć po drodze — sklep, punkt wsparcia,
-        źródełko.
+        Zacznij od całkowitego zapotrzebowania na węglowodany i płyny na całej trasie — Carb Fueling
+        liczy je na podstawie trasy i warunków. Porównaj to z tym, ile realnie pomieszczą Twoje
+        bidony i flaski. Brakującą część musisz uzupełnić po drodze: w sklepie, na punkcie wsparcia,
+        przy źródle wody.
       </p>
       <img
         src="/faq/bottle-refill-planning/shop-stops.png"
-        alt="Oś czasu trasy w Carb Fueling z przystankami sklepowymi ustawionymi między uzupełnieniami butelek."
+        alt="Oś czasu trasy w Carb Fueling z punktami zaopatrzenia ustawionymi między uzupełnieniami bidonów."
         style={articleImgStyle}
       />
       <p style={articleTextStyle}>
-        W miejscu każdego uzupełnienia postaw "przystanek sklepowy". Carb Fueling rozdziela wtedy
-        cały miks na odcinki między przystankami, więc wiesz dokładnie, ile proszku, wody i dodatków
-        zabrać — albo kupić — na każdym z nich. Ustawiaj przystanki, zanim luka zrobi się zbyt duża,
-        nie po fakcie: uzupełnienie przy 20% zapasu to plan, uzupełnienie przy 0% to kryzys.
+        W każdym miejscu uzupełnienia dodaj na trasie punkt zaopatrzenia (sklep). Carb Fueling
+        podzieli wtedy cały miks na porcje przypadające na poszczególne odcinki między punktami,
+        więc dokładnie wiesz, ile proszku, wody i dodatków zabrać ze sobą — albo dokupić — w każdym
+        z nich. Dodawaj punkty, zanim luka zrobi się zbyt duża, nie gdy już jest za późno:
+        uzupełnienie przy 20% zapasu to plan, uzupełnienie przy zerowym zapasie to kryzys.
       </p>
       <p style={articleTextStyle}>
-        Na krótszych, dobrze zaopatrzonych trasach zwykle wystarczy jedno uzupełnienie mniej więcej
-        w połowie. Na dłuższych albo bardziej odludnych — rozstaw przystanki tak, żeby żaden odcinek
-        nie przekraczał pojemności Twoich butelek.
+        Na krótszych trasach, prowadzących przez tereny z dobrym dostępem do sklepów, zwykle
+        wystarczy jedno uzupełnienie mniej więcej w połowie. Na dłuższych albo bardziej odludnych —
+        rozstaw punkty tak, żeby na żadnym odcinku bidony nie musiały pomieścić więcej, niż realnie
+        mogą.
       </p>
       <p>
         <a href="/" style={articleLinkStyle}>
-          Dodaj przystanki sklepowe do swojej trasy →
+          Dodaj punkty zaopatrzenia do swojej trasy →
         </a>
       </p>
     </FaqLayout>

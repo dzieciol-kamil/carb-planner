@@ -34,8 +34,8 @@ export const ARTICLES: FaqArticleMeta[] = [
       description: 'Where to place shop stops so you never run the tank dry.',
     },
     pl: {
-      title: 'Jak zaplanować uzupełnianie butelek na długiej trasie',
-      description: 'Gdzie ustawić przystanki sklepowe, żeby nigdy nie zabrakło paliwa.',
+      title: 'Jak zaplanować uzupełnianie bidonów na długiej trasie',
+      description: 'Gdzie ustawić punkty zaopatrzenia, żeby nigdy nie zabrakło paliwa.',
     },
   },
 ];
