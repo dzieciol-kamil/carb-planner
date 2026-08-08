@@ -35,7 +35,7 @@ function defaultLang(): Lang {
   return browserLang.toLowerCase().startsWith('pl') ? 'pl' : 'en';
 }
 
-export const DESKTOP_BREAKPOINT = 760;
+export const DESKTOP_BREAKPOINT = 770;
 
 // Read synchronously at store-creation time rather than defaulting to 'desktop' and
 // correcting via a useEffect: an effect only runs after the first paint, so on a narrow

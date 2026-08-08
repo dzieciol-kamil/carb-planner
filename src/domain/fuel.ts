@@ -547,6 +547,19 @@ export function rateStats(state: PlanState): RateStats {
   };
 }
 
+type NumericSampleKey = {
+  [K in keyof Sample]: Sample[K] extends number ? K : never;
+}[keyof Sample];
+
+export function valueAt(S: Sample[], D: number, x: number, key: NumericSampleKey): number {
+  const N = S.length - 1;
+  const f = Math.max(0, Math.min(1, x / D)) * N;
+  const i = Math.min(N - 1, Math.floor(f));
+  const a = S[i][key];
+  const b = S[i + 1][key];
+  return a + (b - a) * (f - i);
+}
+
 export function fmtHM(h: number): string {
   const m = Math.round(h * 60);
   return Math.floor(m / 60) + ':' + String(m % 60).padStart(2, '0');

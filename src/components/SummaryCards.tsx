@@ -46,11 +46,11 @@ const trackStyle: CSSProperties = {
 };
 const footerRowStyle: CSSProperties = {
   display: 'flex',
+  flexWrap: 'wrap',
   justifyContent: 'space-between',
-  gap: 10,
+  gap: '4px 10px',
   fontSize: 12,
   color: 'var(--muted-2)',
-  whiteSpace: 'nowrap',
 };
 const footerValueStyle: CSSProperties = {
   fontFamily: "'JetBrains Mono', monospace",
@@ -78,8 +78,13 @@ export function SummaryCards() {
   return (
     <div
       style={{
-        flex: '1 1 44%',
-        minWidth: 240,
+        // flexGrow 9999 (vs. RoutePanel's 1) means this absorbs virtually all leftover
+        // row space, keeping RoutePanel pinned near 760px until this hits minWidth and wraps.
+        // 443 is the card's natural single-line footer width (below it the recovery line
+        // wraps to 2, then 3 cramped lines) — basis matches minWidth so the row wraps as
+        // soon as that width is no longer available, instead of shrinking into that state.
+        flex: '9999 1 443px',
+        minWidth: 443,
         boxSizing: 'border-box',
         display: 'flex',
         flexDirection: 'column',
