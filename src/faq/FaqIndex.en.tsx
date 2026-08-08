@@ -1,12 +1,13 @@
 // src/faq/FaqIndex.en.tsx
 import { FaqLayout } from './FaqLayout';
 import { ARTICLES } from './registry';
+import { articleH1Style, articleTextStyle, articleLinkStyle } from './FaqLayout';
 
 export default function FaqIndexEn() {
   return (
     <FaqLayout lang="en">
-      <h1 style={{ fontSize: 26, marginBottom: 8 }}>Fueling FAQ</h1>
-      <p style={{ color: 'var(--muted-2)', fontSize: 15, marginBottom: 28 }}>
+      <h1 style={articleH1Style}>Fueling FAQ</h1>
+      <p style={{ ...articleTextStyle, color: 'var(--muted-2)', marginBottom: 28 }}>
         Straight answers about carb and hydration strategy for long rides.
       </p>
       <ul
@@ -23,7 +24,7 @@ export default function FaqIndexEn() {
           <li key={a.slug}>
             <a
               href={`/faq/${a.slug}/`}
-              style={{ fontSize: 17, fontWeight: 600, color: 'var(--ink)' }}
+              style={{ ...articleLinkStyle, fontSize: 17, color: 'var(--ink)' }}
             >
               {a.en.title}
             </a>

@@ -1,12 +1,13 @@
 // src/faq/FaqIndex.pl.tsx
 import { FaqLayout } from './FaqLayout';
 import { ARTICLES } from './registry';
+import { articleH1Style, articleTextStyle, articleLinkStyle } from './FaqLayout';
 
 export default function FaqIndexPl() {
   return (
     <FaqLayout lang="pl">
-      <h1 style={{ fontSize: 26, marginBottom: 8 }}>Częste pytania</h1>
-      <p style={{ color: 'var(--muted-2)', fontSize: 15, marginBottom: 28 }}>
+      <h1 style={articleH1Style}>Częste pytania</h1>
+      <p style={{ ...articleTextStyle, color: 'var(--muted-2)', marginBottom: 28 }}>
         Konkretne odpowiedzi o strategii węglowodanowej i nawodnieniu na długich trasach.
       </p>
       <ul
@@ -23,7 +24,7 @@ export default function FaqIndexPl() {
           <li key={a.slug}>
             <a
               href={`/pl/faq/${a.slug}/`}
-              style={{ fontSize: 17, fontWeight: 600, color: 'var(--ink)' }}
+              style={{ ...articleLinkStyle, fontSize: 17, color: 'var(--ink)' }}
             >
               {a.pl.title}
             </a>
