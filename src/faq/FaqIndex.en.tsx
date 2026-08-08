@@ -1,7 +1,6 @@
 // src/faq/FaqIndex.en.tsx
-import { FaqLayout } from './FaqLayout';
+import { FaqLayout, articleH1Style, articleTextStyle, articleLinkStyle } from './FaqLayout';
 import { ARTICLES } from './registry';
-import { articleH1Style, articleTextStyle, articleLinkStyle } from './FaqLayout';
 
 export default function FaqIndexEn() {
   return (

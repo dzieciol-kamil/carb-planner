@@ -33,12 +33,12 @@ export default function CarbTransporterMixEn() {
         actually shows up as fuel being burned (exogenous carbohydrate oxidation). Research on
         combined glucose-fructose feeding (Jeukendrup, 2010) found that pairing carb sources that
         use different transporters — what he called "multiple transportable carbohydrates" — lets
-        riders oxidize carbs almost twice as fast as glucose alone, closely matching the ~60g/h vs
-        ~90g/h gap described above.
+        riders oxidize carbs roughly 50% faster than glucose alone — the ~60g/h vs ~90g/h gap
+        described above (lab studies have measured up to ~105g/h).
       </p>
       <img
         src="/faq/carb-transporter-mix/absorption-cap.png"
-        alt="Mix panel showing the glucose:fructose ratio slider and the resulting absorption ceiling in Carb Fueling."
+        alt="Mix panel showing the glucose:fructose ratio presets and the resulting absorption ceiling in Carb Fueling."
         style={articleImgStyle}
       />
       <p style={articleTextStyle}>
@@ -48,7 +48,7 @@ export default function CarbTransporterMixEn() {
       </p>
       <p style={articleTextStyle}>
         Carb Fueling calculates your personal ceiling from the mix ratio you set, and shows it live
-        as you adjust the sliders.
+        as you change the mix.
       </p>
       <p>
         <a href="/" style={articleLinkStyle}>
