@@ -52,6 +52,7 @@ function renderPage({ urlPath, altPath, lang, title, description, jsonLd, bodyHt
   const plHref = lang === 'pl' ? canonical : alternate;
   const safeTitle = escapeHtml(title);
   const safeDescription = escapeHtml(description);
+  const ogType = jsonLd['@type'] === 'FAQPage' ? 'website' : 'article';
   return `<!doctype html>
 <html lang="${lang}">
   <head>
@@ -69,11 +70,17 @@ function renderPage({ urlPath, altPath, lang, title, description, jsonLd, bodyHt
     <meta name="theme-color" content="#16191c" />
     <title>${safeTitle}</title>
     <meta name="description" content="${safeDescription}" />
-    <meta property="og:type" content="article" />
+    <meta property="og:type" content="${ogType}" />
     <meta property="og:url" content="${canonical}" />
     <meta property="og:title" content="${safeTitle}" />
     <meta property="og:description" content="${safeDescription}" />
+    <meta property="og:image" content="${SITE}/og-image.png" />
     <meta property="og:locale" content="${lang === 'pl' ? 'pl_PL' : 'en_US'}" />
+    <meta property="og:locale:alternate" content="${lang === 'pl' ? 'en_US' : 'pl_PL'}" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="${safeTitle}" />
+    <meta name="twitter:description" content="${safeDescription}" />
+    <meta name="twitter:image" content="${SITE}/og-image.png" />
     <script type="application/ld+json">${safeJsonLd(jsonLd)}</script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
@@ -147,17 +154,23 @@ async function main() {
 
     for (const article of ARTICLES) {
       const modPath = path.join(rootDir, 'src/faq/articles', `${article.slug}.${lang}.tsx`);
-      if (!existsSync(modPath)) continue; // article not written yet — skip, don't fail the build
+      if (!existsSync(modPath)) {
+        throw new Error(
+          `faq: missing component ${modPath} for registry slug "${article.slug}" (${lang})`,
+        );
+      }
 
       const { default: ArticleComponent } = await server.ssrLoadModule(
         articleModulePath(article.slug, lang),
       );
+      const articleUrlPath = `${prefix}/${article.slug}/`;
+      const articleCanonical = `${SITE}${articleUrlPath}`;
       pages.push({
         outPath: path.join(
           distDir,
           lang === 'pl' ? `pl/faq/${article.slug}/index.html` : `faq/${article.slug}/index.html`,
         ),
-        urlPath: `${prefix}/${article.slug}/`,
+        urlPath: articleUrlPath,
         altPath: `${altPrefix}/${article.slug}/`,
         lang,
         title: `${article[lang].title} — Carb Fueling`,
@@ -168,6 +181,11 @@ async function main() {
           headline: article[lang].title,
           description: article[lang].description,
           inLanguage: lang,
+          image: `${SITE}/og-image.png`,
+          mainEntityOfPage: articleCanonical,
+          author: { '@type': 'Organization', name: 'Carb Fueling' },
+          publisher: { '@type': 'Organization', name: 'Carb Fueling' },
+          datePublished: '2026-08-08',
         },
         bodyHtml: renderToStaticMarkup(createElement(ArticleComponent)),
       });

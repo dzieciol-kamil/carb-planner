@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { ARTICLES } from './registry';
 
+// Real files on disk relative to this test file — no filesystem mocking needed. Vite's
+// import.meta.glob resolves these paths at build/test time, so a missing component file
+// shows up as a missing key here rather than a runtime import failure.
+const articleModules = import.meta.glob('./articles/*.tsx');
+
 describe('ARTICLES registry', () => {
   it('has a unique, URL-safe slug per article', () => {
     const slugs = ARTICLES.map((a) => a.slug);
@@ -23,5 +28,14 @@ describe('ARTICLES registry', () => {
     expect(ARTICLES.map((a) => a.slug).sort()).toEqual(
       ['bonk-crisis', 'bottle-refill-planning', 'carb-transporter-mix'].sort(),
     );
+  });
+
+  it('has a component file on disk for every {slug, lang} pair', () => {
+    for (const article of ARTICLES) {
+      for (const lang of ['en', 'pl'] as const) {
+        const componentPath = `./articles/${article.slug}.${lang}.tsx`;
+        expect(componentPath in articleModules, `missing ${componentPath}`).toBe(true);
+      }
+    }
   });
 });
